@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import {
   Users, Shield, Plus, X, Edit2,
-  CheckCircle, XCircle, Loader2, Search, Building2
+  CheckCircle, XCircle, Loader2, Search, Building2, Bot, BookOpen, ToggleLeft, ToggleRight, Trash2
 } from "lucide-react";
 
 const LOGO = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a1fc4b60b4c477ea324579/19aad65cc_Logohorizontal-Fundobranco.png";
