@@ -14,6 +14,7 @@ const tabs = [
   { id:"departamentos", label:"Departamentos", icon: Building2 },
   { id:"modulos", label:"Módulos", icon: Layers },
   { id:"auditoria", label:"Auditoria", icon: ScrollText },
+  { id:"privilegios", label:"Privilégios", icon: Shield },
 ];
 
 export default function Admin() {
