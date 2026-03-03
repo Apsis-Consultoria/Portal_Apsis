@@ -31,6 +31,11 @@ export default function Layout({ children, currentPageName }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDepartamento, setUserDepartamento] = useState(null);
+  const [openSubmenus, setOpenSubmenus] = useState({});
+
+  const toggleSubmenu = (label) => setOpenSubmenus(prev => ({ ...prev, [label]: !prev[label] }));
+
+  const isMarketingPage = ["Marketing","MarketingComercial","MarketingOrcado"].includes(currentPageName);
 
   useEffect(() => {
     base44.auth.me().then(async (user) => {
