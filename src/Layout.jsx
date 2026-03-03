@@ -23,7 +23,13 @@ const navItems = [
       { label: "Orçado vs Real", page: "MarketingOrcado", icon: PieChart },
     ]
   },
-  { label: "Dashboard Qualidade", page: "DashboardQualidade", icon: ClipboardCheck },
+  {
+    label: "Qualidade", page: "DashboardQualidade", icon: ClipboardCheck,
+    children: [
+      { label: "Dashboard", page: "DashboardQualidade", icon: LayoutDashboard },
+      { label: "Questionário de Revisão", page: "QuestionarioRevisao", icon: ClipboardCheck },
+    ]
+  },
   { label: "Configurações", page: "Configuracoes", icon: Settings },
 ];
 
