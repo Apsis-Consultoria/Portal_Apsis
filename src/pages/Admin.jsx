@@ -190,6 +190,16 @@ export default function Admin() {
     return b && r;
   });
 
+  const filteredColaboradores = colaboradores.filter(c => {
+    const search = buscaColaboradores.toLowerCase();
+    return !search || 
+      c.nome?.toLowerCase().includes(search) ||
+      c.email?.toLowerCase().includes(search) ||
+      c.cargo?.toLowerCase().includes(search) ||
+      c.area?.toLowerCase().includes(search) ||
+      c.departamento?.toLowerCase().includes(search);
+  });
+
   if (authLoading) return (
     <div className="min-h-screen bg-[#F4F6F4] flex items-center justify-center">
       <Loader2 className="w-8 h-8 text-[#F47920] animate-spin" />
