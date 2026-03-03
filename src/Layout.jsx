@@ -7,6 +7,7 @@ import {
   DollarSign, BarChart3, FileText, ChevronLeft,
   ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings
 } from "lucide-react";
+import AssistantWidget from "@/components/AssistantWidget";
 
 const navItems = [
   { label: "Dashboard", page: "Dashboard", icon: LayoutDashboard },
