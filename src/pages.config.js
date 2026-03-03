@@ -61,7 +61,7 @@ import Recover from './pages/Recover';
 import Relatorios from './pages/Relatorios';
 import ResetPassword from './pages/ResetPassword';
 import Admin from './pages/Admin';
-import QualidadeDashboard from './pages/QualidadeDashboard';
+import DashboardQualidade from './pages/DashboardQualidade';
 import __Layout from './Layout.jsx';
 
 
@@ -80,7 +80,7 @@ export const PAGES = {
     "Relatorios": Relatorios,
     "ResetPassword": ResetPassword,
     "Admin": Admin,
-    "QualidadeDashboard": QualidadeDashboard,
+    "DashboardQualidade": DashboardQualidade,
 }
 
 export const pagesConfig = {

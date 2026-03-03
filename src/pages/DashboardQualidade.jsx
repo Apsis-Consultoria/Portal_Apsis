@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, AlertCircle, TrendingUp, Activity } from "lucide-react";
 
-export default function QualidadeDashboard() {
+export default function DashboardQualidade() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalRevisoes: 0,
