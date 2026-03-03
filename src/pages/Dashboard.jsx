@@ -93,8 +93,26 @@ export default function Dashboard() {
   ].filter(d => d.value > 0);
 
   if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-[#F47920] border-t-transparent rounded-full animate-spin" />
+    <div className="flex flex-col items-center justify-center h-64 gap-4">
+      <img
+        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a1fc4b60b4c477ea324579/40a49a962_Design-sem-nome.png"
+        alt="APSIS"
+        className="w-16 h-16 object-contain"
+        style={{ animation: "apsisFloat 1.4s ease-in-out infinite" }}
+      />
+      <p className="text-sm text-[#5C7060] font-medium tracking-wide" style={{ animation: "apsisFade 1.4s ease-in-out infinite" }}>
+        Pensando...
+      </p>
+      <style>{`
+        @keyframes apsisFloat {
+          0%, 100% { transform: translateY(0px); opacity: 1; }
+          50% { transform: translateY(-8px); opacity: 0.7; }
+        }
+        @keyframes apsisFade {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 
