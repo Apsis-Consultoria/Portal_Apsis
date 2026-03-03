@@ -27,6 +27,14 @@ export default function Admin() {
   const [colaboradores, setColaboradores] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Assistente IA
+  const [knowledgeDocs, setKnowledgeDocs] = useState([]);
+  const [assistantConfig, setAssistantConfig] = useState({});
+  const [newDoc, setNewDoc] = useState({ title: "", content: "", category: "FAQ", module: "Geral", sensitivity: "INTERNO", tags: "" });
+  const [showDocForm, setShowDocForm] = useState(false);
+  const [savingDoc, setSavingDoc] = useState(false);
+  const [assistantLogs, setAssistantLogs] = useState([]);
+
   // Departamentos
   const [novoDeptNome, setNovoDeptNome] = useState("");
   const [novoDeptDesc, setNovoDeptDesc] = useState("");
