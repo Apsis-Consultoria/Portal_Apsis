@@ -4,7 +4,7 @@ import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, GitBranch, FolderKanban,
   DollarSign, BarChart3, FileText, ChevronLeft,
-  ChevronRight, Bell, User, Menu, X
+  ChevronRight, Bell, User, Menu, X, Megaphone
 } from "lucide-react";
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
   { label: "Financeiro", page: "Financeiro", icon: DollarSign },
   { label: "Budget", page: "Budget", icon: BarChart3 },
   { label: "Relatórios", page: "Relatorios", icon: FileText },
+  { label: "Marketing", page: "Marketing", icon: Megaphone },
 ];
 
 // Cores APSIS: verde escuro #1A4731, laranja #F47920, cinza claro #E8EDE9
