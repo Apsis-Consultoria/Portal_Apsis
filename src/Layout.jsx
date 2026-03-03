@@ -45,6 +45,7 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     base44.auth.me().then(async (user) => {
       if (!user) return;
+      setCurrentUser(user);
       // Busca colaborador pelo email do usuário logado
       const cols = await base44.entities.Colaborador.filter({ email: user.email });
       if (cols && cols.length > 0 && cols[0].departamento) {
