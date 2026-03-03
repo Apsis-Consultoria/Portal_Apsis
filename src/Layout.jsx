@@ -153,12 +153,15 @@ export default function Layout({ children, currentPageName }) {
         </nav>
 
         {/* Collapse toggle */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-[72px] w-6 h-6 bg-[var(--apsis-orange)] rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-        >
-          {collapsed ? <ChevronRight size={12} className="text-white" /> : <ChevronLeft size={12} className="text-white" />}
-        </button>
+        {/* Role badge */}
+        {!collapsed && (
+          <div className="px-4 pt-5 pb-2">
+            <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded tracking-widest uppercase ${isAdmin ? 'bg-white/10 text-white/70' : 'bg-emerald-500/20 text-emerald-300'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isAdmin ? 'bg-white/60' : 'bg-emerald-400'}`} />
+              {isAdmin ? 'Equipe' : 'Cliente'}
+            </span>
+          </div>
+        )}
 
         {/* Bottom user */}
         <div className={`p-3 border-t border-white/10 flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
