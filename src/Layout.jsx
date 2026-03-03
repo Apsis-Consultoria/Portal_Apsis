@@ -269,6 +269,9 @@ export default function Layout({ children, currentPageName }) {
           {children}
         </main>
       </div>
+
+      {/* Assistente APSIS — widget flutuante global */}
+      <AssistantWidget currentPageName={currentPageName} />
     </div>
   );
 }
