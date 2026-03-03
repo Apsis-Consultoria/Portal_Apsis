@@ -34,6 +34,9 @@ export default function Layout({ children, currentPageName }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDepartamento, setUserDepartamento] = useState(null);
   const [openSubmenus, setOpenSubmenus] = useState({});
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'manager';
 
   const toggleSubmenu = (label) => setOpenSubmenus(prev => ({ ...prev, [label]: !prev[label] }));
 
