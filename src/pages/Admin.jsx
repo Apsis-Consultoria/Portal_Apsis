@@ -389,6 +389,74 @@ export default function Admin() {
           </div>
         )}
 
+        {/* PRIVILÉGIOS — quem pode acessar Configurações */}
+        {activeTab === "privilegios" && (
+          <div className="space-y-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+              <p className="text-sm text-amber-800 font-medium">Gestores com acesso à página de Configurações</p>
+              <p className="text-xs text-amber-700 mt-1">
+                Usuários com perfil <strong>manager</strong> já têm acesso à página de Configurações e podem cadastrar colaboradores do próprio departamento.
+                Para conceder esse acesso a um usuário com perfil <strong>user</strong>, altere seu perfil para <strong>manager</strong> na aba Usuários.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-[#DDE3DE] overflow-hidden">
+              <div className="p-4 border-b border-[#DDE3DE]">
+                <p className="font-semibold text-[#1A2B1F] text-sm">Usuários com privilégio de Gestor (manager)</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-[#DDE3DE] bg-[#F4F6F4]">
+                      {["Nome","E-mail","Departamento","Acesso Configurações","Ação"].map(h => (
+                        <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#5C7060] uppercase tracking-wider">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#F4F6F4]">
+                    {loading ? (
+                      <tr><td colSpan={5} className="text-center py-8"><Loader2 className="w-5 h-5 animate-spin mx-auto text-[#F47920]" /></td></tr>
+                    ) : users.filter(u => u.role === "manager" || u.role === "admin").length === 0 ? (
+                      <tr><td colSpan={5} className="text-center py-8 text-[#5C7060] text-sm">Nenhum gestor cadastrado</td></tr>
+                    ) : users.filter(u => u.role === "manager" || u.role === "admin").map(u => (
+                      <tr key={u.id} className="hover:bg-[#F4F6F4] transition-colors">
+                        <td className="px-4 py-3 font-medium text-[#1A2B1F]">{u.full_name || "—"}</td>
+                        <td className="px-4 py-3 text-xs text-[#5C7060]">{u.email}</td>
+                        <td className="px-4 py-3 text-xs text-[#5C7060]">
+                          {(() => {
+                            const col = colaboradores.find ? colaboradores.find(c => c.email === u.email) : null;
+                            return col?.departamento || "—";
+                          })()}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${u.role === "admin" ? "bg-[#1A4731]/10 text-[#1A4731]" : "bg-[#F47920]/10 text-[#F47920]"}`}>
+                            {u.role === "admin" ? "Admin (total)" : "Gestor (dept.)"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          {u.role === "manager" && (
+                            <button onClick={() => { setModalUser(u); setActiveTab("usuarios"); }}
+                              className="text-xs text-[#5C7060] hover:text-red-500 border border-[#DDE3DE] px-2 py-1 rounded-lg hover:border-red-200 transition-colors">
+                              Revogar
+                            </button>
+                          )}
+                          {u.role === "admin" && <span className="text-xs text-[#5C7060]">Irrevogável</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="p-4 border-t border-[#DDE3DE] bg-[#F4F6F4]">
+                <p className="text-xs text-[#5C7060]">
+                  Para <strong>conceder</strong> acesso de gestor: vá na aba <strong>Usuários</strong>, edite o usuário e altere o perfil para <strong>manager</strong>.<br/>
+                  Para <strong>revogar</strong>: clique em "Revogar" acima — isso abrirá o modal de edição do usuário.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* AUDITORIA */}
         {activeTab === "auditoria" && (
           <div className="bg-white rounded-2xl border border-[#DDE3DE] overflow-hidden">
