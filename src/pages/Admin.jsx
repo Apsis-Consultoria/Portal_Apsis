@@ -44,6 +44,7 @@ export default function Admin() {
   // Filtros
   const [busca, setBusca] = useState("");
   const [filtroRole, setFiltroRole] = useState("Todos");
+  const [buscaColaboradores, setBuscaColaboradores] = useState("");
 
   // Modal usuário
   const [modalUser, setModalUser] = useState(null);
