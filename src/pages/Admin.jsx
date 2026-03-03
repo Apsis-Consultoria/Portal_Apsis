@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import {
-  Users, Layers, ScrollText, Shield, Plus, X, Edit2,
-  CheckCircle, XCircle, RefreshCw, Mail, Loader2, Search, ChevronDown, Building2
+  Users, Shield, Plus, X, Edit2,
+  CheckCircle, XCircle, Loader2, Search, Building2
 } from "lucide-react";
 
 const LOGO = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a1fc4b60b4c477ea324579/19aad65cc_Logohorizontal-Fundobranco.png";
