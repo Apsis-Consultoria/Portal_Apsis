@@ -116,7 +116,9 @@ export default function Layout({ children, currentPageName }) {
                 <img src={LOGO_URL} alt="APSIS" className="w-8 h-8 object-contain rounded" />
                 <div>
                   <div className="text-white font-bold text-sm">Portal APSIS</div>
-                  <div className="text-white/40 text-[10px] uppercase tracking-wider">Tax & Advisory</div>
+                  <div className="text-white/40 text-[10px] uppercase tracking-wider">
+                    {navItems.find(n => n.page === currentPageName)?.sub || "Tax & Advisory"}
+                  </div>
                 </div>
               </div>
               <button onClick={() => setMobileOpen(false)}><X size={18} className="text-white/50" /></button>
