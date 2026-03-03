@@ -73,9 +73,13 @@ export default function Layout({ children, currentPageName }) {
           {!collapsed && (
             <div>
               <div className="text-white font-bold text-base leading-tight tracking-wide">Portal APSIS</div>
-              <div className="text-white/40 text-[10px] font-medium tracking-wider uppercase">
-                {navItems.find(n => n.page === currentPageName)?.sub || "Tax & Advisory"}
-              </div>
+              <select
+                className="bg-transparent text-white/40 text-[10px] font-medium tracking-wider uppercase cursor-pointer focus:outline-none hover:text-white/60 transition-colors w-full"
+                value={setor}
+                onChange={e => setSetor(e.target.value)}
+              >
+                {SETORES.map(s => <option key={s} value={s} className="bg-[#1A4731] text-white normal-case">{s}</option>)}
+              </select>
             </div>
           )}
         </div>
