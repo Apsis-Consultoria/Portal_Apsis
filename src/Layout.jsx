@@ -5,17 +5,23 @@ import { base44 } from "@/api/base44Client";
 import {
   LayoutDashboard, GitBranch, FolderKanban,
   DollarSign, BarChart3, FileText, ChevronLeft,
-  ChevronRight, Bell, User, Menu, X, Megaphone
+  ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart
 } from "lucide-react";
 
 const navItems = [
-  { label: "Dashboard", page: "Dashboard", icon: LayoutDashboard, sub: "Visão Geral" },
-  { label: "Pipeline", page: "Pipeline", icon: GitBranch, sub: "CRM & Propostas" },
-  { label: "Projetos", page: "Projetos", icon: FolderKanban, sub: "Gestão de OS" },
-  { label: "Financeiro", page: "Financeiro", icon: DollarSign, sub: "Parcelas & Recebimentos" },
-  { label: "Budget", page: "Budget", icon: BarChart3, sub: "Metas & Orçamento" },
-  { label: "Relatórios", page: "Relatorios", icon: FileText, sub: "Análises & Exportações" },
-  { label: "Marketing", page: "Marketing", icon: Megaphone, sub: "Indicadores Comerciais" },
+  { label: "Dashboard", page: "Dashboard", icon: LayoutDashboard },
+  { label: "Pipeline", page: "Pipeline", icon: GitBranch },
+  { label: "Projetos", page: "Projetos", icon: FolderKanban },
+  { label: "Financeiro", page: "Financeiro", icon: DollarSign },
+  { label: "Budget", page: "Budget", icon: BarChart3 },
+  { label: "Relatórios", page: "Relatorios", icon: FileText },
+  {
+    label: "Marketing", page: "Marketing", icon: Megaphone,
+    children: [
+      { label: "Comercial", page: "MarketingComercial", icon: TrendingUp },
+      { label: "Orçado vs Real", page: "MarketingOrcado", icon: PieChart },
+    ]
+  },
 ];
 
 // Cores APSIS: verde escuro #1A4731, laranja #F47920, cinza claro #E8EDE9
