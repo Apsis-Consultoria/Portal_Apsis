@@ -379,47 +379,7 @@ export default function Admin() {
           </div>
         )}
 
-        {/* AUDITORIA */}
-        {activeTab === "auditoria" && (
-          <div className="bg-white rounded-2xl border border-[#DDE3DE] overflow-hidden">
-            <div className="p-4 border-b border-[#DDE3DE] flex items-center justify-between">
-              <p className="font-semibold text-[#1A2B1F]">Log de Auditoria</p>
-              <p className="text-xs text-[#5C7060]">{logs.length} registros</p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[#DDE3DE] bg-[#F4F6F4]">
-                    {["Data/Hora","Usuário","Ação","Módulo","Resultado"].map(h => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#5C7060] uppercase tracking-wider">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F4F6F4]">
-                  {loading ? (
-                    <tr><td colSpan={5} className="text-center py-10"><Loader2 className="w-5 h-5 animate-spin mx-auto text-[#F47920]" /></td></tr>
-                  ) : logs.length === 0 ? (
-                    <tr><td colSpan={5} className="text-center py-10 text-[#5C7060]">Nenhum evento registrado ainda</td></tr>
-                  ) : logs.map(l => (
-                    <tr key={l.id} className="hover:bg-[#F4F6F4] transition-colors">
-                      <td className="px-4 py-3 text-xs text-[#5C7060] whitespace-nowrap">
-                        {l.created_date ? new Date(l.created_date).toLocaleString("pt-BR") : "—"}
-                      </td>
-                      <td className="px-4 py-3 text-xs font-medium text-[#1A2B1F]">{l.usuario || l.email || "—"}</td>
-                      <td className="px-4 py-3 text-xs text-[#5C7060] max-w-[240px] truncate">{l.acao}</td>
-                      <td className="px-4 py-3 text-xs text-[#5C7060]">{l.modulo || "—"}</td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${l.resultado==="Sucesso"?"bg-emerald-50 text-emerald-700":l.resultado==="Bloqueado"?"bg-amber-50 text-amber-700":"bg-red-50 text-red-600"}`}>
-                          {l.resultado}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+
       </div>
 
       {/* Modal editar usuário */}
