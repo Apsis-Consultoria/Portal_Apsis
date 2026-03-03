@@ -56,13 +56,33 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
-    const [u, m, l] = await Promise.all([
+    const [u, m, l, d] = await Promise.all([
       base44.entities.User.list(),
       base44.entities.Modulo.list(),
       base44.entities.AuditLog.list("-created_date", 100),
+      base44.entities.Departamento.list(),
     ]);
-    setUsers(u); setModulos(m); setLogs(l);
+    setUsers(u); setModulos(m); setLogs(l); setDepartamentos(d);
     setLoading(false);
+  };
+
+  const createDept = async () => {
+    if (!novoDeptNome.trim()) return;
+    setSavingDept(true);
+    await base44.entities.Departamento.create({ nome: novoDeptNome.trim(), descricao: novoDeptDesc.trim(), ativo: true });
+    setNovoDeptNome(""); setNovoDeptDesc("");
+    setSavingDept(false);
+    loadAll();
+  };
+
+  const toggleDept = async (dept) => {
+    await base44.entities.Departamento.update(dept.id, { ativo: !dept.ativo });
+    loadAll();
+  };
+
+  const deleteDept = async (dept) => {
+    await base44.entities.Departamento.delete(dept.id);
+    loadAll();
   };
 
   const seedModulos = async () => {
