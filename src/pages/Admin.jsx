@@ -311,47 +311,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* MÓDULOS */}
-        {activeTab === "modulos" && (
-          <div className="space-y-4">
-            {modulos.length === 0 && !loading && (
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center gap-4">
-                <p className="text-sm text-amber-700 flex-1">Nenhum módulo cadastrado. Clique para carregar os módulos padrão.</p>
-                <button onClick={seedModulos} className="bg-[#1A4731] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#245E40] flex items-center gap-2">
-                  <RefreshCw size={14} /> Inicializar Módulos
-                </button>
-              </div>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {loading ? (
-                <div className="col-span-2 text-center py-10"><Loader2 className="w-5 h-5 animate-spin mx-auto text-[#F47920]" /></div>
-              ) : modulos.map(mod => (
-                <div key={mod.id} className={`bg-white rounded-2xl border p-5 transition-all ${mod.ativo ? "border-[#DDE3DE]" : "border-gray-200 opacity-60"}`}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <p className="font-semibold text-[#1A2B1F]">{mod.nome}</p>
-                      <p className="text-xs text-[#5C7060] mt-0.5">{mod.descricao}</p>
-                    </div>
-                    <button onClick={() => toggleModulo(mod)}
-                      className={`relative w-11 h-6 rounded-full transition-colors ${mod.ativo ? "bg-[#1A4731]" : "bg-gray-300"}`}>
-                      <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${mod.ativo ? "left-6" : "left-1"}`} />
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-[#F4F6F4]">
-                    <p className="text-xs text-[#5C7060] mr-1">Acesso:</p>
-                    {ROLES.map(role => (
-                      <button key={role} onClick={() => updateModuloRoles(mod, role)}
-                        className={`text-xs px-2 py-0.5 rounded-full border transition-colors ${(mod.perfis_acesso || []).includes(role) ? "bg-[#F47920]/10 border-[#F47920]/30 text-[#F47920]" : "border-gray-200 text-gray-400"}`}>
-                        {role}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* PRIVILÉGIOS — quem pode acessar Configurações */}
         {activeTab === "privilegios" && (
           <div className="space-y-4">
