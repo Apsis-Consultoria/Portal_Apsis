@@ -7,6 +7,7 @@ import {
   DollarSign, BarChart3, FileText, ChevronLeft,
   ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings, ClipboardCheck
 } from "lucide-react";
+import { Clock } from "lucide-react";
 import AssistantWidget from "@/components/AssistantWidget";
 
 const navItems = [
