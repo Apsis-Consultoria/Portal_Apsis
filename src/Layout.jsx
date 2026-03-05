@@ -114,7 +114,7 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Nav */}
         <nav className="flex-1 py-4 px-2 space-y-0.5">
-          {navItems.map(({ label, page, icon: Icon, children: subItems }) => {
+          {navItems.map(({ label, page, icon: Icon, children: subItems, externalUrl }) => {
             const isActive = currentPageName === page;
             const hasChildren = subItems && subItems.length > 0;
             const isGroupActive = hasChildren && subItems.some(s => s.page === currentPageName);
