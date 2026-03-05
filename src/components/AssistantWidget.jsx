@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { MessageCircle, X, Minimize2, Send, RefreshCw, Bot, User, Loader2, BookOpen } from "lucide-react";
+import { MessageCircle, X, Minimize2, Send, RefreshCw, User, Loader2, BookOpen, ExternalLink, Sparkles } from "lucide-react";
 
 const LOGO_URL = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a1fc4b60b4c477ea324579/40af152e2_Design-sem-nome.png";
+const AXON_URL = "https://apsis.qi140.ai/auth?redirect=%2Fauth%3Fredirect%3D%252F";
 
 const WELCOME_MESSAGE = {
   role: "assistant",
-  content: "Olá! Sou o **Assistente APSIS**. Posso ajudar com dúvidas sobre o portal e consultas na base de conhecimento corporativa.\n\nComo posso ajudar você hoje?"
+  content: "Olá! Sou o **Oráculo APSIS**. Posso ajudar com dúvidas sobre o portal e consultas na base de conhecimento corporativa.\n\nComo posso ajudar você hoje?"
 };
 
 function MessageBubble({ msg }) {
@@ -24,7 +25,6 @@ function MessageBubble({ msg }) {
           : "bg-white border border-[#DDE3DE] text-[#1A2B1F] rounded-tl-sm"
       }`}>
         {msg.content.split('\n').map((line, i) => {
-          // Markdown bold simples
           const parts = line.split(/\*\*(.*?)\*\*/g);
           return (
             <p key={i} className={i > 0 ? "mt-1" : ""}>
@@ -57,6 +57,7 @@ function MessageBubble({ msg }) {
 export default function AssistantWidget({ currentPageName }) {
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
+  const [activeTab, setActiveTab] = useState("oraculo"); // "oraculo" | "axon"
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -64,16 +65,16 @@ export default function AssistantWidget({ currentPageName }) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (open && !minimized) {
+    if (open && !minimized && activeTab === "oraculo") {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, open, minimized]);
+  }, [messages, open, minimized, activeTab]);
 
   useEffect(() => {
-    if (open && !minimized && inputRef.current) {
+    if (open && !minimized && activeTab === "oraculo" && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [open, minimized]);
+  }, [open, minimized, activeTab]);
 
   const sendMessage = async () => {
     const text = input.trim();
@@ -89,7 +90,7 @@ export default function AssistantWidget({ currentPageName }) {
       const history = newMessages.slice(1).map(m => ({ role: m.role, content: m.content }));
       const res = await base44.functions.invoke('assistantChat', {
         message: text,
-        history: history.slice(0, -1), // histórico sem a mensagem atual
+        history: history.slice(0, -1),
         currentPage: currentPageName || 'Geral'
       });
 
@@ -134,7 +135,7 @@ export default function AssistantWidget({ currentPageName }) {
             <MessageCircle size={24} className="text-white" />
           </button>
           <div className="absolute bottom-16 right-0 bg-[#1A2B1F] text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-            Assistente APSIS
+            Oráculo APSIS
           </div>
           <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F47920] rounded-full border-2 border-white" />
         </div>
@@ -144,9 +145,7 @@ export default function AssistantWidget({ currentPageName }) {
       {open && (
         <div
           className={`fixed bottom-6 right-6 z-50 flex flex-col bg-[#F4F6F4] rounded-2xl shadow-2xl border border-[#DDE3DE] overflow-hidden transition-all duration-200 ${
-            minimized
-              ? "w-72 h-14"
-              : "w-[360px] sm:w-[400px] h-[560px]"
+            minimized ? "w-72 h-14" : "w-[360px] sm:w-[400px] h-[580px]"
           }`}
           style={{ maxHeight: "calc(100vh - 80px)", maxWidth: "calc(100vw - 24px)" }}
         >
@@ -155,12 +154,12 @@ export default function AssistantWidget({ currentPageName }) {
             <div className="flex items-center gap-2">
               <img src={LOGO_URL} alt="APSIS" className="w-6 h-6 object-contain rounded" />
               <div>
-                <p className="text-white text-sm font-semibold leading-tight">Assistente APSIS</p>
+                <p className="text-white text-sm font-semibold leading-tight">Oráculo APSIS</p>
                 {!minimized && <p className="text-white/40 text-[10px]">IA corporativa · {currentPageName || 'Portal'}</p>}
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {!minimized && (
+              {!minimized && activeTab === "oraculo" && (
                 <button onClick={newConversation} title="Nova conversa"
                   className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
                   <RefreshCw size={13} />
@@ -179,57 +178,107 @@ export default function AssistantWidget({ currentPageName }) {
 
           {!minimized && (
             <>
-              {/* Mensagens */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-1">
-                {messages.map((msg, i) => (
-                  <MessageBubble key={i} msg={msg} />
-                ))}
-                {loading && (
-                  <div className="flex gap-2 justify-start mb-3">
-                    <div className="w-7 h-7 rounded-full bg-[#1A4731] flex items-center justify-center flex-shrink-0">
-                      <img src={LOGO_URL} alt="APSIS" className="w-5 h-5 object-contain rounded-full" />
-                    </div>
-                    <div className="bg-white border border-[#DDE3DE] rounded-2xl rounded-tl-sm px-4 py-3">
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex gap-1">
-                          <span className="w-1.5 h-1.5 bg-[#F47920] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                          <span className="w-1.5 h-1.5 bg-[#F47920] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                          <span className="w-1.5 h-1.5 bg-[#F47920] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                        </div>
-                        <span className="text-xs text-[#5C7060]">Pensando...</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
+              {/* Abas */}
+              <div className="flex border-b border-[#DDE3DE] bg-white flex-shrink-0">
+                <button
+                  onClick={() => setActiveTab("oraculo")}
+                  className={`flex-1 py-2.5 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 ${
+                    activeTab === "oraculo"
+                      ? "text-[#1A4731] border-b-2 border-[#1A4731]"
+                      : "text-[#5C7060] hover:text-[#1A2B1F]"
+                  }`}
+                >
+                  <MessageCircle size={12} />
+                  Oráculo APSIS
+                </button>
+                <button
+                  onClick={() => setActiveTab("axon")}
+                  className={`flex-1 py-2.5 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 ${
+                    activeTab === "axon"
+                      ? "text-[#F47920] border-b-2 border-[#F47920]"
+                      : "text-[#5C7060] hover:text-[#1A2B1F]"
+                  }`}
+                >
+                  <Sparkles size={12} />
+                  AXON IA
+                </button>
               </div>
 
-              {/* Input */}
-              <div className="p-3 border-t border-[#DDE3DE] bg-white flex-shrink-0">
-                <div className="flex gap-2 items-end">
-                  <textarea
-                    ref={inputRef}
-                    value={input}
-                    onChange={e => setInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Digite sua mensagem..."
-                    rows={1}
-                    disabled={loading}
-                    className="flex-1 resize-none border border-[#DDE3DE] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#F47920] transition-colors bg-[#F4F6F4] max-h-24 disabled:opacity-50"
-                    style={{ minHeight: "38px" }}
+              {/* Conteúdo Oráculo */}
+              {activeTab === "oraculo" && (
+                <>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-1">
+                    {messages.map((msg, i) => (
+                      <MessageBubble key={i} msg={msg} />
+                    ))}
+                    {loading && (
+                      <div className="flex gap-2 justify-start mb-3">
+                        <div className="w-7 h-7 rounded-full bg-[#1A4731] flex items-center justify-center flex-shrink-0">
+                          <img src={LOGO_URL} alt="APSIS" className="w-5 h-5 object-contain rounded-full" />
+                        </div>
+                        <div className="bg-white border border-[#DDE3DE] rounded-2xl rounded-tl-sm px-4 py-3">
+                          <div className="flex items-center gap-1.5">
+                            <div className="flex gap-1">
+                              <span className="w-1.5 h-1.5 bg-[#F47920] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                              <span className="w-1.5 h-1.5 bg-[#F47920] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                              <span className="w-1.5 h-1.5 bg-[#F47920] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                            </div>
+                            <span className="text-xs text-[#5C7060]">Pensando...</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+                  <div className="p-3 border-t border-[#DDE3DE] bg-white flex-shrink-0">
+                    <div className="flex gap-2 items-end">
+                      <textarea
+                        ref={inputRef}
+                        value={input}
+                        onChange={e => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Digite sua mensagem..."
+                        rows={1}
+                        disabled={loading}
+                        className="flex-1 resize-none border border-[#DDE3DE] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#F47920] transition-colors bg-[#F4F6F4] max-h-24 disabled:opacity-50"
+                        style={{ minHeight: "38px" }}
+                      />
+                      <button
+                        onClick={sendMessage}
+                        disabled={!input.trim() || loading}
+                        className="w-9 h-9 bg-[#F47920] hover:bg-[#D4640D] disabled:opacity-40 rounded-xl flex items-center justify-center transition-colors flex-shrink-0"
+                      >
+                        {loading ? <Loader2 size={15} className="text-white animate-spin" /> : <Send size={15} className="text-white" />}
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-[#5C7060] mt-1.5 text-center">
+                      Oráculo APSIS · Não compartilhe senhas ou dados sensíveis
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* Conteúdo AXON IA */}
+              {activeTab === "axon" && (
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <iframe
+                    src={AXON_URL}
+                    className="flex-1 w-full border-0"
+                    title="AXON IA"
+                    allow="clipboard-write"
                   />
-                  <button
-                    onClick={sendMessage}
-                    disabled={!input.trim() || loading}
-                    className="w-9 h-9 bg-[#F47920] hover:bg-[#D4640D] disabled:opacity-40 rounded-xl flex items-center justify-center transition-colors flex-shrink-0"
-                  >
-                    {loading ? <Loader2 size={15} className="text-white animate-spin" /> : <Send size={15} className="text-white" />}
-                  </button>
+                  <div className="p-2 border-t border-[#DDE3DE] bg-white flex-shrink-0 flex items-center justify-center">
+                    <a
+                      href={AXON_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[10px] text-[#F47920] hover:underline"
+                    >
+                      <ExternalLink size={10} /> Abrir AXON IA em nova aba
+                    </a>
+                  </div>
                 </div>
-                <p className="text-[10px] text-[#5C7060] mt-1.5 text-center">
-                  Assistente APSIS · Não compartilhe senhas ou dados sensíveis
-                </p>
-              </div>
+              )}
             </>
           )}
         </div>
