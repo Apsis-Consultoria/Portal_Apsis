@@ -129,7 +129,7 @@ export default function Dashboard() {
       {/* Indicadores Budget 2026 da planilha */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: "Laudo Contábil Realizado", value: fmt(47290.64), sub: "de " + fmt(6200000) + " orçados", pct: 0.76 },
+          { label: "Laudos Realizados", value: fmt(47290.64), sub: "de " + fmt(6200000) + " orçados", pct: 0.76 },
           { label: "Consultoria Realizada", value: fmt(113891.63), sub: "de " + fmt(2500000) + " orçados", pct: 4.56 },
           { label: "% Budget Vendas Acumulado", value: "1,85%", sub: "Jan–Fev/26 atingidos", pct: 1.85 },
         ].map(k => (
