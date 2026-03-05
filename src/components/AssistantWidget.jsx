@@ -3,8 +3,6 @@ import { base44 } from "@/api/base44Client";
 import { MessageCircle, X, Minimize2, Send, RefreshCw, User, Loader2, BookOpen } from "lucide-react";
 
 const LOGO_URL = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a1fc4b60b4c477ea324579/40af152e2_Design-sem-nome.png";
-const AXON_URL = "https://apsis.qi140.ai/auth?redirect=%2Fauth%3Fredirect%3D%252F";
-
 const WELCOME_MESSAGE = {
   role: "assistant",
   content: "Olá! Sou o **Oráculo APSIS**. Posso ajudar com dúvidas sobre o portal e consultas na base de conhecimento corporativa.\n\nComo posso ajudar você hoje?"
