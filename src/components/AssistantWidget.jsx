@@ -55,7 +55,6 @@ function MessageBubble({ msg }) {
 export default function AssistantWidget({ currentPageName }) {
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
-  const [activeTab, setActiveTab] = useState("oraculo"); // "oraculo" | "axon"
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
