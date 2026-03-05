@@ -49,6 +49,7 @@
  */
 import AccessDenied from './pages/AccessDenied';
 import Admin from './pages/Admin';
+import AlocacoesHoras from './pages/AlocacoesHoras';
 import Budget from './pages/Budget';
 import Configuracoes from './pages/Configuracoes';
 import Dashboard from './pages/Dashboard';
@@ -62,13 +63,13 @@ import Projetos from './pages/Projetos';
 import Recover from './pages/Recover';
 import Relatorios from './pages/Relatorios';
 import ResetPassword from './pages/ResetPassword';
-import AlocacoesHoras from './pages/AlocacoesHoras';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AccessDenied": AccessDenied,
     "Admin": Admin,
+    "AlocacoesHoras": AlocacoesHoras,
     "Budget": Budget,
     "Configuracoes": Configuracoes,
     "Dashboard": Dashboard,
@@ -82,7 +83,6 @@ export const PAGES = {
     "Recover": Recover,
     "Relatorios": Relatorios,
     "ResetPassword": ResetPassword,
-    "AlocacoesHoras": AlocacoesHoras,
 }
 
 export const pagesConfig = {

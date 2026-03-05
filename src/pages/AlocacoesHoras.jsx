@@ -11,6 +11,7 @@ export default function AlocacoesHoras() {
   const [filtroSetor, setFiltroSetor] = useState("Todos");
   const [filtroProjeto, setFiltroProjeto] = useState("Todos");
   const [filtroStatus, setFiltroStatus] = useState("Todos");
+  const [filtroColaborador, setFiltroColaborador] = useState("Todos");
   const [modal, setModal] = useState(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
