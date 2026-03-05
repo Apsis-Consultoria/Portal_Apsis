@@ -156,7 +156,7 @@ export default function AssistantWidget({ currentPageName }) {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {!minimized && activeTab === "oraculo" && (
+              {!minimized && (
                 <button onClick={newConversation} title="Nova conversa"
                   className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
                   <RefreshCw size={13} />
