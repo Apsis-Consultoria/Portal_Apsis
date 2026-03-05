@@ -253,6 +253,17 @@ export default function Layout({ children, currentPageName }) {
                   );
                 }
 
+                if (externalUrl) {
+                  return (
+                    <a key={page} href={externalUrl} target="_blank" rel="noopener noreferrer"
+                      onClick={() => setMobileOpen(false)}
+                      className="nav-item flex items-center gap-3 px-3 py-2.5 rounded-l-lg">
+                      <Icon size={18} className="text-white/50" />
+                      <span className="text-sm font-medium text-white/60">{label}</span>
+                    </a>
+                  );
+                }
+
                 return (
                   <Link key={page} to={createPageUrl(page)} onClick={() => setMobileOpen(false)}
                     className={`nav-item flex items-center gap-3 px-3 py-2.5 rounded-l-lg ${isActive ? "active" : ""}`}>
