@@ -29,12 +29,14 @@ export default function AlocacoesHoras() {
 
   const projetos = [...new Set(alocacoes.map(a => a.projeto_id).filter(Boolean))];
   const setores = [...new Set(alocacoes.map(a => a.setor).filter(Boolean))];
+  const colaboradores = [...new Set(alocacoes.map(a => a.colaborador).filter(Boolean))].sort();
 
   const filtrados = alocacoes.filter(a => {
     const s = filtroSetor === "Todos" || a.setor === filtroSetor;
     const p = filtroProjeto === "Todos" || a.projeto_id === filtroProjeto;
     const st = filtroStatus === "Todos" || a.status === filtroStatus;
-    return s && p && st;
+    const c = filtroColaborador === "Todos" || a.colaborador === filtroColaborador;
+    return s && p && st && c;
   });
 
   // KPIs
