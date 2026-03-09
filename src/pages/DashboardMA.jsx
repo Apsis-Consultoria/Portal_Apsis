@@ -35,6 +35,8 @@ export default function DashboardMA() {
       </div>
 
       <VendasTicketMAChart />
+
+      <ClientesVolumeConversaoMAChart />
     </div>
   );
 }
