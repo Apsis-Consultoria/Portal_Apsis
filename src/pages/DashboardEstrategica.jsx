@@ -22,20 +22,7 @@ export default function DashboardEstrategica() {
   const engagedClients = new Set(estrategicaSales.map(s => s.client_id)).size;
   const avgEngagement = estrategicaSales.length > 0 ? (totalRevenue / engagedClients) : 0;
 
-  const monthlyGrowth = [
-    { month: "Jan", faturado: 35000, pipeline: 120000 },
-    { month: "Fev", faturado: 42000, pipeline: 145000 },
-    { month: "Mar", faturado: 38000, pipeline: 165000 },
-    { month: "Abr", faturado: 45000, pipeline: 180000 }
-  ];
 
-  const clientSegmentation = [
-    { name: "Indústria", value: 40 },
-    { name: "Comércio", value: 30 },
-    { name: "Serviços", value: 30 }
-  ];
-
-  const colors = ["#1A4731", "#F47920", "#245E40"];
 
   return (
     <div className="space-y-6">
