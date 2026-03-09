@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import {
   LayoutDashboard, GitBranch, FolderKanban,
   DollarSign, BarChart3, FileText, ChevronLeft,
-  ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings, ClipboardCheck, Sparkles
+  ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings, ClipboardCheck, Sparkles, Users
 } from "lucide-react";
 import { Clock } from "lucide-react";
 import AssistantWidget from "@/components/AssistantWidget";
@@ -21,8 +21,8 @@ const navItems = [
       { label: "M&A", page: "DashboardMA", icon: GitBranch },
       { label: "Projetos Especiais", page: "DashboardProjetos", icon: Sparkles },
       { label: "Financeiro", page: "DashboardFinanceiro", icon: DollarSign },
-      { label: "Capital Humano", page: "DashboardCapitalHumano", icon: DollarSign },
-      { label: "Mercado / Clientes", page: "DashboardMercadoClientes", icon: DollarSign },
+      { label: "Capital Humano", page: "DashboardCapitalHumano", icon: Users },
+      { label: "Mercado / Clientes", page: "DashboardMercadoClientes", icon: TrendingUp },
     ]
   },
   { label: "Pipeline", page: "Pipeline", icon: GitBranch },
