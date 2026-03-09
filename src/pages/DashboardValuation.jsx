@@ -42,6 +42,7 @@ export default function DashboardValuation() {
 
       <div className="space-y-6">
         <VendasTicketChart />
+        <ClientesVolumeConversaoChart />
         <VendasPorGrupoTable />
         <OrcadoRealizadoChart />
       </div>
