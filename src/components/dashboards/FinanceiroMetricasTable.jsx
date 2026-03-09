@@ -70,7 +70,7 @@ export default function FinanceiroMetricasTable() {
           <table className="w-full">
             <thead>
               <tr className="bg-[#1A4731] text-white">
-                <th className="px-6 py-4 text-left text-sm font-semibold w-1/3">Crescimento da Receita de Serviços Maduros</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold w-1/3">Crescimento da Receita de<br />Serviços Maduros</th>
                 <th className="px-6 py-4 text-center text-sm font-semibold bg-[#F47920]">1º trimestre</th>
                 <th className="px-6 py-4 text-center text-sm font-semibold bg-[#F47920]">2º trimestre</th>
                 <th className="px-6 py-4 text-center text-sm font-semibold bg-[#F47920]">3º trimestre</th>
