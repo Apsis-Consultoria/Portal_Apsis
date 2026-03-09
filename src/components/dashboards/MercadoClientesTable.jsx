@@ -14,10 +14,10 @@ const MetricTable = ({ metric, data }) => (
       </thead>
       <tbody>
         <tr className="bg-white">
-          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{data[0]}</td>
-          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{data[1]}</td>
-          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{data[2]}</td>
-          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{data[3]}</td>
+          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{data[0]}</td>
+          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{data[1]}</td>
+          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{data[2]}</td>
+          <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{data[3]}</td>
           <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F]">{data[4]}</td>
           <td className="px-6 py-4 text-center text-sm font-semibold text-white bg-[#F47920]">{data[5]}</td>
         </tr>

@@ -16,10 +16,10 @@ const MetricTable = ({ title, rows }) => (
         {rows.map((row, idx) => (
           <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-[#F4F6F4]"}>
             <td className="px-6 py-4 text-sm font-medium text-white bg-[#1A4731]">{row.label}</td>
-            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{row.data[0]}</td>
-            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{row.data[1]}</td>
-            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{row.data[2]}</td>
-            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{row.data[3]}</td>
+            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{row.data[0]}</td>
+            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{row.data[1]}</td>
+            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{row.data[2]}</td>
+            <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{row.data[3]}</td>
             <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F]">{row.data[4]}</td>
             <td className="px-6 py-4 text-center text-sm font-semibold text-white bg-[#F47920]">{row.data[5]}</td>
           </tr>
