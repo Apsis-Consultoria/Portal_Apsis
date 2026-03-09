@@ -69,6 +69,7 @@ import Projetos from './pages/Projetos';
 import Recover from './pages/Recover';
 import Relatorios from './pages/Relatorios';
 import ResetPassword from './pages/ResetPassword';
+import DashboardFinanceiro from './pages/DashboardFinanceiro';
 import __Layout from './Layout.jsx';
 
 
@@ -95,6 +96,7 @@ export const PAGES = {
     "Recover": Recover,
     "Relatorios": Relatorios,
     "ResetPassword": ResetPassword,
+    "DashboardFinanceiro": DashboardFinanceiro,
 }
 
 export const pagesConfig = {
