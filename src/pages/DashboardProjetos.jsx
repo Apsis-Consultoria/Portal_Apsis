@@ -27,20 +27,7 @@ export default function DashboardProjetos() {
     ? ((allocations.reduce((sum, a) => sum + a.horas_executadas, 0) / allocations.reduce((sum, a) => sum + a.horas_previstas, 0)) * 100).toFixed(1)
     : 0;
 
-  const projectDistribution = [
-    { name: "Ativo", value: 28, color: "#1A4731" },
-    { name: "Pausado", value: 4, color: "#F47920" },
-    { name: "Finalizado", value: 42, color: "#245E40" }
-  ];
 
-  const monthlyMetrics = [
-    { month: "Jan", horas: 480, receita: 55000, projetos: 12 },
-    { month: "Fev", horas: 520, receita: 62000, projetos: 14 },
-    { month: "Mar", horas: 495, receita: 58000, projetos: 13 },
-    { month: "Abr", horas: 535, receita: 68000, projetos: 16 }
-  ];
-
-  const colors = ["#1A4731", "#F47920", "#245E40"];
 
   return (
     <div className="space-y-6">
