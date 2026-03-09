@@ -55,9 +55,6 @@ const navItems = [
     ]
   },
   {
-    label: "AXON IA", page: "AxonIA", icon: Sparkles, externalUrl: "https://apsis.qi140.ai/auth?redirect=%2Fauth%3Fredirect%3D%252F"
-  },
-  {
     label: "Apps APSIS", page: "AppsAPSIS", icon: Grid3x3,
     children: [
       { label: "App Ativo Fixo", page: "AppAtivoFixo", icon: FolderKanban },
@@ -67,6 +64,9 @@ const navItems = [
     ]
   },
   { label: "Relatórios", page: "Relatorios", icon: FileText },
+  {
+    label: "AXON IA", page: "AxonIA", icon: Sparkles, externalUrl: "https://apsis.qi140.ai/auth?redirect=%2Fauth%3Fredirect%3D%252F"
+  },
   { label: "Configurações", page: "Configuracoes", icon: Settings },
 ];
 
