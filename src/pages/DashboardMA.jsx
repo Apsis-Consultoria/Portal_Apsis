@@ -1,0 +1,82 @@
+import { useEffect, useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import StatCard from "@/components/ui/StatCard";
+
+export default function DashboardMA() {
+  const [proposals, setProposals] = useState([]);
+  const [sales, setSales] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      base44.entities.Proposal.filter({ business_unit_id: "ma" }),
+      base44.entities.SalesTransaction.list()
+    ]).then(([prop, sal]) => {
+      setProposals(prop || []);
+      setSales(sal || []);
+    });
+  }, []);
+
+  const maSales = sales.filter(s => s.business_unit_id === "ma");
+  const totalRevenue = maSales.reduce((sum, s) => sum + s.revenue_value, 0);
+  const avgDealSize = maSales.length > 0 ? (totalRevenue / maSales.length) : 0;
+  const winRate = proposals.length > 0 ? ((proposals.filter(p => p.is_won).length / proposals.length) * 100).toFixed(1) : 0;
+
+  const dealPipeline = [
+    { stage: "Prospecção", value: 500000 },
+    { stage: "Apresentação", value: 800000 },
+    { stage: "Negociação", value: 1200000 },
+    { stage: "Finalização", value: 600000 }
+  ];
+
+  const dealTimeline = [
+    { month: "Jan", volume: 1, value: 180000 },
+    { month: "Fev", value: 220000, volume: 1 },
+    { month: "Mar", value: 280000, volume: 2 },
+    { month: "Abr", value: 350000, volume: 1 }
+  ];
+
+  const colors = ["#1A4731", "#F47920", "#245E40", "#F9A15A"];
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <StatCard label="Receita M&A" value={`R$ ${(totalRevenue / 1000).toFixed(0)}k`} subLabel="YTD" trend={22} />
+        <StatCard label="Deals Ativos" value={proposals.length} subLabel="em pipeline" trend={16} />
+        <StatCard label="Ticket Médio Deal" value={`R$ ${(avgDealSize / 1000).toFixed(0)}k`} subLabel="valor médio" />
+        <StatCard label="Win Rate" value={`${winRate}%`} subLabel="taxa sucesso" trend={11} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-[#DDE3DE]">
+          <h3 className="text-sm font-semibold text-[#1A2B1F] mb-4">Pipeline de Deals</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie data={dealPipeline} dataKey="value" nameKey="stage" cx="50%" cy="50%" outerRadius={100}>
+                {dealPipeline.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                ))}
+              </Pie>
+              <Tooltip contentStyle={{ backgroundColor: "#FFF", border: "1px solid #DDE3DE" }} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-[#DDE3DE]">
+          <h3 className="text-sm font-semibold text-[#1A2B1F] mb-4">Receita M&A Acumulada</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={dealTimeline}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#DDE3DE" />
+              <XAxis dataKey="month" stroke="#5C7060" />
+              <YAxis stroke="#5C7060" />
+              <Tooltip contentStyle={{ backgroundColor: "#FFF", border: "1px solid #DDE3DE" }} />
+              <Legend />
+              <Bar dataKey="value" fill="#F47920" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+}
