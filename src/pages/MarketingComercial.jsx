@@ -8,6 +8,7 @@ import KpiCard from "@/components/marketing/KpiCard";
 import FiltersBar from "@/components/marketing/FiltersBar";
 import AnalisisTipoVendaChart from "@/components/dashboards/AnalisisTipoVendaChart";
 import AberturaVendaChart from "@/components/dashboards/AberturaVendaChart";
+import VendasTipoClienteChart from "@/components/dashboards/VendasTipoClienteChart";
 import { Download } from "lucide-react";
 
 const COLORS = ["#F47920", "#1A4731", "#22C55E", "#6366F1", "#F59E0B", "#EF4444", "#8B5CF6"];
