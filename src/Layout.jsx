@@ -25,7 +25,6 @@ const navItems = [
       { label: "Mercado / Clientes", page: "DashboardMercadoClientes", icon: TrendingUp },
     ]
   },
-  { label: "Pipeline", page: "Pipeline", icon: GitBranch },
   {
     label: "Projetos", page: "Projetos", icon: FolderKanban,
     children: [
