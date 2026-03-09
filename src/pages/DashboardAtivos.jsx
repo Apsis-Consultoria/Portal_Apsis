@@ -49,6 +49,8 @@ export default function DashboardAtivos() {
       <VendasTicketAtivosChart />
 
       <ClientesPropostasConversaoAtivosChart />
+
+      <AvaliacaoBensImoveisTable />
     </div>
   );
 }
