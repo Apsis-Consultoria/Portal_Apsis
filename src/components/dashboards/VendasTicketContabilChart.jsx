@@ -45,26 +45,7 @@ export default function VendasTicketContabilChart() {
         </ComposedChart>
       </ResponsiveContainer>
 
-      <div className="mt-6 bg-gray-50 rounded-lg p-4">
-        <h4 className="text-sm font-semibold text-[#1A2B1F] mb-3">Resumo Anual</h4>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-white rounded border border-[#DDE3DE]">
-            <div className="text-2xl font-bold text-gray-400">5.506</div>
-            <div className="text-xs text-[#5C7060]">Vendas 2023</div>
-            <div className="text-sm font-semibold text-gray-600 mt-1">31.823</div>
-          </div>
-          <div className="text-center p-3 bg-white rounded border border-[#DDE3DE]">
-            <div className="text-2xl font-bold text-[#245E40]">7.072</div>
-            <div className="text-xs text-[#5C7060]">Vendas 2024</div>
-            <div className="text-sm font-semibold text-[#245E40] mt-1">40.878</div>
-          </div>
-          <div className="text-center p-3 bg-white rounded border border-[#DDE3DE]">
-            <div className="text-2xl font-bold text-[#F47920]">8.393</div>
-            <div className="text-xs text-[#5C7060]">Vendas 2025</div>
-            <div className="text-sm font-semibold text-[#F47920] mt-1">58.288</div>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
