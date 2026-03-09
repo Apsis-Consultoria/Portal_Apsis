@@ -11,7 +11,14 @@ export default function ContasApagarTable() {
   const valueRows = [
     { label: "Total Vencidas", data: ["R$ 125K", "R$ 95K", "R$ 110K", "R$ 75K", "R$ 101K", "R$ 405K"] },
     { label: "Total a Pagar", data: ["R$ 850K", "R$ 920K", "R$ 880K", "R$ 900K", "R$ 890K", "R$ 3.55M"] },
-    { label: "Diferença de Prazo", data: ["32%", "28%", "35%", "30%", "32%", "31%"] }
+    { label: "% Adimplência", data: ["85%", "90%", "87%", "92%", "87%", "88%"] }
+  ];
+
+  const indicadoresAvancados = [
+    { label: "Dias Médios de Pagamento", data: ["32", "28", "35", "30", "32", "31"] },
+    { label: "Ticket Médio a Pagar", data: ["R$ 18.5K", "R$ 24.2K", "R$ 20.9K", "R$ 22.1K", "R$ 21.7K", "R$ 21.5K"] },
+    { label: "Rotatividade de Fornecedores", data: ["12", "14", "11", "13", "12", "13"] },
+    { label: "% de Atraso", data: ["15%", "10%", "13%", "8%", "13%", "12%"] }
   ];
 
   return (
@@ -27,6 +34,9 @@ export default function ContasApagarTable() {
 
         <h3 className="text-base font-semibold text-[#1A2B1F] mb-6 mt-8">Valores por Período</h3>
         <MetricTableComponent title="Período" rows={valueRows} />
+
+        <h3 className="text-base font-semibold text-[#1A2B1F] mb-6 mt-8">Indicadores Avançados</h3>
+        <MetricTableComponent title="Indicador" rows={indicadoresAvancados} />
       </div>
     </div>
   );
