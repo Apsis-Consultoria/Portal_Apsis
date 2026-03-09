@@ -5,6 +5,7 @@ import VendasTicketAtivosChart from "@/components/dashboards/VendasTicketAtivosC
 import ClientesPropostasConversaoAtivosChart from "@/components/dashboards/ClientesPropostasConversaoAtivosChart";
 import AvaliacaoBensImoveisTable from "@/components/dashboards/AvaliacaoBensImoveisTable";
 import AvaliacaoImoveisTable from "@/components/dashboards/AvaliacaoImoveisTable";
+import InventarioConciliacaoTable from "@/components/dashboards/InventarioConciliacaoTable";
 
 export default function DashboardAtivos() {
   const [proposals, setProposals] = useState([]);
