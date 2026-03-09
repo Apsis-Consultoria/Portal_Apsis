@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import StatCard from "@/components/ui/StatCard";
 import VendasTicketAtivosChart from "@/components/dashboards/VendasTicketAtivosChart";
 import ClientesPropostasConversaoAtivosChart from "@/components/dashboards/ClientesPropostasConversaoAtivosChart";
+import AvaliacaoBensImoveisTable from "@/components/dashboards/AvaliacaoBensImoveisTable";
 
 export default function DashboardAtivos() {
   const [proposals, setProposals] = useState([]);
