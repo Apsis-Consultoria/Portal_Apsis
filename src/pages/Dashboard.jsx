@@ -6,6 +6,7 @@ import {
 } from "recharts";
 import StatCard from "@/components/ui/StatCard";
 import { TrendingUp, DollarSign, GitBranch, FolderKanban, AlertTriangle, Target } from "lucide-react";
+import FinanceiroMetricasTable from "@/components/dashboards/FinanceiroMetricasTable";
 
 const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 const COLORS = ["#F47920","#1A4731","#22C55E","#6366F1","#F59E0B","#EF4444"];
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const [oss, setOss] = useState([]);
   const [loading, setLoading] = useState(true);
   const [anoSel, setAnoSel] = useState(2026);
+  const [activeTab, setActiveTab] = useState("geral");
 
   useEffect(() => {
     Promise.all([
@@ -118,6 +120,33 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Abas */}
+      <div className="flex gap-2 border-b border-[#DDE3DE]">
+        <button
+          onClick={() => setActiveTab("geral")}
+          className={`px-4 py-3 font-medium text-sm transition-colors ${
+            activeTab === "geral"
+              ? "text-[#F47920] border-b-2 border-[#F47920]"
+              : "text-[#5C7060] hover:text-[#1A2B1F]"
+          }`}
+        >
+          Geral
+        </button>
+        <button
+          onClick={() => setActiveTab("financeiro")}
+          className={`px-4 py-3 font-medium text-sm transition-colors ${
+            activeTab === "financeiro"
+              ? "text-[#F47920] border-b-2 border-[#F47920]"
+              : "text-[#5C7060] hover:text-[#1A2B1F]"
+          }`}
+        >
+          Financeiro
+        </button>
+      </div>
+
+      {/* Aba Geral */}
+      {activeTab === "geral" && (
+      <div className="space-y-6">
       {/* KPIs Budget 2026 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Orçado 2026" value={fmt(ORCADO_TOTAL_2026)} icon={Target} color="green" sub="Meta anual total" />
@@ -233,6 +262,15 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      </div>
+      )}
+
+      {/* Aba Financeiro */}
+      {activeTab === "financeiro" && (
+        <div>
+          <FinanceiroMetricasTable />
+        </div>
+      )}
     </div>
   );
 }
