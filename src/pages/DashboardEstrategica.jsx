@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import StatCard from "@/components/ui/StatCard";
 import VendasTicketEstrategicaChart from "@/components/dashboards/VendasTicketEstrategicaChart";
+import ClientesVolumeConversaoEstrategicaChart from "@/components/dashboards/ClientesVolumeConversaoEstrategicaChart";
 
 export default function DashboardEstrategica() {
   const [proposals, setProposals] = useState([]);
