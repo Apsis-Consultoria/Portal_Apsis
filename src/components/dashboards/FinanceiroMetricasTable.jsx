@@ -57,7 +57,7 @@ export default function FinanceiroMetricasTable() {
                 <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">51%</td>
                 <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">17%</td>
                 <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">52%</td>
-                <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">40%</td>
+                <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F]">40%</td>
               </tr>
             </tbody>
           </table>
@@ -85,7 +85,7 @@ export default function FinanceiroMetricasTable() {
                 <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">37%</td>
                 <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">5%</td>
                 <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">29%</td>
-                <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">15%</td>
+                <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F]">15%</td>
               </tr>
             </tbody>
           </table>
@@ -121,7 +121,7 @@ export default function FinanceiroMetricasTable() {
                   <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{row.data[1]}</td>
                   <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{row.data[2]}</td>
                   <td className="px-6 py-4 text-center text-sm text-[#1A2B1F] bg-[#FFC69F]">{row.data[3]}</td>
-                  <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#FFC69F]">{row.data[4]}</td>
+                  <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F]">{row.data[4]}</td>
                 </tr>
               ))}
             </tbody>
