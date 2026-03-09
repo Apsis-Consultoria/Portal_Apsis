@@ -6,6 +6,7 @@ import ClientesPropostasConversaoAtivosChart from "@/components/dashboards/Clien
 import AvaliacaoBensImoveisTable from "@/components/dashboards/AvaliacaoBensImoveisTable";
 import AvaliacaoImoveisTable from "@/components/dashboards/AvaliacaoImoveisTable";
 import InventarioConciliacaoTable from "@/components/dashboards/InventarioConciliacaoTable";
+import OrcadoRealizadoAtivoChart from "@/components/dashboards/OrcadoRealizadoAtivoChart";
 
 export default function DashboardAtivos() {
   const [proposals, setProposals] = useState([]);
