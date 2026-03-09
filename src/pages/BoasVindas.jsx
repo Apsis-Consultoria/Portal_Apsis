@@ -84,9 +84,9 @@ export default function BoasVindas() {
           <h2 className="text-2xl font-bold text-[#1A4731] mb-6">Navegação Principal</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {modules.map(({ name, icon: Icon, color, page }) => (
-              <Link
+              <a
                 key={page}
-                to={createPageUrl(page)}
+                href={createPageUrl(page)}
                 className="group"
               >
                 <div className={`bg-gradient-to-br ${color} rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 p-8 cursor-pointer h-full flex flex-col items-center justify-center text-center`}>
@@ -95,7 +95,7 @@ export default function BoasVindas() {
                   </div>
                   <h3 className="text-xl font-bold text-white">{name}</h3>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
