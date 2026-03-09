@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import {
   LayoutDashboard, GitBranch, FolderKanban,
   DollarSign, BarChart3, FileText, ChevronLeft,
-  ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings, ClipboardCheck, Sparkles, Users
+  ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings, ClipboardCheck, Sparkles, Users, Grid3x3
 } from "lucide-react";
 import { Clock } from "lucide-react";
 import AssistantWidget from "@/components/AssistantWidget";
@@ -59,7 +59,7 @@ const navItems = [
     label: "AXON IA", page: "AxonIA", icon: Sparkles, externalUrl: "https://apsis.qi140.ai/auth?redirect=%2Fauth%3Fredirect%3D%252F"
   },
   {
-    label: "Apps APSIS", page: "AppsAPSIS", icon: Sparkles,
+    label: "Apps APSIS", page: "AppsAPSIS", icon: Grid3x3,
     children: [
       { label: "App Ativo Fixo", page: "AppAtivoFixo", icon: FolderKanban },
       { label: "App Conciliação", page: "AppConciliacao", icon: BarChart3 },
