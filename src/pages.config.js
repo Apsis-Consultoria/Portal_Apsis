@@ -68,6 +68,7 @@ import DashboardContabil from './pages/DashboardContabil';
 import DashboardAtivos from './pages/DashboardAtivos';
 import DashboardEstrategica from './pages/DashboardEstrategica';
 import DashboardMA from './pages/DashboardMA';
+import DashboardProjetos from './pages/DashboardProjetos';
 import __Layout from './Layout.jsx';
 
 
@@ -93,6 +94,7 @@ export const PAGES = {
     "DashboardAtivos": DashboardAtivos,
     "DashboardEstrategica": DashboardEstrategica,
     "DashboardMA": DashboardMA,
+    "DashboardProjetos": DashboardProjetos,
 }
 
 export const pagesConfig = {
