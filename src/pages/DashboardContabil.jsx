@@ -33,6 +33,8 @@ export default function DashboardContabil() {
       </div>
 
       <VendasTicketContabilChart />
+
+      <LaudosContabeisTable />
     </div>
   );
 }
