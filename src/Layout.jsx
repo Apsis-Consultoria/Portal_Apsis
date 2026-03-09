@@ -11,6 +11,7 @@ import { Clock } from "lucide-react";
 import AssistantWidget from "@/components/AssistantWidget";
 
 const navItems = [
+  { label: "Boas-Vindas", page: "BoasVindas", icon: Sparkles },
   {
     label: "Dashboard", page: "Dashboard", icon: LayoutDashboard,
     children: [
