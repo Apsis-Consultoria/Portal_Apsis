@@ -152,6 +152,8 @@ export default function MarketingComercial() {
       <AnalisisTipoVendaChart />
 
       <AberturaVendaChart />
+
+      <VendasTipoClienteChart />
     </div>
   );
 }
