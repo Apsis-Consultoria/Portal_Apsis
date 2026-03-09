@@ -46,37 +46,7 @@ export default function DashboardEstrategica() {
         <StatCard label="Pipeline Aberto" value={`R$ ${(proposals.length * 50).toFixed(0)}k`} subLabel="próximos 6 meses" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-[#DDE3DE]">
-          <h3 className="text-sm font-semibold text-[#1A2B1F] mb-4">Faturado vs Pipeline</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={monthlyGrowth}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#DDE3DE" />
-              <XAxis dataKey="month" stroke="#5C7060" />
-              <YAxis stroke="#5C7060" />
-              <Tooltip contentStyle={{ backgroundColor: "#FFF", border: "1px solid #DDE3DE" }} />
-              <Legend />
-              <Bar dataKey="faturado" fill="#1A4731" />
-              <Bar dataKey="pipeline" fill="#F47920" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-[#DDE3DE]">
-          <h3 className="text-sm font-semibold text-[#1A2B1F] mb-4">Segmentação de Clientes</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie data={clientSegmentation} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
-                {clientSegmentation.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={colors[index]} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ backgroundColor: "#FFF", border: "1px solid #DDE3DE" }} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <VendasTicketEstrategicaChart />
     </div>
   );
 }
