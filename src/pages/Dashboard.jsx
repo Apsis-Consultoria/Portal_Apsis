@@ -70,7 +70,16 @@ export default function Dashboard() {
   // Pipeline status
   const pipelineEmElaboracao = propostas.filter(p => p.status === "Em elaboração").length;
   const pipelineEnviada = propostas.filter(p => p.status === "Enviada").length;
-  
+
+  // Alocação colaboradores — dados planilha 2026
+  const alocData = [
+    { name: "Evelyne Ferrari", value: 39749 },
+    { name: "Patrick Gomes", value: 13655 },
+    { name: "Amanda Sobral", value: 11408 },
+    { name: "Thiago Bastos", value: 996 },
+    { name: "Eduardo Calazans", value: 0 },
+  ].filter(d => d.value > 0);
+
   // Alocação máxima de colaboradores
   const maxAlocacao = 39749;
   const utilizacaoMedia = ((alocData.reduce((s, d) => s + d.value, 0) / (alocData.length * maxAlocacao)) * 100).toFixed(1);
@@ -98,15 +107,6 @@ export default function Dashboard() {
   const statusMap = {};
   propostas.forEach(p => { statusMap[p.status] = (statusMap[p.status] || 0) + 1; });
   const pipelineData = Object.entries(statusMap).map(([name, value]) => ({ name, value }));
-
-  // Alocação colaboradores — dados planilha 2026
-  const alocData = [
-    { name: "Evelyne Ferrari", value: 39749 },
-    { name: "Patrick Gomes", value: 13655 },
-    { name: "Amanda Sobral", value: 11408 },
-    { name: "Thiago Bastos", value: 996 },
-    { name: "Eduardo Calazans", value: 0 },
-  ].filter(d => d.value > 0);
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center h-64 gap-4">
