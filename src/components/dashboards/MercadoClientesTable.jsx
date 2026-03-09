@@ -18,7 +18,7 @@ const MetricTable = ({ metric, data }) => (
           <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{data[1]}</td>
           <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{data[2]}</td>
           <td className="px-6 py-4 text-center text-sm text-[#1A2B1F]">{data[3]}</td>
-          <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F]">{data[4]}</td>
+          <td className="px-6 py-4 text-center text-sm font-semibold text-[#1A2B1F] bg-[#F4F6F4]">{data[4]}</td>
           <td className="px-6 py-4 text-center text-sm font-semibold text-white bg-[#F47920]">{data[5]}</td>
         </tr>
       </tbody>
