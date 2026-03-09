@@ -142,12 +142,12 @@ export default function Dashboard() {
         <StatCard label="Propostas Ganhas" value={propostasGanhas} icon={TrendingUp} color="green" sub={`${((propostasGanhas / propostas.length) * 100 || 0).toFixed(1)}% de conversão`} />
       </div>
 
-      {/* Indicadores Budget 2026 da planilha */}
+      {/* Indicadores de Receita por Natureza */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: "Laudos Realizados", value: fmt(47290.64), sub: "de " + fmt(6200000) + " orçados", pct: 0.76 },
-          { label: "Consultoria Realizada", value: fmt(113891.63), sub: "de " + fmt(2500000) + " orçados", pct: 4.56 },
-          { label: "% Budget Vendas Acumulado", value: "1,85%", sub: "Jan–Fev/26 atingidos", pct: 1.85 },
+          { label: "Laudos Contábeis", value: fmt(laudosRealizados), sub: `${((laudosRealizados / laudosOrcado) * 100).toFixed(2)}% do orçado`, pct: (laudosRealizados / laudosOrcado) * 100 },
+          { label: "Consultoria", value: fmt(consultoriaRealizada), sub: `${((consultoriaRealizada / consultoriaOrcado) * 100).toFixed(2)}% do orçado`, pct: (consultoriaRealizada / consultoriaOrcado) * 100 },
+          { label: "Utilização Colaboradores", value: `${utilizacaoMedia}%`, sub: `Carga média distribuída`, pct: Math.min(utilizacaoMedia, 100) },
         ].map(k => (
           <div key={k.label} className="bg-white rounded-2xl border border-[#DDE3DE] p-5">
             <p className="text-xs font-medium text-[#5C7060] uppercase tracking-wider mb-2">{k.label}</p>
