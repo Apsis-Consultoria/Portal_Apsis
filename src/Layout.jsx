@@ -143,7 +143,7 @@ export default function Layout({ children, currentPageName }) {
             <div>
               <div className="text-white font-bold text-base leading-tight tracking-wide">Portal APSIS</div>
               {userDepartamento && (
-                <div className="text-white/40 text-[10px] font-medium tracking-wider uppercase truncate max-w-[160px]">{userDepartamento}</div>
+                <div className="text-[#F47920] text-[11px] font-bold tracking-widest uppercase truncate max-w-[160px]">{userDepartamento}</div>
               )}
             </div>
           )}
