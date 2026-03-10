@@ -452,6 +452,50 @@ export default function Admin() {
                 </table>
               </div>
             </div>
+            {/* Colaboradores sem conta */}
+            {(() => {
+              const semConta = colaboradores.filter(col => col.email && !users.find(u => u.email === col.email));
+              if (semConta.length === 0) return null;
+              return (
+                <div className="bg-white rounded-2xl border border-amber-200 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-amber-200 bg-amber-50 flex items-center gap-2">
+                    <AlertCircle size={14} className="text-amber-600" />
+                    <p className="text-xs font-semibold text-amber-700 uppercase tracking-wider">Colaboradores sem conta no portal ({semConta.length})</p>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-[#DDE3DE] bg-[#F4F6F4]">
+                          {["Nome","E-mail","Cargo","Departamento","Status"].map(h => (
+                            <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#5C7060] uppercase tracking-wider">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#F4F6F4]">
+                        {semConta.map(col => {
+                          let depts = [];
+                          if (col.departamentos) { try { depts = JSON.parse(col.departamentos); } catch {} }
+                          else if (col.departamento) { depts = [col.departamento]; }
+                          return (
+                            <tr key={col.id} className="hover:bg-[#F4F6F4]">
+                              <td className="px-4 py-3 font-medium text-[#1A2B1F]">{col.nome}</td>
+                              <td className="px-4 py-3 text-xs text-[#5C7060]">{col.email || "—"}</td>
+                              <td className="px-4 py-3 text-xs text-[#5C7060]">{col.cargo || "—"}</td>
+                              <td className="px-4 py-3 text-xs text-[#5C7060]">{depts.join(", ") || "—"}</td>
+                              <td className="px-4 py-3">
+                                <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700">
+                                  Sem acesso ao portal
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 
