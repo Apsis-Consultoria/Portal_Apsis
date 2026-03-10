@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { Plus, Search, Flame, Thermometer, Snowflake, Bell, X, Edit2, Trash2 } from "lucide-react";
+import { Plus, Search, Flame, Thermometer, Snowflake, Bell, X, Edit2, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 
 const fmt = (v) => v ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v) : "—";
