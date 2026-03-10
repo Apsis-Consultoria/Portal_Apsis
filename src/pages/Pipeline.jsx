@@ -186,29 +186,87 @@ export default function Pipeline() {
               <tbody className="divide-y divide-[#F4F6F4]">
                 {filtradas.length === 0 ? (
                   <tr><td colSpan={9} className="text-center py-12 text-[#5C7060] text-sm">Nenhuma proposta encontrada</td></tr>
-                ) : filtradas.map((p, idx) => (
-                  <tr key={p.id || p.numero_ap || idx} className={`hover:bg-[#F4F6F4] transition-colors ${p._planilha ? "bg-[#F9FBF9]" : ""}`}>
-                    <td className="px-4 py-3 font-medium text-[#1A2B1F] text-xs">{p.numero_ap || "—"}</td>
-                    <td className="px-4 py-3 font-semibold text-[#1A2B1F]">{p.cliente_nome}</td>
-                    <td className="px-4 py-3 text-[#5C7060] max-w-[140px] truncate text-xs">{p.natureza}</td>
-                    <td className="px-4 py-3 font-semibold text-[#1A2B1F]">{fmt(p.valor_total)}</td>
-                    <td className="px-4 py-3"><TempIcon t={p.temperatura} /></td>
-                    <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
-                    <td className="px-4 py-3 text-xs text-[#5C7060]">{p.responsavel || "—"}</td>
-                    <td className="px-4 py-3 text-xs text-[#5C7060] max-w-[160px] truncate">{p.observacoes || "—"}</td>
-                    <td className="px-4 py-3">
-                      {!p._planilha && (
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => setModal({ type:"proposta", data:{...p}, editing:p })}
-                            className="p-1.5 hover:bg-[#E8EDE9] rounded-lg"><Edit2 size={13} className="text-[#5C7060]" /></button>
-                          <button onClick={() => excluir("proposta", p.id)}
-                            className="p-1.5 hover:bg-red-50 rounded-lg"><Trash2 size={13} className="text-red-400" /></button>
-                        </div>
+                ) : filtradas.map((p, idx) => {
+                  const rowKey = p.id || p.numero_ap || idx;
+                  const expanded = !!expandedRows[rowKey];
+                  return (
+                    <>
+                      <tr key={rowKey} className={`hover:bg-[#F4F6F4] transition-colors cursor-pointer ${p._planilha ? "bg-[#F9FBF9]" : ""} ${expanded ? "bg-[#F4F6F4]" : ""}`}
+                        onClick={() => toggleRow(rowKey)}>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-1.5">
+                            {expanded ? <ChevronDown size={13} className="text-[#F47920] flex-shrink-0" /> : <ChevronRight size={13} className="text-[#5C7060] flex-shrink-0" />}
+                            <span className="font-medium text-[#1A2B1F] text-xs">{p.numero_ap || "—"}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 font-semibold text-[#1A2B1F]">{p.cliente_nome}</td>
+                        <td className="px-4 py-3 text-[#5C7060] max-w-[140px] truncate text-xs">{p.natureza}</td>
+                        <td className="px-4 py-3 font-semibold text-[#1A2B1F]">{fmt(p.valor_total)}</td>
+                        <td className="px-4 py-3"><TempIcon t={p.temperatura} /></td>
+                        <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
+                        <td className="px-4 py-3 text-xs text-[#5C7060]">{p.responsavel || "—"}</td>
+                        <td className="px-4 py-3 text-xs text-[#5C7060] max-w-[160px] truncate">{p.observacoes || "—"}</td>
+                        <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
+                          {!p._planilha && (
+                            <div className="flex items-center gap-1">
+                              <button onClick={() => setModal({ type:"proposta", data:{...p}, editing:p })}
+                                className="p-1.5 hover:bg-[#E8EDE9] rounded-lg"><Edit2 size={13} className="text-[#5C7060]" /></button>
+                              <button onClick={() => excluir("proposta", p.id)}
+                                className="p-1.5 hover:bg-red-50 rounded-lg"><Trash2 size={13} className="text-red-400" /></button>
+                            </div>
+                          )}
+                          {p._planilha && <span className="text-[10px] text-[#5C7060] bg-[#E8EDE9] px-1.5 py-0.5 rounded">planilha</span>}
+                        </td>
+                      </tr>
+                      {expanded && (
+                        <tr key={`${rowKey}-expand`} className="bg-[#F9FBF9] border-l-4 border-[#F47920]">
+                          <td colSpan={9} className="px-6 py-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-xs">
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Horas</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.quantidade_horas ? `${p.quantidade_horas}h` : "—"}</p>
+                              </div>
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Taxa Média</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.taxa_media ? fmt(p.taxa_media) : "—"}</p>
+                              </div>
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Desconto</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.desconto_percentual != null ? `${p.desconto_percentual}%` : "—"}</p>
+                              </div>
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Chance Conversão</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.chance_conversao != null ? `${p.chance_conversao}%` : "—"}</p>
+                              </div>
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Nível Follow-up</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.nivel_followup || "—"}</p>
+                              </div>
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Data Envio</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.data_envio ? format(new Date(p.data_envio), "dd/MM/yyyy") : "—"}</p>
+                              </div>
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Último Follow-up</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.ultimo_followup ? format(new Date(p.ultimo_followup), "dd/MM/yyyy") : "—"}</p>
+                              </div>
+                              <div>
+                                <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">OAP Origem</p>
+                                <p className="text-[#1A2B1F] font-semibold">{p.oap_origem || "—"}</p>
+                              </div>
+                              {p.observacoes && (
+                                <div className="col-span-2 sm:col-span-3 lg:col-span-2">
+                                  <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Observações</p>
+                                  <p className="text-[#1A2B1F]">{p.observacoes}</p>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
                       )}
-                      {p._planilha && <span className="text-[10px] text-[#5C7060] bg-[#E8EDE9] px-1.5 py-0.5 rounded">planilha</span>}
-                    </td>
-                  </tr>
-                ))}
+                    </>
+                  );
+                })}
               </tbody>
             </table>
           </div>
