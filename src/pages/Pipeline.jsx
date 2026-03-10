@@ -243,7 +243,7 @@ export default function Pipeline() {
                       </tr>
                       {expanded && (
                         <tr key={`${rowKey}-expand`} className="bg-[#FFF7F0] border-l-4 border-[#F47920]">
-                          <td colSpan={9} className="px-6 py-4">
+                          <td colSpan={10} className="px-6 py-4">
                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-xs">
                               <div>
                                 <p className="text-[#5C7060] font-medium uppercase tracking-wide mb-1">Horas</p>
