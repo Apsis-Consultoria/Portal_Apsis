@@ -400,10 +400,13 @@ export default function Admin() {
 
             {/* Tabela usuários */}
             <div className="bg-white rounded-2xl border border-[#DDE3DE] overflow-hidden">
+              <div className="px-4 py-3 border-b border-[#DDE3DE] bg-[#F4F6F4] flex items-center justify-between">
+                <p className="text-xs font-semibold text-[#5C7060] uppercase tracking-wider">Usuários com acesso ao Portal ({filteredUsers.length})</p>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-[#DDE3DE] bg-[#F4F6F4]">
+                    <tr className="border-b border-[#DDE3DE] bg-white">
                       {["Nome","E-mail","Perfil","Departamentos","Impressão/Excel","Ações"].map(h => (
                         <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#5C7060] uppercase tracking-wider">{h}</th>
                       ))}
