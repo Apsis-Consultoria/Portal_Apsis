@@ -256,6 +256,36 @@ export default function Admin() {
   const toggleDept = async (dept) => { await base44.entities.Departamento.update(dept.id, { ativo: !dept.ativo }); loadAll(); };
   const deleteDept = async (dept) => { await base44.entities.Departamento.delete(dept.id); loadAll(); };
 
+  // Sincroniza Colaboradores → garante que todo colaborador com email tenha registro cruzado
+  const syncColaboradores = async () => {
+    setSyncing(true);
+    setSyncMsg("");
+    let criados = 0;
+    let atualizados = 0;
+    // Para cada user que não tem colaborador vinculado, cria o registro
+    for (const u of users) {
+      if (!u.email) continue;
+      const col = colaboradores.find(c => c.email === u.email);
+      if (!col) {
+        await base44.entities.Colaborador.create({
+          nome: u.full_name || u.email,
+          email: u.email,
+          ativo: true,
+        });
+        criados++;
+      } else if (!col.nome || col.nome !== u.full_name) {
+        // Atualiza nome se divergente
+        if (u.full_name && col.nome !== u.full_name) {
+          await base44.entities.Colaborador.update(col.id, { nome: u.full_name });
+          atualizados++;
+        }
+      }
+    }
+    await loadAll();
+    setSyncMsg(`Sincronização concluída: ${criados} criado(s), ${atualizados} atualizado(s).`);
+    setSyncing(false);
+  };
+
   const filteredUsers = users.filter(u => {
     const b = !busca || u.full_name?.toLowerCase().includes(busca.toLowerCase()) || u.email?.toLowerCase().includes(busca.toLowerCase());
     const r = filtroRole === "Todos" || u.role === filtroRole;
