@@ -89,8 +89,16 @@ export default function Layout({ children, currentPageName }) {
       if (!user) return;
       // Busca colaborador pelo email do usuário logado
       const cols = await base44.entities.Colaborador.filter({ email: user.email });
-      if (cols && cols.length > 0 && cols[0].departamento) {
-        setUserDepartamento(cols[0].departamento);
+      if (cols && cols.length > 0) {
+        let dept = "";
+        if (cols[0].departamentos) {
+          try {
+            const depts = JSON.parse(cols[0].departamentos);
+            dept = depts[0] || "";
+          } catch {}
+        }
+        if (!dept && cols[0].departamento) dept = cols[0].departamento;
+        if (dept) setUserDepartamento(dept);
       }
     }).catch(() => {});
   }, []);
