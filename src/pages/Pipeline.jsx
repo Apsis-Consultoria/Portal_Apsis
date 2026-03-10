@@ -32,6 +32,9 @@ export default function Pipeline() {
   const [modal, setModal] = useState(null);
   const [saving, setSaving] = useState(false);
   const [mostrarPlanilha, setMostrarPlanilha] = useState(true);
+  const [expandedRows, setExpandedRows] = useState({});
+
+  const toggleRow = (key) => setExpandedRows(prev => ({ ...prev, [key]: !prev[key] }));
 
   const load = () => Promise.all([
     base44.entities.Proposta.list("-created_date", 200),
