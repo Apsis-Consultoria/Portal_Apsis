@@ -347,6 +347,7 @@ export default function Pipeline() {
               {modal.type === "proposta" ? (
                 <>
                   <InputField label="Número AP" field="numero_ap" />
+                  <InputField label="Departamento" field="departamento" options={["Contábil","Tributária","Societária","M&A","Projetos Especiais","Outros"]} />
                   <div className="col-span-2">
                     <InputField label="Natureza" field="natureza" options={["Contábil - Laudo","Contábil - Parecer","Consultoria - Tributária","Consultoria - Societária","Consultoria - M&A","Outros"]} />
                   </div>
