@@ -27,14 +27,14 @@ const DEFAULT_ROLE_PAGES = {
   ],
   analista: [
     "BoasVindas",
-    "Projetos","AlocacoesHoras","Pipeline","Budget",
+    "Projetos","AlocacoesHoras","Pipeline",
     "AppsAPSIS","AppAtivoFixo","AppConciliacao","AppImoveis","AppCubus",
   ],
   // fallback para roles legados
   manager: null,
   user: [
     "BoasVindas",
-    "Projetos","AlocacoesHoras","Pipeline","Budget",
+    "Projetos","AlocacoesHoras","Pipeline",
     "AppsAPSIS","AppAtivoFixo","AppConciliacao","AppImoveis","AppCubus",
   ],
 };
