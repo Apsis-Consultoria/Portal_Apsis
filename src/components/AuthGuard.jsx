@@ -10,7 +10,7 @@ export default function AuthGuard({ children }) {
   const isAuthenticated = useIsAuthenticated();
 
   const handleLogin = () => {
-    instance.loginRedirect(loginRequest);
+    instance.loginPopup(loginRequest).catch(console.error);
   };
 
   if (inProgress !== InteractionStatus.None) {
