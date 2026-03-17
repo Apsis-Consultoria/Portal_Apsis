@@ -18,7 +18,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 
 function AuthGuard({ children }) {
   const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Login />;
+  if (!isAuthenticated) return <LoginScreen />;
   return children;
 }
 
