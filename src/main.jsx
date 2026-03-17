@@ -39,7 +39,7 @@ async function bootstrap() {
 
   // Se acabou de fazer login, redireciona para a tela principal
   if (redirectResult && redirectResult.account) {
-    window.location.replace('/BoasVindas');
+    window.location.replace('/MainView');
     return;
   }
 
