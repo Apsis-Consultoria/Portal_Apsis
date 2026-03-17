@@ -3,9 +3,11 @@ import { useMsal, useIsAuthenticated } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { loginRequest } from "@/lib/msalConfig";
 
-// Bypass auth no preview do Base44
-const isPreview = window.location.hostname.includes('preview-sandbox') ||
-  new URLSearchParams(window.location.search).has('_preview_token');
+// Bypass auth no preview do Base44 (roda em iframe)
+const isPreview = 
+  window.location.hostname.includes('preview--') ||
+  window.location.hostname.includes('preview-sandbox') ||
+  window !== window.top; // detecta iframe
 
 const LOGO_URL = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a1fc4b60b4c477ea324579/40af152e2_Design-sem-nome.png";
 
