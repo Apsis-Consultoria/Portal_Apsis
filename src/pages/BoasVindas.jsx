@@ -27,7 +27,6 @@ export default function BoasVindas() {
         <div className="mb-12 flex items-center justify-between">
           <div>
             <h1 className="text-5xl font-bold text-[#1A4731] mb-6">Bem-vindo Apsiano!</h1>
-            <p className="text-2xl text-[#245E40] font-semibold mb-2">{displayName}</p>
             <p className="text-[#5C7060] text-lg">Explore os módulos do Portal APSIS abaixo</p>
           </div>
         </div>
