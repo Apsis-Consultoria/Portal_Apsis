@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 import { MsalProvider } from '@azure/msal-react';
 import { msalInstance } from './lib/msalConfig';
 import { AuthProvider, useAuth } from './lib/AuthContext';
