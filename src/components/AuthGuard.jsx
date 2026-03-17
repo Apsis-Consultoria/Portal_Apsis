@@ -31,7 +31,8 @@ export default function AuthGuard({ children }) {
     }
   };
 
-  if (inProgress !== InteractionStatus.None) {
+  // Só mostra spinner quando está processando o retorno do redirect Microsoft
+  if (inProgress === InteractionStatus.HandleRedirect) {
     return (
       <div className="min-h-screen bg-[#1A4731] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -43,35 +44,4 @@ export default function AuthGuard({ children }) {
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-[#1A4731] flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl shadow-xl p-10 max-w-sm w-full text-center">
-          <img src={LOGO_URL} alt="APSIS" className="w-16 h-16 object-contain mx-auto mb-6 rounded" />
-          <h1 className="text-2xl font-bold text-[#1A4731] mb-1">Portal APSIS</h1>
-          <p className="text-gray-500 text-sm mb-8">Faça login com sua conta corporativa</p>
-
-          <button
-            onClick={handleLogin}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-3 bg-[#F47920] disabled:opacity-60 disabled:cursor-not-allowed hover:bg-[#d96910] text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-          >
-            <svg width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="1" width="9" height="9" fill="#F25022"/>
-              <rect x="11" y="1" width="9" height="9" fill="#7FBA00"/>
-              <rect x="1" y="11" width="9" height="9" fill="#00A4EF"/>
-              <rect x="11" y="11" width="9" height="9" fill="#FFB900"/>
-            </svg>
-            Entrar com Microsoft
-          </button>
-
-          <p className="text-xs text-gray-400 mt-6">
-            Acesso restrito a colaboradores APSIS.<br />
-            Use sua conta <span className="font-medium">@apsis.com.br</span>
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return children;
 }
