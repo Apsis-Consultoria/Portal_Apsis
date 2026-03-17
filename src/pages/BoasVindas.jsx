@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, FolderKanban, DollarSign, Megaphone,
   FileText, Settings, TrendingUp, Users, BarChart3, GitBranch, Sparkles
@@ -21,33 +19,6 @@ const modules = [
 ];
 
 export default function BoasVindas() {
-  const [user, setUser] = useState(null);
-  const [colaborador, setColaborador] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-
-        if (currentUser?.email) {
-          const cols = await base44.entities.Colaborador.filter({ email: currentUser.email });
-          if (cols && cols.length > 0) {
-            setColaborador(cols[0]);
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao carregar dados do usuário:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadUserData();
-  }, []);
-
-  const displayName = colaborador?.nome || user?.full_name || "Usuário";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F4F6F4] via-white to-[#E8EDE9] p-8">
@@ -61,23 +32,7 @@ export default function BoasVindas() {
           </div>
         </div>
 
-        {/* Info Cards */}
-        {!loading && user && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-white rounded-xl shadow-sm border border-[#DDE3DE] p-6">
-              <p className="text-[#5C7060] text-sm font-medium mb-2">Email</p>
-              <p className="text-[#1A2B1F] font-semibold">{user.email}</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-[#DDE3DE] p-6">
-              <p className="text-[#5C7060] text-sm font-medium mb-2">Cargo</p>
-              <p className="text-[#1A2B1F] font-semibold">{colaborador?.cargo || "—"}</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-[#DDE3DE] p-6">
-              <p className="text-[#5C7060] text-sm font-medium mb-2">Departamento</p>
-              <p className="text-[#1A2B1F] font-semibold">{colaborador?.departamento || "—"}</p>
-            </div>
-          </div>
-        )}
+
 
         {/* Modules Grid */}
         <div>
