@@ -75,6 +75,7 @@ import Projetos from './pages/Projetos';
 import Recover from './pages/Recover';
 import Relatorios from './pages/Relatorios';
 import ResetPassword from './pages/ResetPassword';
+import MainView from './pages/MainView';
 import __Layout from './Layout.jsx';
 
 
@@ -107,10 +108,11 @@ export const PAGES = {
     "Recover": Recover,
     "Relatorios": Relatorios,
     "ResetPassword": ResetPassword,
+    "MainView": MainView,
 }
 
 export const pagesConfig = {
-    mainPage: "Dashboard",
+    mainPage: "MainView",
     Pages: PAGES,
     Layout: __Layout,
 };
