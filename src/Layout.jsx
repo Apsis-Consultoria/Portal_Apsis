@@ -266,14 +266,14 @@ export default function Layout({ children, currentPageName }) {
                       </a>
                     );
                   }
+                  const subTo = c.tabParam ? `/Projetos?tab=${c.tabParam}` : createPageUrl(subPage);
+                  const subActiveCheck = c.tabParam
+                    ? currentPageName === subPage && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tab') === c.tabParam
+                    : currentPageName === subPage;
                   return (
-                    <Link key={subPage} to={createPageUrl(subPage)}
+                    <Link key={subPage + (c.tabParam||'')} to={subTo}
                       onClick={onLinkClick}
-                      className={`nav-item flex items-center gap-2 px-2 py-2 rounded-l-lg ${subActive ? "active" : ""}`}>
-                      <SubIcon size={14} className={subActive ? "text-[var(--apsis-orange)]" : "text-white/40"} />
-                      <span className={`text-xs font-medium ${subActive ? "text-white" : "text-white/50"}`}>{subLabel}</span>
-                    </Link>
-                  );
+                      className={`nav-item flex items-center gap-2 px-2 py-2 rounded-l-lg ${subActiveCheck ? "active" : ""}`}>
                 })}
               </div>
             )}
