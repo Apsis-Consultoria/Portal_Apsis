@@ -1,22 +1,13 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Upload, ExternalLink, Trash2, Plus, FileCheck, FileClock } from "lucide-react";
 
-const TIPO_ICONS = {
-  "Laudo": "📊", "Relatório": "📋", "Contrato": "📝",
-  "Proposta": "💼", "Apresentação": "📑", "Planilha": "📈", "Outro": "📄",
-};
-
-const STATUS_STYLE = {
-  "Rascunho": "bg-slate-100 text-slate-600",
-  "Em revisão": "bg-yellow-100 text-yellow-700",
-  "Aprovado": "bg-green-100 text-green-700",
-  "Entregue": "bg-blue-100 text-blue-700",
-};
+const TIPO_ICONS = { "Laudo": "📊", "Relatório": "📋", "Contrato": "📝", "Proposta": "💼", "Apresentação": "📑", "Planilha": "📈", "Outro": "📄" };
+const STATUS_STYLE = { "Rascunho": "bg-slate-100 text-slate-600", "Em revisão": "bg-yellow-100 text-yellow-700", "Aprovado": "bg-green-100 text-green-700", "Entregue": "bg-blue-100 text-blue-700" };
 
 export default function ProjetosDocumentos({ data, onRefresh }) {
   const { documentos, projetos } = data;
@@ -44,46 +35,32 @@ export default function ProjetosDocumentos({ data, onRefresh }) {
     setSaving(false);
   };
 
-  const handleStatus = async (doc, novoStatus) => {
-    await base44.entities.DocumentoProjeto.update(doc.id, { status: novoStatus });
-    onRefresh();
-  };
+  const handleStatus = async (doc, novoStatus) => { await base44.entities.DocumentoProjeto.update(doc.id, { status: novoStatus }); onRefresh(); };
+  const handleDelete = async (id) => { await base44.entities.DocumentoProjeto.delete(id); onRefresh(); };
 
-  const handleDelete = async (id) => {
-    await base44.entities.DocumentoProjeto.delete(id);
-    onRefresh();
-  };
-
-  // KPIs
-  const total = filtrados.length;
-  const aprovados = filtrados.filter(d => d.status === "Aprovado" || d.status === "Entregue").length;
+  const aprovados = filtrados.filter(d => ["Aprovado","Entregue"].includes(d.status)).length;
   const emRevisao = filtrados.filter(d => d.status === "Em revisão").length;
   const enviados = filtrados.filter(d => d.enviado_cliente).length;
 
   return (
     <div className="p-6 space-y-4">
-      {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card><CardContent className="p-4 flex items-center gap-3"><FileText size={18} className="text-blue-400" /><div><p className="text-xl font-bold text-slate-800">{total}</p><p className="text-xs text-slate-400">Total</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><FileText size={18} className="text-blue-400" /><div><p className="text-xl font-bold text-slate-800">{filtrados.length}</p><p className="text-xs text-slate-400">Total</p></div></CardContent></Card>
         <Card><CardContent className="p-4 flex items-center gap-3"><FileCheck size={18} className="text-green-500" /><div><p className="text-xl font-bold text-slate-800">{aprovados}</p><p className="text-xs text-slate-400">Aprovados/Entregues</p></div></CardContent></Card>
         <Card><CardContent className="p-4 flex items-center gap-3"><FileClock size={18} className="text-amber-400" /><div><p className="text-xl font-bold text-slate-800">{emRevisao}</p><p className="text-xs text-slate-400">Em revisão</p></div></CardContent></Card>
         <Card><CardContent className="p-4 flex items-center gap-3"><Upload size={18} className="text-[#F47920]" /><div><p className="text-xl font-bold text-slate-800">{enviados}</p><p className="text-xs text-slate-400">Enviados ao cliente</p></div></CardContent></Card>
       </div>
 
-      {/* SharePoint info */}
       <Card className="border-blue-200 bg-blue-50">
-        <CardContent className="p-3">
-          <div className="flex items-start gap-2">
-            <FileText size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
-            <div className="text-xs text-slate-600">
-              <p className="font-medium text-slate-800 mb-0.5">Integração SharePoint</p>
-              <p>Documentos são gerenciados no SharePoint da APSIS. Cole a URL do documento SharePoint no campo "URL" ao cadastrar.</p>
-            </div>
+        <CardContent className="p-3 flex items-start gap-2">
+          <FileText size={15} className="text-blue-500 mt-0.5 flex-shrink-0" />
+          <div className="text-xs text-slate-600">
+            <p className="font-medium text-slate-800 mb-0.5">Integração SharePoint</p>
+            <p>Documentos são gerenciados no SharePoint da APSIS. Cole a URL do documento no campo "URL" ao cadastrar.</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-3 items-center">
         <Select value={filtroOS} onValueChange={setFiltroOS}>
           <SelectTrigger className="w-56 h-9"><SelectValue placeholder="Todos os projetos" /></SelectTrigger>
@@ -102,12 +79,9 @@ export default function ProjetosDocumentos({ data, onRefresh }) {
             <SelectItem value="Entregue">Entregue</SelectItem>
           </SelectContent>
         </Select>
-        <Button size="sm" onClick={() => setShowForm(!showForm)} className="gap-1.5 bg-[#1A4731] hover:bg-[#245E40]">
-          <Plus size={13} /> Novo Documento
-        </Button>
+        <Button size="sm" onClick={() => setShowForm(!showForm)} className="gap-1.5 bg-[#1A4731] hover:bg-[#245E40]"><Plus size={13} /> Novo Documento</Button>
       </div>
 
-      {/* Form */}
       {showForm && (
         <Card className="border-[#1A4731]/20 bg-[#1A4731]/5">
           <CardContent className="p-4">
@@ -127,9 +101,7 @@ export default function ProjetosDocumentos({ data, onRefresh }) {
                 <label className="text-xs text-slate-500 mb-1 block">Tipo *</label>
                 <Select value={form.tipo} onValueChange={v => setForm(f => ({ ...f, tipo: v }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["Laudo","Relatório","Contrato","Proposta","Apresentação","Planilha","Outro"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{["Laudo","Relatório","Contrato","Proposta","Apresentação","Planilha","Outro"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="col-span-2">
@@ -149,7 +121,6 @@ export default function ProjetosDocumentos({ data, onRefresh }) {
         </Card>
       )}
 
-      {/* Lista */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {filtrados.map(d => (
           <Card key={d.id} className="hover:shadow-sm transition-shadow">
@@ -162,9 +133,7 @@ export default function ProjetosDocumentos({ data, onRefresh }) {
                     <p className="text-[10px] text-slate-400">{projetoNome(d.os_id)}</p>
                   </div>
                 </div>
-                <button onClick={() => handleDelete(d.id)} className="text-slate-200 hover:text-red-400 flex-shrink-0">
-                  <Trash2 size={12} />
-                </button>
+                <button onClick={() => handleDelete(d.id)} className="text-slate-200 hover:text-red-400 flex-shrink-0"><Trash2 size={12} /></button>
               </div>
               <div className="flex items-center justify-between gap-2">
                 <Select value={d.status} onValueChange={v => handleStatus(d, v)}>
@@ -180,11 +149,7 @@ export default function ProjetosDocumentos({ data, onRefresh }) {
                 </Select>
                 <div className="flex items-center gap-2">
                   {d.responsavel && <span className="text-[10px] text-slate-400">{d.responsavel}</span>}
-                  {d.url && (
-                    <a href={d.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600">
-                      <ExternalLink size={12} />
-                    </a>
-                  )}
+                  {d.url && <a href={d.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600"><ExternalLink size={12} /></a>}
                 </div>
               </div>
             </CardContent>

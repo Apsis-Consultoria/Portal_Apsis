@@ -1,24 +1,13 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, Shield, CheckCircle2, XCircle, Plus, Trash2 } from "lucide-react";
 
-const IMPACTO_STYLE = {
-  "Baixo": "bg-green-100 text-green-700",
-  "Médio": "bg-yellow-100 text-yellow-700",
-  "Alto": "bg-orange-100 text-orange-700",
-  "Crítico": "bg-red-100 text-red-700",
-};
-
-const STATUS_STYLE = {
-  "Aberto": "bg-red-100 text-red-700",
-  "Em mitigação": "bg-yellow-100 text-yellow-700",
-  "Resolvido": "bg-green-100 text-green-700",
-  "Aceito": "bg-slate-100 text-slate-600",
-};
+const IMPACTO_STYLE = { "Baixo": "bg-green-100 text-green-700", "Médio": "bg-yellow-100 text-yellow-700", "Alto": "bg-orange-100 text-orange-700", "Crítico": "bg-red-100 text-red-700" };
+const STATUS_STYLE = { "Aberto": "bg-red-100 text-red-700", "Em mitigação": "bg-yellow-100 text-yellow-700", "Resolvido": "bg-green-100 text-green-700", "Aceito": "bg-slate-100 text-slate-600" };
 
 export default function ProjetosRiscos({ data, onRefresh }) {
   const { riscos, projetos } = data;
@@ -51,47 +40,27 @@ export default function ProjetosRiscos({ data, onRefresh }) {
     setSaving(false);
   };
 
-  const handleStatus = async (risco, novoStatus) => {
-    await base44.entities.RiscoProjeto.update(risco.id, { status: novoStatus });
-    onRefresh();
-  };
-
-  const handleDelete = async (id) => {
-    await base44.entities.RiscoProjeto.delete(id);
-    onRefresh();
-  };
+  const handleStatus = async (risco, novoStatus) => { await base44.entities.RiscoProjeto.update(risco.id, { status: novoStatus }); onRefresh(); };
+  const handleDelete = async (id) => { await base44.entities.RiscoProjeto.delete(id); onRefresh(); };
 
   return (
     <div className="p-6 space-y-4">
-      {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-l-4 border-l-red-400">
-          <CardContent className="p-4 flex items-center gap-3">
-            <AlertTriangle size={18} className="text-red-400" />
-            <div><p className="text-xl font-bold text-slate-800">{abertos}</p><p className="text-xs text-slate-400">Abertos</p></div>
-          </CardContent>
-        </Card>
-        <Card className="border-l-4 border-l-orange-400">
-          <CardContent className="p-4 flex items-center gap-3">
-            <Shield size={18} className="text-[#F47920]" />
-            <div><p className="text-xl font-bold text-slate-800">{emMitigacao}</p><p className="text-xs text-slate-400">Em Mitigação</p></div>
-          </CardContent>
-        </Card>
-        <Card className="border-l-4 border-l-green-400">
-          <CardContent className="p-4 flex items-center gap-3">
-            <CheckCircle2 size={18} className="text-green-500" />
-            <div><p className="text-xl font-bold text-slate-800">{resolvidos}</p><p className="text-xs text-slate-400">Resolvidos</p></div>
-          </CardContent>
-        </Card>
-        <Card className="border-l-4 border-l-red-600">
-          <CardContent className="p-4 flex items-center gap-3">
-            <XCircle size={18} className="text-red-600" />
-            <div><p className="text-xl font-bold text-slate-800">{criticos}</p><p className="text-xs text-slate-400">Impacto Crítico</p></div>
-          </CardContent>
-        </Card>
+        {[
+          { icon: AlertTriangle, color: "border-l-red-400 text-red-400", label: "Abertos", value: abertos },
+          { icon: Shield, color: "border-l-orange-400 text-[#F47920]", label: "Em Mitigação", value: emMitigacao },
+          { icon: CheckCircle2, color: "border-l-green-400 text-green-500", label: "Resolvidos", value: resolvidos },
+          { icon: XCircle, color: "border-l-red-600 text-red-600", label: "Impacto Crítico", value: criticos },
+        ].map(({ icon: Icon, color, label, value }) => (
+          <Card key={label} className={`border-l-4 ${color.split(" ")[0]}`}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <Icon size={18} className={color.split(" ")[1]} />
+              <div><p className="text-xl font-bold text-slate-800">{value}</p><p className="text-xs text-slate-400">{label}</p></div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-3 items-center">
         <Select value={filtroOS} onValueChange={setFiltroOS}>
           <SelectTrigger className="w-56 h-9"><SelectValue placeholder="Todos os projetos" /></SelectTrigger>
@@ -110,12 +79,9 @@ export default function ProjetosRiscos({ data, onRefresh }) {
             <SelectItem value="Aceito">Aceito</SelectItem>
           </SelectContent>
         </Select>
-        <Button size="sm" onClick={() => setShowForm(!showForm)} className="gap-1.5 bg-[#1A4731] hover:bg-[#245E40]">
-          <Plus size={13} /> Novo Risco
-        </Button>
+        <Button size="sm" onClick={() => setShowForm(!showForm)} className="gap-1.5 bg-[#1A4731] hover:bg-[#245E40]"><Plus size={13} /> Novo Risco</Button>
       </div>
 
-      {/* Form */}
       {showForm && (
         <Card className="border-[#1A4731]/20 bg-[#1A4731]/5">
           <CardContent className="p-4">
@@ -131,27 +97,21 @@ export default function ProjetosRiscos({ data, onRefresh }) {
                 <label className="text-xs text-slate-500 mb-1 block">Categoria *</label>
                 <Select value={form.categoria} onValueChange={v => setForm(f => ({ ...f, categoria: v }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["Prazo","Escopo","Financeiro","Técnico","Comunicação","Recurso"].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{["Prazo","Escopo","Financeiro","Técnico","Comunicação","Recurso"].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">Impacto</label>
                 <Select value={form.impacto} onValueChange={v => setForm(f => ({ ...f, impacto: v }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["Baixo","Médio","Alto","Crítico"].map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{["Baixo","Médio","Alto","Crítico"].map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">Probabilidade</label>
                 <Select value={form.probabilidade} onValueChange={v => setForm(f => ({ ...f, probabilidade: v }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["Baixa","Média","Alta"].map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{["Baixa","Média","Alta"].map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
@@ -175,7 +135,6 @@ export default function ProjetosRiscos({ data, onRefresh }) {
         </Card>
       )}
 
-      {/* Tabela */}
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -185,7 +144,6 @@ export default function ProjetosRiscos({ data, onRefresh }) {
                   <th className="text-left px-4 py-3 text-slate-500 font-medium">Projeto</th>
                   <th className="text-left px-4 py-3 text-slate-500 font-medium">Risco</th>
                   <th className="text-left px-4 py-3 text-slate-500 font-medium">Categoria</th>
-                  <th className="text-left px-4 py-3 text-slate-500 font-medium">Prob.</th>
                   <th className="text-left px-4 py-3 text-slate-500 font-medium">Impacto</th>
                   <th className="text-left px-4 py-3 text-slate-500 font-medium">Status</th>
                   <th className="text-left px-4 py-3 text-slate-500 font-medium">Responsável</th>
@@ -201,10 +159,7 @@ export default function ProjetosRiscos({ data, onRefresh }) {
                       {r.plano_mitigacao && <div className="text-slate-400 truncate mt-0.5">→ {r.plano_mitigacao}</div>}
                     </td>
                     <td className="px-4 py-2.5 text-slate-500">{r.categoria}</td>
-                    <td className="px-4 py-2.5 text-slate-500">{r.probabilidade}</td>
-                    <td className="px-4 py-2.5">
-                      <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${IMPACTO_STYLE[r.impacto] || ""}`}>{r.impacto}</span>
-                    </td>
+                    <td className="px-4 py-2.5"><span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${IMPACTO_STYLE[r.impacto] || ""}`}>{r.impacto}</span></td>
                     <td className="px-4 py-2.5">
                       <Select value={r.status} onValueChange={v => handleStatus(r, v)}>
                         <SelectTrigger className="h-6 border-0 p-0 w-28 text-xs">
@@ -219,16 +174,10 @@ export default function ProjetosRiscos({ data, onRefresh }) {
                       </Select>
                     </td>
                     <td className="px-4 py-2.5 text-slate-500">{r.responsavel || "—"}</td>
-                    <td className="px-4 py-2.5">
-                      <button onClick={() => handleDelete(r.id)} className="text-slate-300 hover:text-red-400">
-                        <Trash2 size={12} />
-                      </button>
-                    </td>
+                    <td className="px-4 py-2.5"><button onClick={() => handleDelete(r.id)} className="text-slate-300 hover:text-red-400"><Trash2 size={12} /></button></td>
                   </tr>
                 ))}
-                {filtrados.length === 0 && (
-                  <tr><td colSpan={8} className="text-center py-10 text-slate-300">Nenhum risco registrado</td></tr>
-                )}
+                {filtrados.length === 0 && <tr><td colSpan={7} className="text-center py-10 text-slate-300">Nenhum risco registrado</td></tr>}
               </tbody>
             </table>
           </div>

@@ -20,11 +20,7 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
   const [filtroOS, setFiltroOS] = useState("todos");
   const [filtroTipo, setFiltroTipo] = useState("todos");
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({
-    os_id: "", tipo: "Nota interna", titulo: "", descricao: "", autor: "",
-    data: new Date().toISOString().split("T")[0], participantes: "",
-    visivel_cliente: false, acao_requerida: false, acao_descricao: "", acao_responsavel: "",
-  });
+  const [form, setForm] = useState({ os_id: "", tipo: "Nota interna", titulo: "", descricao: "", autor: "", data: new Date().toISOString().split("T")[0], visivel_cliente: false, acao_requerida: false, acao_descricao: "", acao_responsavel: "" });
   const [saving, setSaving] = useState(false);
 
   const filtradas = comunicacoes.filter(c => {
@@ -34,27 +30,22 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
   }).sort((a, b) => new Date(b.data) - new Date(a.data));
 
   const projetoNome = (osId) => projetos.find(p => p.id === osId)?.cliente_nome || "—";
-
-  const acoesAbertas = comunicacoes.filter(c => c.acao_requerida && !c.acao_prazo_cumprido);
+  const acoesAbertas = comunicacoes.filter(c => c.acao_requerida && c.acao_descricao);
 
   const handleSave = async () => {
     if (!form.os_id || !form.titulo || !form.autor) return;
     setSaving(true);
     await base44.entities.ComunicacaoProjeto.create(form);
-    setForm({ os_id: "", tipo: "Nota interna", titulo: "", descricao: "", autor: "", data: new Date().toISOString().split("T")[0], participantes: "", visivel_cliente: false, acao_requerida: false, acao_descricao: "", acao_responsavel: "" });
+    setForm({ os_id: "", tipo: "Nota interna", titulo: "", descricao: "", autor: "", data: new Date().toISOString().split("T")[0], visivel_cliente: false, acao_requerida: false, acao_descricao: "", acao_responsavel: "" });
     setShowForm(false);
     onRefresh();
     setSaving(false);
   };
 
-  const handleDelete = async (id) => {
-    await base44.entities.ComunicacaoProjeto.delete(id);
-    onRefresh();
-  };
+  const handleDelete = async (id) => { await base44.entities.ComunicacaoProjeto.delete(id); onRefresh(); };
 
   return (
     <div className="p-6 space-y-4">
-      {/* Ações abertas */}
       {acoesAbertas.length > 0 && (
         <Card className="border-amber-200 bg-amber-50">
           <CardContent className="p-4">
@@ -66,7 +57,7 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
                   {acoesAbertas.slice(0, 3).map(c => (
                     <div key={c.id} className="text-xs text-slate-600 flex items-center gap-2">
                       <span className="font-medium">{projetoNome(c.os_id)}:</span>
-                      <span>{c.acao_descricao || c.titulo}</span>
+                      <span>{c.acao_descricao}</span>
                       {c.acao_responsavel && <span className="text-slate-400">→ {c.acao_responsavel}</span>}
                     </div>
                   ))}
@@ -77,7 +68,6 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
         </Card>
       )}
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-3 items-center">
         <Select value={filtroOS} onValueChange={setFiltroOS}>
           <SelectTrigger className="w-56 h-9"><SelectValue placeholder="Todos os projetos" /></SelectTrigger>
@@ -93,12 +83,9 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
             {Object.keys(TIPO_CONFIG).map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Button size="sm" onClick={() => setShowForm(!showForm)} className="gap-1.5 bg-[#1A4731] hover:bg-[#245E40]">
-          <Plus size={13} /> Nova Comunicação
-        </Button>
+        <Button size="sm" onClick={() => setShowForm(!showForm)} className="gap-1.5 bg-[#1A4731] hover:bg-[#245E40]"><Plus size={13} /> Nova Comunicação</Button>
       </div>
 
-      {/* Form */}
       {showForm && (
         <Card className="border-[#1A4731]/20 bg-[#1A4731]/5">
           <CardContent className="p-4 space-y-3">
@@ -137,16 +124,13 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
                 <label className="text-xs text-slate-500 mb-1 block">Ação requerida?</label>
                 <Select value={form.acao_requerida ? "sim" : "nao"} onValueChange={v => setForm(f => ({ ...f, acao_requerida: v === "sim" }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="nao">Não</SelectItem>
-                    <SelectItem value="sim">Sim</SelectItem>
-                  </SelectContent>
+                  <SelectContent><SelectItem value="nao">Não</SelectItem><SelectItem value="sim">Sim</SelectItem></SelectContent>
                 </Select>
               </div>
               {form.acao_requerida && (
                 <>
                   <div>
-                    <label className="text-xs text-slate-500 mb-1 block">Ação</label>
+                    <label className="text-xs text-slate-500 mb-1 block">Descrição da ação</label>
                     <Input className="h-8 text-xs" value={form.acao_descricao} onChange={e => setForm(f => ({ ...f, acao_descricao: e.target.value }))} />
                   </div>
                   <div>
@@ -164,7 +148,6 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
         </Card>
       )}
 
-      {/* Timeline */}
       <div className="space-y-3">
         {filtradas.map(c => {
           const cfg = TIPO_CONFIG[c.tipo] || TIPO_CONFIG["Nota interna"];
@@ -182,9 +165,7 @@ export default function ProjetosComunicacao({ data, onRefresh }) {
                         <p className="text-sm font-semibold text-slate-800">{c.titulo}</p>
                         <p className="text-xs text-slate-400">{projetoNome(c.os_id)} · {c.autor} · {c.data ? new Date(c.data + "T00:00:00").toLocaleDateString("pt-BR") : "—"}</p>
                       </div>
-                      <button onClick={() => handleDelete(c.id)} className="text-slate-200 hover:text-red-400 flex-shrink-0">
-                        <Trash2 size={12} />
-                      </button>
+                      <button onClick={() => handleDelete(c.id)} className="text-slate-200 hover:text-red-400 flex-shrink-0"><Trash2 size={12} /></button>
                     </div>
                     {c.descricao && <p className="text-xs text-slate-600 mt-1">{c.descricao}</p>}
                     {c.acao_requerida && c.acao_descricao && (

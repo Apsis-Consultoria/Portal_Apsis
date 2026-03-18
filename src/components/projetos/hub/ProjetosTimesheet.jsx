@@ -15,7 +15,6 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
   const [saving, setSaving] = useState(false);
 
   const colaboradores = [...new Set(entradas.map(e => e.colaborador).filter(Boolean))];
-
   const entradasFiltradas = entradas.filter(e => {
     const matchOS = filtroOS === "todos" || e.os_id === filtroOS;
     const matchC = filtroColab === "todos" || e.colaborador === filtroColab;
@@ -25,6 +24,9 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
   const totalHoras = entradasFiltradas.reduce((s, e) => s + (e.horas || 0), 0);
   const horasFaturavel = entradasFiltradas.filter(e => e.faturavel).reduce((s, e) => s + (e.horas || 0), 0);
   const horasAprovadas = entradasFiltradas.filter(e => e.aprovado).reduce((s, e) => s + (e.horas || 0), 0);
+
+  const projetoNome = (osId) => projetos.find(p => p.id === osId)?.cliente_nome || "—";
+  const tarefaNome = (tId) => tarefas.find(t => t.id === tId)?.titulo || "—";
 
   const handleSave = async () => {
     if (!form.os_id || !form.colaborador || !form.data || !form.horas) return;
@@ -36,53 +38,21 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
     setSaving(false);
   };
 
-  const handleDelete = async (id) => {
-    await base44.entities.EntradaTempo.delete(id);
-    onRefresh();
-  };
-
-  const handleApprove = async (e) => {
-    await base44.entities.EntradaTempo.update(e.id, { aprovado: !e.aprovado });
-    onRefresh();
-  };
-
-  const projetoNome = (osId) => projetos.find(p => p.id === osId)?.cliente_nome || osId;
-  const tarefaNome = (tId) => tarefas.find(t => t.id === tId)?.titulo || "—";
+  const handleDelete = async (id) => { await base44.entities.EntradaTempo.delete(id); onRefresh(); };
+  const handleApprove = async (e) => { await base44.entities.EntradaTempo.update(e.id, { aprovado: !e.aprovado }); onRefresh(); };
 
   return (
     <div className="p-6 space-y-4">
-      {/* KPIs */}
       <div className="grid grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <Clock size={20} className="text-[#1A4731]" />
-            <div>
-              <p className="text-xl font-bold text-slate-800">{totalHoras.toFixed(1)}h</p>
-              <p className="text-xs text-slate-400">Total lançado</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <Timer size={20} className="text-green-500" />
-            <div>
-              <p className="text-xl font-bold text-slate-800">{horasFaturavel.toFixed(1)}h</p>
-              <p className="text-xs text-slate-400">Faturável</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <Check size={20} className="text-blue-500" />
-            <div>
-              <p className="text-xl font-bold text-slate-800">{horasAprovadas.toFixed(1)}h</p>
-              <p className="text-xs text-slate-400">Aprovadas</p>
-            </div>
-          </CardContent>
-        </Card>
+        {[
+          { icon: Clock, color: "text-[#1A4731]", label: "Total lançado", value: `${totalHoras.toFixed(1)}h` },
+          { icon: Timer, color: "text-green-500", label: "Faturável", value: `${horasFaturavel.toFixed(1)}h` },
+          { icon: Check, color: "text-blue-500", label: "Aprovadas", value: `${horasAprovadas.toFixed(1)}h` },
+        ].map(({ icon: Icon, color, label, value }) => (
+          <Card key={label}><CardContent className="p-4 flex items-center gap-3"><Icon size={20} className={color} /><div><p className="text-xl font-bold text-slate-800">{value}</p><p className="text-xs text-slate-400">{label}</p></div></CardContent></Card>
+        ))}
       </div>
 
-      {/* Filtros + novo */}
       <div className="flex flex-wrap gap-3 items-center">
         <Select value={filtroOS} onValueChange={setFiltroOS}>
           <SelectTrigger className="w-56 h-9"><SelectValue placeholder="Todos os projetos" /></SelectTrigger>
@@ -103,7 +73,6 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
         </Button>
       </div>
 
-      {/* Formulário */}
       {showForm && (
         <Card className="border-[#1A4731]/20 bg-[#1A4731]/5">
           <CardContent className="p-4">
@@ -112,18 +81,14 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
                 <label className="text-xs text-slate-500 mb-1 block">Projeto *</label>
                 <Select value={form.os_id} onValueChange={v => setForm(f => ({ ...f, os_id: v }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selecione" /></SelectTrigger>
-                  <SelectContent>
-                    {projetos.map(p => <SelectItem key={p.id} value={p.id}>{p.cliente_nome}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{projetos.map(p => <SelectItem key={p.id} value={p.id}>{p.cliente_nome}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">Tarefa</label>
                 <Select value={form.tarefa_id} onValueChange={v => setForm(f => ({ ...f, tarefa_id: v }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Opcional" /></SelectTrigger>
-                  <SelectContent>
-                    {tarefas.filter(t => t.os_id === form.os_id).map(t => <SelectItem key={t.id} value={t.id}>{t.titulo}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{tarefas.filter(t => t.os_id === form.os_id).map(t => <SelectItem key={t.id} value={t.id}>{t.titulo}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
@@ -142,28 +107,22 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
                 <label className="text-xs text-slate-500 mb-1 block">Faturável</label>
                 <Select value={form.faturavel ? "sim" : "nao"} onValueChange={v => setForm(f => ({ ...f, faturavel: v === "sim" }))}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="sim">Sim</SelectItem>
-                    <SelectItem value="nao">Não</SelectItem>
-                  </SelectContent>
+                  <SelectContent><SelectItem value="sim">Sim</SelectItem><SelectItem value="nao">Não</SelectItem></SelectContent>
                 </Select>
               </div>
               <div className="col-span-2 md:col-span-3">
-                <label className="text-xs text-slate-500 mb-1 block">Descrição da atividade</label>
+                <label className="text-xs text-slate-500 mb-1 block">Descrição</label>
                 <Input className="h-8 text-xs" value={form.descricao} onChange={e => setForm(f => ({ ...f, descricao: e.target.value }))} placeholder="Descreva o que foi feito..." />
               </div>
             </div>
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={handleSave} disabled={saving} className="bg-[#1A4731] hover:bg-[#245E40]">
-                {saving ? "Salvando..." : "Salvar"}
-              </Button>
+              <Button size="sm" onClick={handleSave} disabled={saving} className="bg-[#1A4731] hover:bg-[#245E40]">{saving ? "Salvando..." : "Salvar"}</Button>
               <Button size="sm" variant="outline" onClick={() => setShowForm(false)}>Cancelar</Button>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Lista */}
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -177,7 +136,7 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
                   <th className="text-right px-4 py-3 text-slate-500 font-medium">Horas</th>
                   <th className="text-left px-4 py-3 text-slate-500 font-medium">Descrição</th>
                   <th className="text-center px-4 py-3 text-slate-500 font-medium">Fat.</th>
-                  <th className="text-center px-4 py-3 text-slate-500 font-medium">Aprovado</th>
+                  <th className="text-center px-4 py-3 text-slate-500 font-medium">Aprov.</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
@@ -190,26 +149,14 @@ export default function ProjetosTimesheet({ data, onRefresh }) {
                     <td className="px-4 py-2.5 text-slate-500">{e.data ? new Date(e.data + "T00:00:00").toLocaleDateString("pt-BR") : "—"}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-[#1A4731]">{(e.horas || 0).toFixed(1)}h</td>
                     <td className="px-4 py-2.5 text-slate-500 max-w-xs truncate">{e.descricao || "—"}</td>
+                    <td className="px-4 py-2.5 text-center">{e.faturavel ? <span className="text-green-600">✓</span> : <span className="text-slate-300">—</span>}</td>
                     <td className="px-4 py-2.5 text-center">
-                      {e.faturavel ? <span className="text-green-600">✓</span> : <span className="text-slate-300">—</span>}
+                      <button onClick={() => handleApprove(e)}>{e.aprovado ? <Check size={13} className="text-green-500" /> : <span className="text-slate-300 text-xs">—</span>}</button>
                     </td>
-                    <td className="px-4 py-2.5 text-center">
-                      <button onClick={() => handleApprove(e)} title="Aprovar/Reprovar">
-                        {e.aprovado
-                          ? <Check size={13} className="text-green-500" />
-                          : <span className="text-slate-300 text-xs">—</span>}
-                      </button>
-                    </td>
-                    <td className="px-4 py-2.5">
-                      <button onClick={() => handleDelete(e.id)} className="text-slate-300 hover:text-red-400">
-                        <Trash2 size={12} />
-                      </button>
-                    </td>
+                    <td className="px-4 py-2.5"><button onClick={() => handleDelete(e.id)} className="text-slate-300 hover:text-red-400"><Trash2 size={12} /></button></td>
                   </tr>
                 ))}
-                {entradasFiltradas.length === 0 && (
-                  <tr><td colSpan={9} className="text-center py-10 text-slate-300">Nenhuma entrada de tempo</td></tr>
-                )}
+                {entradasFiltradas.length === 0 && <tr><td colSpan={9} className="text-center py-10 text-slate-300">Nenhuma entrada de tempo</td></tr>}
               </tbody>
             </table>
           </div>

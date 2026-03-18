@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
-  Briefcase, DollarSign, AlertTriangle, CheckCircle2,
-  TrendingUp, Clock, Users, Calendar, ChevronRight, Timer
+  Briefcase, DollarSign, AlertTriangle, Timer, ChevronRight
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from "recharts";
 
@@ -12,7 +10,7 @@ const fmt = (v) => (v || 0).toLocaleString("pt-BR", { style: "currency", currenc
 export default function ProjetosDashboard({ data, loading }) {
   if (loading) return <LoadingState />;
 
-  const { projetos, parcelas, tarefas, entradas, riscos } = data;
+  const { projetos, parcelas, entradas, riscos } = data;
 
   const totalAtivos = projetos.filter(p => p.status === "Ativo").length;
   const totalConcluidos = projetos.filter(p => p.percentual_conclusao === 100).length;
@@ -23,11 +21,9 @@ export default function ProjetosDashboard({ data, loading }) {
   const receitaTotal = parcelas.reduce((s, p) => s + (p.valor || 0), 0);
   const receitaFaturada = parcelas.filter(p => ["Faturada", "Recebida"].includes(p.status))
     .reduce((s, p) => s + (p.valor || 0), 0);
-
   const horasTotais = entradas.reduce((s, e) => s + (e.horas || 0), 0);
   const riscosAbertos = riscos.filter(r => r.status === "Aberto").length;
 
-  // Por status
   const statusData = [
     { name: "Ativo", value: projetos.filter(p => p.status === "Ativo").length, color: "#22C55E" },
     { name: "Pausado", value: projetos.filter(p => p.status === "Pausado").length, color: "#F59E0B" },
@@ -35,14 +31,10 @@ export default function ProjetosDashboard({ data, loading }) {
     { name: "Cancelado", value: projetos.filter(p => p.status === "Cancelado").length, color: "#EF4444" },
   ].filter(d => d.value > 0);
 
-  // Por natureza
   const naturezaMap = {};
-  projetos.forEach(p => {
-    if (p.natureza) naturezaMap[p.natureza] = (naturezaMap[p.natureza] || 0) + 1;
-  });
+  projetos.forEach(p => { if (p.natureza) naturezaMap[p.natureza] = (naturezaMap[p.natureza] || 0) + 1; });
   const naturezaData = Object.entries(naturezaMap).map(([name, value]) => ({ name: name.split(" - ")[1] || name, value }));
 
-  // Projetos recentes com risco/atraso
   const destacados = projetos
     .filter(p => p.status === "Ativo" || p.status === "Não iniciado")
     .sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date))
@@ -50,7 +42,6 @@ export default function ProjetosDashboard({ data, loading }) {
 
   return (
     <div className="p-6 space-y-6">
-      {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard icon={Briefcase} color="blue" title="Em Execução" value={totalAtivos} sub={`${projetos.length} total`} />
         <KPICard icon={DollarSign} color="green" title="Faturado" value={fmt(receitaFaturada)} sub={`de ${fmt(receitaTotal)}`} small />
@@ -59,18 +50,15 @@ export default function ProjetosDashboard({ data, loading }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Projetos por status */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Status dos Projetos</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Status dos Projetos</CardTitle></CardHeader>
           <CardContent>
             <div className="flex justify-center mb-2">
               <PieChart width={160} height={140}>
                 <Pie data={statusData} cx={75} cy={65} innerRadius={40} outerRadius={65} dataKey="value">
                   {statusData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                 </Pie>
-                <Tooltip formatter={(v, n) => [v, n]} />
+                <Tooltip />
               </PieChart>
             </div>
             <div className="space-y-1.5">
@@ -87,11 +75,8 @@ export default function ProjetosDashboard({ data, loading }) {
           </CardContent>
         </Card>
 
-        {/* Por natureza */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Por Tipo de Serviço</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Por Tipo de Serviço</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={naturezaData} layout="vertical">
@@ -104,11 +89,8 @@ export default function ProjetosDashboard({ data, loading }) {
           </CardContent>
         </Card>
 
-        {/* Receita */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Receita do Portfólio</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Receita do Portfólio</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div>
               <div className="flex justify-between text-xs text-slate-500 mb-1">
@@ -148,7 +130,6 @@ export default function ProjetosDashboard({ data, loading }) {
         </Card>
       </div>
 
-      {/* Projetos em destaque */}
       <Card>
         <CardHeader className="pb-3 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-semibold text-slate-700">Projetos em Andamento</CardTitle>
@@ -173,7 +154,7 @@ export default function ProjetosDashboard({ data, loading }) {
                 {destacados.map(p => {
                   const atrasado = p.prazo_previsto && new Date(p.prazo_previsto) < new Date() && p.percentual_conclusao < 100;
                   return (
-                    <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                    <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50">
                       <td className="px-4 py-2.5">
                         <Link to={`/ProjetoDetalhe?id=${p.id}`} className="font-medium text-slate-800 hover:text-[#1A4731]">
                           {p.cliente_nome || "—"}
@@ -191,7 +172,7 @@ export default function ProjetosDashboard({ data, loading }) {
                       </td>
                       <td className={`px-4 py-2.5 ${atrasado ? "text-red-500 font-medium" : "text-slate-500"}`}>
                         {p.prazo_previsto ? new Date(p.prazo_previsto + "T00:00:00").toLocaleDateString("pt-BR") : "—"}
-                        {atrasado && <span className="ml-1">⚠</span>}
+                        {atrasado && " ⚠"}
                       </td>
                       <td className="px-4 py-2.5">
                         <StatusBadge status={p.status} />
@@ -209,19 +190,13 @@ export default function ProjetosDashboard({ data, loading }) {
 }
 
 function KPICard({ icon: Icon, color, title, value, sub, small }) {
-  const colors = {
-    blue: "text-blue-600 bg-blue-50 border-blue-200",
-    green: "text-green-600 bg-green-50 border-green-200",
-    orange: "text-[#F47920] bg-orange-50 border-orange-200",
-    purple: "text-purple-600 bg-purple-50 border-purple-200",
-  };
+  const colors = { blue: ["text-blue-600", "bg-blue-50", "border-blue-200"], green: ["text-green-600", "bg-green-50", "border-green-200"], orange: ["text-[#F47920]", "bg-orange-50", "border-orange-200"], purple: ["text-purple-600", "bg-purple-50", "border-purple-200"] };
+  const [tc, bg, bc] = colors[color] || colors.blue;
   return (
-    <Card className={`border ${colors[color].split(" ").slice(2).join(" ")}`}>
+    <Card className={`border ${bc}`}>
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${colors[color].split(" ").slice(1, 2).join(" ")}`}>
-            <Icon size={18} className={colors[color].split(" ")[0]} />
-          </div>
+          <div className={`p-2 rounded-lg ${bg}`}><Icon size={18} className={tc} /></div>
           <div>
             <p className={`${small ? "text-base" : "text-xl"} font-bold text-slate-800`}>{value}</p>
             <p className="text-xs text-slate-500">{title}</p>
@@ -234,19 +209,10 @@ function KPICard({ icon: Icon, color, title, value, sub, small }) {
 }
 
 function StatusBadge({ status }) {
-  const map = {
-    "Ativo": "bg-green-100 text-green-700",
-    "Pausado": "bg-yellow-100 text-yellow-700",
-    "Cancelado": "bg-red-100 text-red-700",
-    "Não iniciado": "bg-slate-100 text-slate-600",
-  };
+  const map = { "Ativo": "bg-green-100 text-green-700", "Pausado": "bg-yellow-100 text-yellow-700", "Cancelado": "bg-red-100 text-red-700", "Não iniciado": "bg-slate-100 text-slate-600" };
   return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || "bg-slate-100 text-slate-600"}`}>{status}</span>;
 }
 
 function LoadingState() {
-  return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-4 border-slate-200 border-t-[#1A4731] rounded-full animate-spin" />
-    </div>
-  );
+  return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-4 border-slate-200 border-t-[#1A4731] rounded-full animate-spin" /></div>;
 }

@@ -6,102 +6,74 @@ import { DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 
 const fmt = (v) => (v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 });
 
-export default function ProjetosBudget({ data, loading }) {
+export default function ProjetosBudget({ data }) {
   const [filtroOS, setFiltroOS] = useState("todos");
-
   const { projetos, parcelas, entradas } = data;
 
   const getValorOS = (osId) => parcelas.filter(p => p.os_id === osId).reduce((s, p) => s + (p.valor || 0), 0);
-  const getFaturadoOS = (osId) => parcelas.filter(p => p.os_id === osId && ["Faturada", "Recebida"].includes(p.status)).reduce((s, p) => s + (p.valor || 0), 0);
+  const getFaturadoOS = (osId) => parcelas.filter(p => p.os_id === osId && ["Faturada","Recebida"].includes(p.status)).reduce((s, p) => s + (p.valor || 0), 0);
   const getHorasOS = (osId) => entradas.filter(e => e.os_id === osId).reduce((s, e) => s + (e.horas || 0), 0);
 
   const osFiltradas = filtroOS === "todos" ? projetos : projetos.filter(p => p.id === filtroOS);
-
   const receitaTotal = osFiltradas.reduce((s, p) => s + getValorOS(p.id), 0);
   const receitaRealizada = osFiltradas.reduce((s, p) => s + getFaturadoOS(p.id), 0);
   const receitaPendente = receitaTotal - receitaRealizada;
 
-  // Dados por projeto para gráfico
-  const chartData = projetos
-    .filter(p => getValorOS(p.id) > 0)
-    .slice(0, 12)
-    .map(p => ({
-      name: (p.cliente_nome || "").split(" ")[0],
-      orcado: getValorOS(p.id),
-      realizado: getFaturadoOS(p.id),
-    }));
+  const chartData = projetos.filter(p => getValorOS(p.id) > 0).slice(0, 12).map(p => ({
+    name: (p.cliente_nome || "").split(" ")[0],
+    orcado: getValorOS(p.id),
+    realizado: getFaturadoOS(p.id),
+  }));
 
-  // Parcelas por mês
   const parcelasPorMes = {};
   parcelas.forEach(p => {
     if (!p.data_vencimento) return;
     const key = p.data_vencimento.substring(0, 7);
     if (!parcelasPorMes[key]) parcelasPorMes[key] = { mes: key, previsto: 0, realizado: 0 };
     parcelasPorMes[key].previsto += p.valor || 0;
-    if (["Faturada", "Recebida"].includes(p.status)) parcelasPorMes[key].realizado += p.valor || 0;
+    if (["Faturada","Recebida"].includes(p.status)) parcelasPorMes[key].realizado += p.valor || 0;
   });
   const tendencia = Object.values(parcelasPorMes).sort((a, b) => a.mes.localeCompare(b.mes)).slice(-12);
 
   return (
     <div className="p-6 space-y-6">
-      {/* Filtro */}
       <div className="flex items-center gap-4">
         <Select value={filtroOS} onValueChange={setFiltroOS}>
-          <SelectTrigger className="w-64 h-9">
-            <SelectValue placeholder="Todos os projetos" />
-          </SelectTrigger>
+          <SelectTrigger className="w-64 h-9"><SelectValue placeholder="Todos os projetos" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos os projetos</SelectItem>
-            {projetos.map(p => (
-              <SelectItem key={p.id} value={p.id}>{p.cliente_nome} {p.proposta_numero ? `— ${p.proposta_numero}` : ""}</SelectItem>
-            ))}
+            {projetos.map(p => <SelectItem key={p.id} value={p.id}>{p.cliente_nome} {p.proposta_numero ? `— ${p.proposta_numero}` : ""}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
 
-      {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="border-l-4 border-l-blue-500">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <DollarSign size={22} className="text-blue-500" />
-              <div>
-                <p className="text-lg font-bold text-slate-800">{fmt(receitaTotal)}</p>
-                <p className="text-xs text-slate-400">Orçamento Total</p>
-              </div>
-            </div>
+          <CardContent className="p-4 flex items-center gap-3">
+            <DollarSign size={22} className="text-blue-500" />
+            <div><p className="text-lg font-bold text-slate-800">{fmt(receitaTotal)}</p><p className="text-xs text-slate-400">Orçamento Total</p></div>
           </CardContent>
         </Card>
         <Card className="border-l-4 border-l-green-500">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <TrendingUp size={22} className="text-green-500" />
-              <div>
-                <p className="text-lg font-bold text-slate-800">{fmt(receitaRealizada)}</p>
-                <p className="text-xs text-slate-400">Faturado ({receitaTotal > 0 ? Math.round(receitaRealizada / receitaTotal * 100) : 0}%)</p>
-              </div>
+          <CardContent className="p-4 flex items-center gap-3">
+            <TrendingUp size={22} className="text-green-500" />
+            <div>
+              <p className="text-lg font-bold text-slate-800">{fmt(receitaRealizada)}</p>
+              <p className="text-xs text-slate-400">Faturado ({receitaTotal > 0 ? Math.round(receitaRealizada / receitaTotal * 100) : 0}%)</p>
             </div>
           </CardContent>
         </Card>
         <Card className="border-l-4 border-l-orange-400">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <TrendingDown size={22} className="text-[#F47920]" />
-              <div>
-                <p className="text-lg font-bold text-slate-800">{fmt(receitaPendente)}</p>
-                <p className="text-xs text-slate-400">Saldo Pendente</p>
-              </div>
-            </div>
+          <CardContent className="p-4 flex items-center gap-3">
+            <TrendingDown size={22} className="text-[#F47920]" />
+            <div><p className="text-lg font-bold text-slate-800">{fmt(receitaPendente)}</p><p className="text-xs text-slate-400">Saldo Pendente</p></div>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Real vs Planejado */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Real vs Planejado por Projeto</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Real vs Planejado por Projeto</CardTitle></CardHeader>
           <CardContent>
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={240}>
@@ -114,17 +86,12 @@ export default function ProjetosBudget({ data, loading }) {
                   <Bar dataKey="realizado" fill="#1A4731" name="Realizado" radius={[2, 2, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-48 text-slate-300 text-sm">Sem dados de parcelas</div>
-            )}
+            ) : <div className="flex items-center justify-center h-48 text-slate-300 text-sm">Sem dados</div>}
           </CardContent>
         </Card>
 
-        {/* Tendência mensal */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Receita Mensal — Previsto vs Realizado</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Receita Mensal — Previsto vs Realizado</CardTitle></CardHeader>
           <CardContent>
             {tendencia.length > 0 ? (
               <ResponsiveContainer width="100%" height={240}>
@@ -137,18 +104,13 @@ export default function ProjetosBudget({ data, loading }) {
                   <Line type="monotone" dataKey="realizado" stroke="#1A4731" strokeWidth={2} name="Realizado" dot={false} />
                 </LineChart>
               </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-48 text-slate-300 text-sm">Sem dados históricos</div>
-            )}
+            ) : <div className="flex items-center justify-center h-48 text-slate-300 text-sm">Sem dados históricos</div>}
           </CardContent>
         </Card>
       </div>
 
-      {/* Tabela por projeto */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-slate-700">Budget por Projeto</CardTitle>
-        </CardHeader>
+        <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Budget por Projeto</CardTitle></CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">

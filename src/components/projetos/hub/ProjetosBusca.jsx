@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Users, Calendar, DollarSign, AlertTriangle, LayoutGrid, List } from "lucide-react";
+import { Search, Users, Calendar, AlertTriangle, LayoutGrid, List } from "lucide-react";
 
 const fmt = (v) => (v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -14,7 +14,7 @@ const STATUS_COLOR = {
   "Não iniciado": "bg-slate-100 text-slate-600",
 };
 
-export default function ProjetosBusca({ data, loading }) {
+export default function ProjetosBusca({ data }) {
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroResp, setFiltroResp] = useState("todos");
@@ -23,16 +23,12 @@ export default function ProjetosBusca({ data, loading }) {
   const { projetos, parcelas } = data;
   const responsaveis = [...new Set(projetos.map(p => p.responsavel_tecnico).filter(Boolean))];
 
-  const getValor = (osId, tipo) => {
-    const p = parcelas.filter(x => x.os_id === osId);
-    if (tipo === "total") return p.reduce((s, x) => s + (x.valor || 0), 0);
-    return p.filter(x => ["Faturada", "Recebida"].includes(x.status)).reduce((s, x) => s + (x.valor || 0), 0);
-  };
+  const getValorTotal = (osId) => parcelas.filter(x => x.os_id === osId).reduce((s, x) => s + (x.valor || 0), 0);
+  const getValorFat = (osId) => parcelas.filter(x => x.os_id === osId && ["Faturada","Recebida"].includes(x.status)).reduce((s, x) => s + (x.valor || 0), 0);
 
   const filtrados = projetos.filter(p => {
     const text = busca.toLowerCase();
-    const matchBusca = !busca || [p.cliente_nome, p.proposta_numero, p.natureza, p.responsavel_tecnico, p.descricao]
-      .some(v => v?.toLowerCase().includes(text));
+    const matchBusca = !busca || [p.cliente_nome, p.proposta_numero, p.natureza, p.responsavel_tecnico, p.descricao].some(v => v?.toLowerCase().includes(text));
     const matchStatus = filtroStatus === "todos" || p.status === filtroStatus;
     const matchResp = filtroResp === "todos" || p.responsavel_tecnico === filtroResp;
     return matchBusca && matchStatus && matchResp;
@@ -40,16 +36,10 @@ export default function ProjetosBusca({ data, loading }) {
 
   return (
     <div className="p-6 space-y-4">
-      {/* Filtros */}
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-          <Input
-            placeholder="Buscar por cliente, responsável, natureza..."
-            className="pl-9 h-9"
-            value={busca}
-            onChange={e => setBusca(e.target.value)}
-          />
+          <Input placeholder="Buscar por cliente, responsável, natureza..." className="pl-9 h-9" value={busca} onChange={e => setBusca(e.target.value)} />
         </div>
         <Select value={filtroStatus} onValueChange={setFiltroStatus}>
           <SelectTrigger className="w-44 h-9"><SelectValue placeholder="Status" /></SelectTrigger>
@@ -69,21 +59,54 @@ export default function ProjetosBusca({ data, loading }) {
           </SelectContent>
         </Select>
         <div className="flex gap-1 border rounded-lg p-1 bg-white">
-          <button onClick={() => setView("grid")} className={`p-1.5 rounded ${view === "grid" ? "bg-slate-100" : ""}`}>
-            <LayoutGrid className="w-4 h-4 text-slate-500" />
-          </button>
-          <button onClick={() => setView("list")} className={`p-1.5 rounded ${view === "list" ? "bg-slate-100" : ""}`}>
-            <List className="w-4 h-4 text-slate-500" />
-          </button>
+          <button onClick={() => setView("grid")} className={`p-1.5 rounded ${view === "grid" ? "bg-slate-100" : ""}`}><LayoutGrid className="w-4 h-4 text-slate-500" /></button>
+          <button onClick={() => setView("list")} className={`p-1.5 rounded ${view === "list" ? "bg-slate-100" : ""}`}><List className="w-4 h-4 text-slate-500" /></button>
         </div>
-        <span className="text-xs text-slate-400">{filtrados.length} projeto{filtrados.length !== 1 ? "s" : ""}</span>
+        <span className="text-xs text-slate-400">{filtrados.length} projeto(s)</span>
       </div>
 
-      {/* Resultados */}
       {view === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filtrados.map(p => <ProjetoCard key={p.id} projeto={p} faturado={getValor(p.id, "fat")} total={getValor(p.id, "total")} />)}
-          {filtrados.length === 0 && <EmptyState />}
+          {filtrados.map(p => (
+            <Link key={p.id} to={`/ProjetoDetalhe?id=${p.id}`}>
+              <Card className="hover:shadow-md transition-all cursor-pointer border hover:border-[#1A4731]/30 group">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-slate-800 truncate group-hover:text-[#1A4731]">{p.cliente_nome || "—"}</p>
+                      <p className="text-xs text-slate-400 truncate">{p.natureza}</p>
+                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${STATUS_COLOR[p.status] || "bg-slate-100 text-slate-600"}`}>{p.status}</span>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                      <span>Progresso</span>
+                      <span>{p.percentual_conclusao || 0}%</span>
+                    </div>
+                    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#1A4731] rounded-full" style={{ width: `${p.percentual_conclusao || 0}%` }} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs text-slate-500">
+                    <div className="flex items-center gap-1"><Users size={11} /><span className="truncate">{p.responsavel_tecnico || "—"}</span></div>
+                    <div className="flex items-center gap-1"><Calendar size={11} /><span>{p.prazo_previsto ? new Date(p.prazo_previsto + "T00:00:00").toLocaleDateString("pt-BR") : "—"}</span></div>
+                  </div>
+                  {getValorTotal(p.id) > 0 && (
+                    <div className="bg-slate-50 rounded-lg p-2 text-xs flex justify-between">
+                      <span className="text-slate-400">Faturado</span>
+                      <span className="font-semibold text-green-600">{fmt(getValorFat(p.id))}</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+          {filtrados.length === 0 && (
+            <div className="col-span-3 text-center py-16 text-slate-400">
+              <Search size={32} className="mx-auto mb-2 opacity-30" />
+              <p>Nenhum projeto encontrado.</p>
+            </div>
+          )}
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
@@ -100,103 +123,33 @@ export default function ProjetosBusca({ data, loading }) {
               </tr>
             </thead>
             <tbody>
-              {filtrados.map(p => {
-                const atrasado = p.prazo_previsto && new Date(p.prazo_previsto) < new Date() && p.percentual_conclusao < 100;
-                return (
-                  <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50">
-                    <td className="px-4 py-3">
-                      <Link to={`/ProjetoDetalhe?id=${p.id}`} className="font-medium text-slate-800 hover:text-[#1A4731]">
-                        {p.cliente_nome || "—"}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3 text-slate-500">{p.natureza || "—"}</td>
-                    <td className="px-4 py-3 text-slate-600">{p.responsavel_tecnico || "—"}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-14 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div className={`h-full rounded-full ${atrasado ? "bg-red-400" : "bg-[#1A4731]"}`} style={{ width: `${p.percentual_conclusao || 0}%` }} />
-                        </div>
-                        <span className={atrasado ? "text-red-500" : "text-slate-500"}>{p.percentual_conclusao || 0}%</span>
+              {filtrados.map(p => (
+                <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50">
+                  <td className="px-4 py-3">
+                    <Link to={`/ProjetoDetalhe?id=${p.id}`} className="font-medium text-slate-800 hover:text-[#1A4731]">{p.cliente_nome || "—"}</Link>
+                  </td>
+                  <td className="px-4 py-3 text-slate-500">{p.natureza || "—"}</td>
+                  <td className="px-4 py-3 text-slate-600">{p.responsavel_tecnico || "—"}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-14 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#1A4731] rounded-full" style={{ width: `${p.percentual_conclusao || 0}%` }} />
                       </div>
-                    </td>
-                    <td className={`px-4 py-3 ${atrasado ? "text-red-500 font-medium" : "text-slate-500"}`}>
-                      {p.prazo_previsto ? new Date(p.prazo_previsto + "T00:00:00").toLocaleDateString("pt-BR") : "—"}
-                    </td>
-                    <td className="px-4 py-3 text-right font-medium text-slate-700">{fmt(getValor(p.id, "total"))}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[p.status] || "bg-slate-100 text-slate-600"}`}>
-                        {p.status}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
+                      <span className="text-slate-500">{p.percentual_conclusao || 0}%</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-slate-500">{p.prazo_previsto ? new Date(p.prazo_previsto + "T00:00:00").toLocaleDateString("pt-BR") : "—"}</td>
+                  <td className="px-4 py-3 text-right font-medium text-slate-700">{fmt(getValorTotal(p.id))}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[p.status] || "bg-slate-100 text-slate-600"}`}>{p.status}</span>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
-          {filtrados.length === 0 && <EmptyState />}
+          {filtrados.length === 0 && <div className="text-center py-10 text-slate-300 text-sm">Nenhum projeto encontrado</div>}
         </div>
       )}
-    </div>
-  );
-}
-
-function ProjetoCard({ projeto, faturado, total }) {
-  const atrasado = projeto.prazo_previsto && new Date(projeto.prazo_previsto) < new Date() && projeto.percentual_conclusao < 100;
-  const progresso = projeto.percentual_conclusao || 0;
-  return (
-    <Link to={`/ProjetoDetalhe?id=${projeto.id}`}>
-      <Card className="hover:shadow-md transition-all cursor-pointer border hover:border-[#1A4731]/30 group">
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-slate-800 truncate group-hover:text-[#1A4731]">{projeto.cliente_nome || "—"}</p>
-              <p className="text-xs text-slate-400 truncate">{projeto.natureza}</p>
-            </div>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${STATUS_COLOR[projeto.status] || "bg-slate-100 text-slate-600"}`}>
-              {projeto.status}
-            </span>
-          </div>
-          <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
-              <span>Progresso</span>
-              <span className={atrasado ? "text-red-500 font-medium" : ""}>{progresso}%</span>
-            </div>
-            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className={`h-full rounded-full ${atrasado ? "bg-red-400" : progresso === 100 ? "bg-green-500" : "bg-[#1A4731]"}`} style={{ width: `${progresso}%` }} />
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-xs text-slate-500">
-            <div className="flex items-center gap-1">
-              <Users size={11} />
-              <span className="truncate">{projeto.responsavel_tecnico || "—"}</span>
-            </div>
-            <div className={`flex items-center gap-1 ${atrasado ? "text-red-500 font-medium" : ""}`}>
-              <Calendar size={11} />
-              <span>{projeto.prazo_previsto ? new Date(projeto.prazo_previsto + "T00:00:00").toLocaleDateString("pt-BR") : "—"}</span>
-            </div>
-          </div>
-          {total > 0 && (
-            <div className="bg-slate-50 rounded-lg p-2 text-xs flex justify-between">
-              <span className="text-slate-400">Faturado</span>
-              <span className="font-semibold text-green-600">{fmt(faturado)}</span>
-            </div>
-          )}
-          {atrasado && (
-            <div className="flex items-center gap-1 text-xs text-red-500">
-              <AlertTriangle size={11} /> Prazo vencido
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </Link>
-  );
-}
-
-function EmptyState() {
-  return (
-    <div className="col-span-3 text-center py-16 text-slate-400">
-      <Search size={32} className="mx-auto mb-2 opacity-30" />
-      <p>Nenhum projeto encontrado com os filtros selecionados.</p>
     </div>
   );
 }

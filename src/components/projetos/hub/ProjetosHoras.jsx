@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, TrendingUp, AlertTriangle, Clock } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 
-export default function ProjetosHoras({ data, loading }) {
-  const { alocacoes, entradas, projetos } = data;
+export default function ProjetosHoras({ data }) {
+  const { alocacoes, entradas } = data;
 
-  // Agrupa horas por colaborador
   const colab = {};
   alocacoes.forEach(a => {
     if (!a.colaborador) return;
@@ -19,15 +18,11 @@ export default function ProjetosHoras({ data, loading }) {
     colab[e.colaborador].executadas += e.horas || 0;
   });
 
-  const colaboradores = Object.entries(colab)
-    .map(([nome, h]) => ({
-      nome,
-      previstas: h.previstas,
-      executadas: h.executadas,
-      restantes: Math.max(0, h.previstas - h.executadas),
-      carga: h.previstas > 0 ? (h.executadas / h.previstas) * 100 : 0,
-    }))
-    .sort((a, b) => b.executadas - a.executadas);
+  const colaboradores = Object.entries(colab).map(([nome, h]) => ({
+    nome, previstas: h.previstas, executadas: h.executadas,
+    restantes: Math.max(0, h.previstas - h.executadas),
+    carga: h.previstas > 0 ? (h.executadas / h.previstas) * 100 : 0,
+  })).sort((a, b) => b.executadas - a.executadas);
 
   const totalPrevistas = alocacoes.reduce((s, a) => s + (a.horas_previstas || 0), 0);
   const totalExecutadas = entradas.reduce((s, e) => s + (e.horas || 0), 0);
@@ -35,28 +30,35 @@ export default function ProjetosHoras({ data, loading }) {
   const ociosos = colaboradores.filter(c => c.previstas > 0 && c.carga < 30).length;
 
   const chartData = colaboradores.slice(0, 10).map(c => ({
-    name: c.nome.split(" ")[0],
-    previstas: c.previstas,
-    executadas: c.executadas,
-    carga: c.carga,
+    name: c.nome.split(" ")[0], previstas: c.previstas, executadas: c.executadas,
   }));
 
   return (
     <div className="p-6 space-y-6">
-      {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPICard icon={Clock} color="blue" label="Horas Previstas" value={`${totalPrevistas.toFixed(0)}h`} />
-        <KPICard icon={TrendingUp} color="green" label="Horas Executadas" value={`${totalExecutadas.toFixed(0)}h`} />
-        <KPICard icon={AlertTriangle} color="orange" label="Sobrecarregados" value={sobrecarregados} />
-        <KPICard icon={Users} color="slate" label="Ociosos" value={ociosos} />
+        {[
+          { icon: Clock, color: "blue", label: "Horas Previstas", value: `${totalPrevistas.toFixed(0)}h` },
+          { icon: TrendingUp, color: "green", label: "Horas Executadas", value: `${totalExecutadas.toFixed(0)}h` },
+          { icon: AlertTriangle, color: "orange", label: "Sobrecarregados", value: sobrecarregados },
+          { icon: Users, color: "slate", label: "Ociosos", value: ociosos },
+        ].map(({ icon: Icon, color, label, value }) => (
+          <Card key={label}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className={`p-2 rounded-lg ${color === "blue" ? "bg-blue-50" : color === "green" ? "bg-green-50" : color === "orange" ? "bg-orange-50" : "bg-slate-100"}`}>
+                <Icon size={18} className={color === "blue" ? "text-blue-600" : color === "green" ? "text-green-600" : color === "orange" ? "text-[#F47920]" : "text-slate-500"} />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-slate-800">{value}</p>
+                <p className="text-xs text-slate-400">{label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de carga */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Horas por Colaborador (Top 10)</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Horas por Colaborador (Top 10)</CardTitle></CardHeader>
           <CardContent>
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={240}>
@@ -74,11 +76,8 @@ export default function ProjetosHoras({ data, loading }) {
           </CardContent>
         </Card>
 
-        {/* Ranking */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Ranking de Carga</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Ranking de Carga</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {colaboradores.slice(0, 8).map((c, i) => (
               <div key={c.nome} className="space-y-1">
@@ -94,25 +93,17 @@ export default function ProjetosHoras({ data, loading }) {
                   </span>
                 </div>
                 <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${c.carga > 100 ? "bg-red-400" : c.carga > 80 ? "bg-amber-400" : "bg-[#1A4731]"}`}
-                    style={{ width: `${Math.min(100, c.carga)}%` }}
-                  />
+                  <div className={`h-full rounded-full ${c.carga > 100 ? "bg-red-400" : c.carga > 80 ? "bg-amber-400" : "bg-[#1A4731]"}`} style={{ width: `${Math.min(100, c.carga)}%` }} />
                 </div>
               </div>
             ))}
-            {colaboradores.length === 0 && (
-              <div className="text-center py-8 text-slate-300 text-sm">Sem alocações registradas</div>
-            )}
+            {colaboradores.length === 0 && <div className="text-center py-8 text-slate-300 text-sm">Sem alocações registradas</div>}
           </CardContent>
         </Card>
       </div>
 
-      {/* Tabela detalhada */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-slate-700">Detalhe por Colaborador</CardTitle>
-        </CardHeader>
+        <CardHeader className="pb-2"><CardTitle className="text-sm font-semibold text-slate-700">Detalhe por Colaborador</CardTitle></CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -135,48 +126,19 @@ export default function ProjetosHoras({ data, loading }) {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${c.carga > 100 ? "bg-red-400" : c.carga > 80 ? "bg-amber-400" : "bg-[#1A4731]"}`}
-                            style={{ width: `${Math.min(100, c.carga)}%` }}
-                          />
+                          <div className={`h-full rounded-full ${c.carga > 100 ? "bg-red-400" : c.carga > 80 ? "bg-amber-400" : "bg-[#1A4731]"}`} style={{ width: `${Math.min(100, c.carga)}%` }} />
                         </div>
-                        <span className={`font-medium ${c.carga > 100 ? "text-red-500" : "text-slate-600"}`}>
-                          {c.carga.toFixed(0)}%
-                        </span>
+                        <span className={`font-medium ${c.carga > 100 ? "text-red-500" : "text-slate-600"}`}>{c.carga.toFixed(0)}%</span>
                       </div>
                     </td>
                   </tr>
                 ))}
-                {colaboradores.length === 0 && (
-                  <tr><td colSpan={5} className="text-center py-8 text-slate-300">Sem dados de alocação</td></tr>
-                )}
+                {colaboradores.length === 0 && <tr><td colSpan={5} className="text-center py-8 text-slate-300">Sem dados de alocação</td></tr>}
               </tbody>
             </table>
           </div>
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function KPICard({ icon: Icon, color, label, value }) {
-  const colors = {
-    blue: "bg-blue-50 text-blue-600",
-    green: "bg-green-50 text-green-600",
-    orange: "bg-orange-50 text-[#F47920]",
-    slate: "bg-slate-100 text-slate-500",
-  };
-  return (
-    <Card>
-      <CardContent className="p-4 flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${colors[color]}`}>
-          <Icon size={18} />
-        </div>
-        <div>
-          <p className="text-xl font-bold text-slate-800">{value}</p>
-          <p className="text-xs text-slate-400">{label}</p>
-        </div>
-      </CardContent>
-    </Card>
   );
 }
