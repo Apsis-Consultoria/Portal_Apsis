@@ -9,13 +9,13 @@ const areas = [
         id: 1,
         nome: "Modelo de Avaliação Bens Móveis",
         arquivo: "Planilha AF - Avaliação.xlsb",
-        url: null, // substituir pelo link real após upload
+        url: "/modelos/Planilha AF - Avaliação.xlsb",
       },
       {
         id: 2,
         nome: "Modelo de Avaliação Vidas Úteis",
         arquivo: "Planilha AF - VU.xlsb",
-        url: null, // substituir pelo link real após upload
+        url: "/modelos/Planilha AF - VU.xlsb",
       },
     ],
   },
