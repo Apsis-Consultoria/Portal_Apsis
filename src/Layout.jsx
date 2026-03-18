@@ -116,9 +116,9 @@ const navItems = [
   {
     label: "Apps APSIS", page: "AppsAPSIS", icon: Grid3x3,
     children: [
-      { label: "App Ativo Fixo", page: "AppAtivoFixo", icon: FolderKanban },
-      { label: "App Conciliação", page: "AppConciliacao", icon: BarChart3 },
-      { label: "App Imóveis", page: "AppImoveis", icon: FolderKanban },
+      { label: "App Ativo Fixo", page: "AppAtivoFixo", icon: FolderKanban, externalUrl: "https://invativos.apsis.com.br/" },
+      { label: "App Conciliação", page: "AppConciliacao", icon: BarChart3, externalUrl: "https://invativos.apsis.com.br/admin/inventories" },
+      { label: "App Imóveis", page: "AppImoveis", icon: FolderKanban, externalUrl: "https://imoveis.apsis.com.br/" },
       { label: "App Cubus", page: "AppCubus", icon: BarChart3 },
     ]
   },
