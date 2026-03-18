@@ -34,8 +34,9 @@ export default function ProjetoDetalhe() {
 
   useEffect(() => {
     if (!osId) return;
-    base44.entities.OrdemServico.filter({ id: osId }).then(res => {
-      setProjeto(res[0] || null);
+    base44.entities.OrdemServico.list("-created_date", 500).then(res => {
+      const found = res.find(o => o.id === osId);
+      setProjeto(found || null);
       setLoading(false);
     });
   }, [osId]);
