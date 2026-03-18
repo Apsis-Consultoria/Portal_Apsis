@@ -90,6 +90,7 @@ const navItems = [
       { label: "Horas e Alocações", page: "AlocacoesHoras", icon: Clock },
       { label: "Pipeline", page: "Pipeline", icon: GitBranch },
       { label: "Budget", page: "Budget", icon: BarChart3 },
+      { label: "Modelos de Avaliação", page: "ModelosAvaliacao", icon: FileText },
     ]
   },
   {
