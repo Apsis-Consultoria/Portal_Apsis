@@ -34,13 +34,20 @@ async function bootstrap() {
 
   const msalInstance = new PublicClientApplication(msalConfig);
   await msalInstance.initialize();
-  // Processa o retorno do redirect após login
-  const redirectResult = await msalInstance.handleRedirectPromise();
+  // Processa o retorno do redirect após login (protegido para não derrubar o app)
+  let redirectResult = null;
+  try {
+    redirectResult = await msalInstance.handleRedirectPromise();
+  } catch (e) {
+    console.warn('MSAL handleRedirectPromise error:', e);
+    // Limpa estado corrompido do MSAL e continua renderizando
+    localStorage.clear();
+  }
 
   // Se acabou de fazer login com sucesso, força navegação para a tela principal
   if (redirectResult && redirectResult.account) {
     window.location.replace('/BoasVindas');
-    return; // aguarda o reload
+    return;
   }
 
   ReactDOM.createRoot(document.getElementById('root')).render(
