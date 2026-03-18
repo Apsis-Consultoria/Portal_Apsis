@@ -37,9 +37,10 @@ async function bootstrap() {
   // Processa o retorno do redirect após login
   const redirectResult = await msalInstance.handleRedirectPromise();
 
-  // Se acabou de fazer login com sucesso, redireciona para a tela principal
+  // Se acabou de fazer login com sucesso, força navegação para a tela principal
   if (redirectResult && redirectResult.account) {
-    window.history.replaceState({}, '', '/BoasVindas');
+    window.location.replace('/BoasVindas');
+    return; // aguarda o reload
   }
 
   ReactDOM.createRoot(document.getElementById('root')).render(
