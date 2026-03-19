@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Mail, MailCheck, AlertCircle, Clock, Eye, EyeOff } from 'lucide-react';
+import { Mail, MailCheck, AlertCircle, Clock, Eye, EyeOff, Copy, Check, HelpCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import PortalSecurityModal from '@/components/PortalSecurityModal';
 
 const ClientEmailSection = ({ workspace, onUpdate }) => {
   const [editMode, setEditMode] = useState(false);
@@ -225,6 +226,9 @@ const EmailHistorySection = ({ workspaceId }) => {
 export default function NexusPortalCliente() {
   const [workspace, setWorkspace] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showSecurityModal, setShowSecurityModal] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [linkCustomizado, setLinkCustomizado] = useState('portal.apsis.com.br');
 
   useEffect(() => {
     const loadWorkspace = async () => {
@@ -313,12 +317,77 @@ export default function NexusPortalCliente() {
         </div>
       )}
 
+      {/* Link do Portal */}
+      {workspace && (
+        <div className="bg-white border border-[var(--border)] rounded-lg p-6 space-y-4">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Acesso Seguro ao Portal</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">Link customizado para o cliente acessar</p>
+            </div>
+            <button
+              onClick={() => setShowSecurityModal(true)}
+              className="flex items-center gap-2 px-3 py-2 text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium"
+            >
+              <HelpCircle size={16} />
+              Como funciona?
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {/* Link Customizado */}
+            <div>
+              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-2">Link do Portal</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={linkCustomizado}
+                  onChange={(e) => setLinkCustomizado(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[var(--apsis-orange)]/50"
+                />
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`https://${linkCustomizado}`);
+                    setLinkCopied(true);
+                    setTimeout(() => setLinkCopied(false), 2000);
+                  }}
+                  className="px-4 py-2 bg-[var(--apsis-orange)] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm flex items-center gap-2"
+                >
+                  {linkCopied ? (
+                    <>
+                      <Check size={16} />
+                      Copiado
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} />
+                      Copiar Link
+                    </>
+                  )}
+                </button>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] mt-2">Compartilhe este link com o cliente para acessar o portal</p>
+            </div>
+
+            {/* Info de Segurança */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-xs text-blue-800">
+                <strong>🔒 Seguro:</strong> O acesso é protegido por login e senha. O cliente só vê dados do seu workspace. Todos os acessos são auditados.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Histórico */}
       {workspace && (
         <div className="bg-white border border-[var(--border)] rounded-lg p-6">
           <EmailHistorySection workspaceId={workspace.id} />
         </div>
       )}
-    </div>
-  );
-}
+
+      {/* Security Modal */}
+      <PortalSecurityModal isOpen={showSecurityModal} onClose={() => setShowSecurityModal(false)} />
+      </div>
+      );
+      }
