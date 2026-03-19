@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
+import PerfisTab from '@/components/admin/PerfisTab';
+import UsuariosAcessoTab from '@/components/admin/UsuariosAcessoTab';
 import {
   Users, Shield, Plus, X, Edit2,
   CheckCircle, XCircle, Loader2, Search, Building2, Bot, BookOpen,
@@ -61,6 +63,8 @@ const DEFAULT_PERMISSIONS = {
 
 const tabs = [
   { id: "usuarios", label: "Usuários", icon: Users },
+  { id: "perfis", label: "Perfis", icon: Shield },
+  { id: "acessousuarios", label: "Controle de Acesso", icon: Users },
   { id: "departamentos", label: "Departamentos", icon: Building2 },
   { id: "privilegios", label: "Privilégios", icon: Shield },
   { id: "assistente", label: "Assistente IA", icon: Bot },
@@ -497,6 +501,16 @@ export default function Admin() {
               );
             })()}
           </div>
+        )}
+
+        {/* PERFIS */}
+        {activeTab === "perfis" && (
+          <PerfisTab />
+        )}
+
+        {/* CONTROLE DE ACESSO POR USUÁRIO */}
+        {activeTab === "acessousuarios" && (
+          <UsuariosAcessoTab />
         )}
 
         {/* DEPARTAMENTOS */}
