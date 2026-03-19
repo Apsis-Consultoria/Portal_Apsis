@@ -50,11 +50,7 @@ function App() {
       <ClientAuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={
-              <LayoutWrapper currentPageName={mainPageKey}>
-                <MainPage />
-              </LayoutWrapper>
-            } />
+            <Route path="/" element={<Navigate to="/Dashboard" replace />} />
             {Object.entries(Pages).map(([path, Page]) => (
               <Route
                 key={path}
