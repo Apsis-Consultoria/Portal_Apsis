@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { Plus, Search, Flame, Thermometer, Snowflake, Bell, X, Edit2, Trash2, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, Search, Flame, Thermometer, Snowflake, Bell, X, Edit2, Trash2, ChevronDown, ChevronRight, Columns2, List } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
+import KanbanPipeline from "@/components/pipeline/KanbanPipeline";
 
 const fmt = (v) => v ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v) : "—";
 const TempIcon = ({ t }) => t === "Quente" ? <Flame size={13} className="text-red-500" /> : t === "Morno" ? <Thermometer size={13} className="text-amber-500" /> : <Snowflake size={13} className="text-blue-400" />;
@@ -25,6 +26,7 @@ const emptyOAP = { cliente_nome:"", natureza:"Contábil", responsavel:"", status
 
 export default function Pipeline() {
   const [tab, setTab] = useState("ap");
+  const [viewMode, setViewMode] = useState("kanban"); // "kanban" | "tabela"
   const [propostas, setPropostas] = useState([]);
   const [oaps, setOaps] = useState([]);
   const [busca, setBusca] = useState("");
@@ -121,8 +123,20 @@ export default function Pipeline() {
     </div>
   );
 
+  const handleKanbanUpdate = (draggableId, newStatus) => {
+    setPropostas(prev => prev.map(p => (p.id || p.numero_ap) === draggableId ? { ...p, status: newStatus } : p));
+  };
+
   return (
     <div className="space-y-4">
+      {/* Título */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Pipeline de Vendas</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Acompanhe o progresso das propostas em cada etapa do funil</p>
+        </div>
+      </div>
+
       {/* Alertas */}
       {(alertasPlanilha.length > 0 || alertasPortal.length > 0) && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
@@ -140,7 +154,7 @@ export default function Pipeline() {
       )}
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
         <div className="flex bg-white border border-[#DDE3DE] rounded-xl p-1 gap-1">
           {[{k:"ap",l:"Propostas (AP)"},{k:"oap",l:"Oportunidades (OAP)"}].map(t => (
             <button key={t.k} onClick={() => setTab(t.k)}
@@ -165,6 +179,18 @@ export default function Pipeline() {
               {mostrarPlanilha ? "✓" : ""} Dados planilha 2026
             </button>
           </>
+        )}
+        {tab === "ap" && (
+          <div className="flex bg-white border border-[#DDE3DE] rounded-xl p-1 gap-1">
+            <button onClick={() => setViewMode("kanban")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "kanban" ? "bg-[#1A4731] text-white" : "text-[#5C7060] hover:text-[#1A2B1F]"}`}>
+              <Columns2 size={12} /> Kanban
+            </button>
+            <button onClick={() => setViewMode("tabela")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "tabela" ? "bg-[#1A4731] text-white" : "text-[#5C7060] hover:text-[#1A2B1F]"}`}>
+              <List size={12} /> Tabela
+            </button>
+          </div>
         )}
         <button onClick={() => setModal({ type: tab==="ap"?"proposta":"oap", data: tab==="ap"?{...emptyProposta}:{...emptyOAP}, editing: null })}
           className="flex items-center gap-2 bg-[#1A4731] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#245E40] transition-colors">
@@ -196,8 +222,16 @@ export default function Pipeline() {
         </div>
       )}
 
+      {/* Kanban AP */}
+      {tab === "ap" && viewMode === "kanban" && (
+        <KanbanPipeline
+          propostas={[...AP_PLANILHA.map(p => ({ ...p, _planilha: true })), ...propostas]}
+          onUpdate={handleKanbanUpdate}
+        />
+      )}
+
       {/* Tabela AP */}
-      {tab === "ap" && (
+      {tab === "ap" && viewMode === "tabela" && (
         <div className="bg-white rounded-2xl border border-[#DDE3DE] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
