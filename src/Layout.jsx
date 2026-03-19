@@ -119,7 +119,6 @@ const navItems = [
       { label: "CUBUS", page: "AppCubus", icon: Settings },
     ]
   },
-  { label: "Relatórios", page: "Relatorios", icon: FileText },
   {
     label: "APSIS Nexus", page: "NexusInicio", icon: Globe,
     children: [
