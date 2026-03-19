@@ -6,8 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import PageHeader from "./shared/PageHeader";
 import {
   Users, Calendar, DollarSign, Clock, CheckCircle2, AlertTriangle,
-  FileText, TrendingUp, Edit2, Save, X, AlertOctagon, Activity,
-  BarChart3, FolderOpen, MessageSquare, ArrowUpRight, LayoutDashboard
+  FileText, Edit2, Save, X, AlertOctagon, Activity,
+  BarChart3, FolderOpen, MessageSquare, ArrowUpRight, LayoutDashboard, Link2
 } from "lucide-react";
 
 const fmt = (v) => (v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
