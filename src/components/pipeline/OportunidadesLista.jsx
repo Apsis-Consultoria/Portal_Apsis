@@ -288,6 +288,15 @@ export default function OportunidadesLista({ oaps, onReload }) {
         )}
       </div>
 
+      {/* Detalhe lateral */}
+      {selected && (
+        <OportunidadeDetalhe
+          oap={selected}
+          onClose={() => setSelected(null)}
+          onReload={async () => { await onReload(); setSelected(s => oaps.find(o => o.id === s?.id) || s); }}
+        />
+      )}
+
       {/* Modal */}
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
