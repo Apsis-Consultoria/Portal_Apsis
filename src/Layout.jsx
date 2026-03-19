@@ -99,6 +99,7 @@ const navItems = [
     children: [
       { label: "Contas a Pagar", page: "ContasAPagar", icon: DollarSign },
       { label: "Contas a Receber", page: "ContasAReceber", icon: DollarSign },
+      { label: "Rateio de Despesas", page: "RateioDespesas", icon: Split },
     ]
   },
   {
