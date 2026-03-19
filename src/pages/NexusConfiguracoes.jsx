@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, Settings, Globe, MessageSquare, Mail, Share2, Lock, Check, AlertCircle, ChevronDown, Upload } from 'lucide-react';
+import { Save, Settings, Globe, MessageSquare, Mail, Share2, Lock, Check, AlertCircle, Upload } from 'lucide-react';
 
 const ConfigSection = ({ title, description, children }) => (
   <div className="space-y-4">
@@ -62,15 +62,47 @@ const SaveButton = () => (
   </button>
 );
 
-const SuccessMessage = () => (
+const SuccessMessage = ({ message = 'Configurações salvas com sucesso' }) => (
   <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
     <Check size={18} className="text-green-600 flex-shrink-0 mt-0.5" />
     <div>
-      <p className="text-sm font-medium text-green-900">Configurações salvas com sucesso</p>
+      <p className="text-sm font-medium text-green-900">{message}</p>
       <p className="text-xs text-green-700 mt-0.5">Suas alterações foram aplicadas ao sistema</p>
     </div>
   </div>
 );
+
+const ErrorMessage = ({ message = 'Ocorreu um erro' }) => (
+  <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+    <AlertCircle size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
+    <div>
+      <p className="text-sm font-medium text-red-900">{message}</p>
+      <p className="text-xs text-red-700 mt-0.5">Verifique os dados e tente novamente</p>
+    </div>
+  </div>
+);
+
+const StatusCard = ({ status, lastTest }) => {
+  const statusConfig = {
+    configured: { color: 'bg-green-50 border-green-200', text: 'text-green-700', label: '✓ Configurado', icon: '✓' },
+    partial: { color: 'bg-amber-50 border-amber-200', text: 'text-amber-700', label: '⚠ Parcialmente configurado', icon: '⚠' },
+    unconfigured: { color: 'bg-gray-50 border-gray-200', text: 'text-gray-700', label: '○ Não configurado', icon: '○' },
+    error: { color: 'bg-red-50 border-red-200', text: 'text-red-700', label: '✕ Erro na última tentativa', icon: '✕' }
+  }[status] || { color: 'bg-gray-50 border-gray-200', text: 'text-gray-700', label: 'Desconhecido', icon: '?' };
+
+  return (
+    <div className={`p-4 rounded-lg border ${statusConfig.color}`}>
+      <div className="flex items-start justify-between mb-2">
+        <p className={`text-sm font-medium ${statusConfig.text}`}>{statusConfig.label}</p>
+      </div>
+      {lastTest && (
+        <p className={`text-xs ${statusConfig.text.replace('700', '600')}`}>
+          Último teste: {new Date(lastTest).toLocaleDateString('pt-BR')} às {new Date(lastTest).toLocaleTimeString('pt-BR')}
+        </p>
+      )}
+    </div>
+  );
+};
 
 const tabs = [
   { id: 'gerais', label: 'Gerais', icon: Settings },
@@ -84,6 +116,7 @@ const tabs = [
 export default function NexusConfiguracoes() {
   const [activeTab, setActiveTab] = useState('gerais');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [emailStatus, setEmailStatus] = useState('partial');
 
   const handleSave = () => {
     setShowSuccess(true);
@@ -240,6 +273,8 @@ export default function NexusConfiguracoes() {
         {/* ABA 4: E-mail e Notificações */}
         {activeTab === 'email' && (
           <>
+            <StatusCard status={emailStatus} lastTest="2026-03-19T14:30:00" />
+
             <ConfigSection title="Ativação" description="Controle central de notificações por e-mail">
               <ToggleSwitch defaultChecked={true} label="Habilitar envio de e-mails automáticos" />
             </ConfigSection>
@@ -284,16 +319,25 @@ export default function NexusConfiguracoes() {
             </ConfigSection>
 
             <ConfigSection title="Templates Padrão" description="Personalize o conteúdo dos e-mails">
-              <FormField label="Assunto Padrão" description="Use variáveis: {tipo}, {cliente_nome}, {projeto_nome}">
+              <FormField label="Assunto Padrão" required description="Use variáveis: {tipo}, {cliente_nome}, {projeto_nome}">
                 <TextInput placeholder="[APSIS Nexus] {projeto_nome} - {tipo}" defaultValue="[APSIS Nexus] {projeto_nome} - Nova notificação" />
               </FormField>
 
-              <FormField label="Corpo Padrão" description="Variáveis: {cliente_nome}, {projeto_nome}, {link}, {data}">
+              <FormField label="Corpo Padrão" required description="Variáveis: {cliente_nome}, {projeto_nome}, {link}, {data}">
                 <textarea
                   placeholder="Digite o corpo do e-mail..."
                   defaultValue="Olá {cliente_nome},\n\nVocê recebeu uma nova notificação no Portal APSIS.\n\nAcesse: {link}\n\nData: {data}"
-                  className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-[var(--apsis-orange)]/50 font-mono"
+                  className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-[var(--apsis-orange)]/50"
                   rows="5"
+                />
+              </FormField>
+
+              <FormField label="Assinatura Padrão" description="Aparecerá ao final de todos os e-mails">
+                <textarea
+                  placeholder="Digite a assinatura padrão..."
+                  defaultValue="---\nAPSIS Consultoria\nwww.apsis.com.br\nTel: (11) 3000-0000"
+                  className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-[var(--apsis-orange)]/50"
+                  rows="3"
                 />
               </FormField>
             </ConfigSection>
@@ -333,21 +377,23 @@ export default function NexusConfiguracoes() {
               </FormField>
             </ConfigSection>
 
-            <ConfigSection title="Teste de Conexão" description="Verifique se o provedor está configurado corretamente">
-              <div className="space-y-3">
-                <button className="flex items-center gap-2 px-6 py-2.5 border border-[var(--apsis-orange)] text-[var(--apsis-orange)] rounded-lg text-sm font-medium hover:bg-[var(--apsis-orange)]/5 transition-colors w-full justify-center">
-                  🔗 Testar Provedor
+            <ConfigSection title="Ações" description="Teste e salve sua configuração">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <button className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[var(--apsis-orange)] text-[var(--apsis-orange)] rounded-lg text-sm font-medium hover:bg-[var(--apsis-orange)]/5 transition-colors">
+                  🔗 Testar Conexão
                 </button>
-                <button className="flex items-center gap-2 px-6 py-2.5 border border-green-500 text-green-600 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors w-full justify-center">
-                  📧 Enviar E-mail de Teste
+                <button className="flex items-center justify-center gap-2 px-4 py-2.5 border border-green-500 text-green-600 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors">
+                  📧 E-mail de Teste
+                </button>
+                <button onClick={handleSave} className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--apsis-orange)] text-white rounded-lg text-sm font-medium hover:bg-[var(--apsis-orange)]/90 transition-colors">
+                  <Save size={14} />
+                  Salvar
                 </button>
               </div>
-              <p className="text-xs text-[var(--text-secondary)] mt-3 p-2 bg-amber-50 rounded border border-amber-100">
-                ⚠️ O e-mail de teste será enviado para <strong>seu endereço configurado</strong>
+              <p className="text-xs text-[var(--text-secondary)] mt-3 p-2 bg-blue-50 rounded border border-blue-100">
+                💡 Teste a conexão antes de salvar para garantir que tudo está funcionando corretamente.
               </p>
             </ConfigSection>
-
-            <SaveButton />
           </>
         )}
 
