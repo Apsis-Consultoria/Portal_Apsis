@@ -1,6 +1,7 @@
 import { useState } from "react";
 import EstoqueMateriais from "@/components/estoque/EstoqueMateriais";
 import EstoqueMovimentacoes from "@/components/estoque/EstoqueMovimentacoes";
+import UploadMaterialPlanilha from "@/components/estoque/UploadMaterialPlanilha";
 
 export default function Estoque() {
   const [aba, setAba] = useState("materiais");
@@ -25,6 +26,16 @@ export default function Estoque() {
           Cadastro de Materiais
         </button>
         <button
+          onClick={() => setAba("upload")}
+          className={`px-6 py-3 font-medium border-b-2 transition-colors ${
+            aba === "upload"
+              ? "border-[#F47920] text-[#1A2B1F]"
+              : "border-transparent text-[#5C7060] hover:text-[#1A2B1F]"
+          }`}
+        >
+          Upload de Carga
+        </button>
+        <button
           onClick={() => setAba("movimentacoes")}
           className={`px-6 py-3 font-medium border-b-2 transition-colors ${
             aba === "movimentacoes"
@@ -39,6 +50,7 @@ export default function Estoque() {
       {/* Conteúdo das abas */}
       <div className="space-y-6">
         {aba === "materiais" && <EstoqueMateriais />}
+        {aba === "upload" && <UploadMaterialPlanilha onSuccess={() => setAba("materiais")} />}
         {aba === "movimentacoes" && <EstoqueMovimentacoes />}
       </div>
     </div>
