@@ -98,6 +98,17 @@ const navItems = [
     ]
   },
   {
+    label: "Vendas", page: "Vendas", icon: ShoppingBag,
+    children: [
+      { label: "Dashboard", page: "Vendas", icon: LayoutDashboard, tabParam: "dashboard" },
+      { label: "Pipeline", page: "Vendas", icon: GitBranch, tabParam: "pipeline" },
+      { label: "Oportunidades", page: "Vendas", icon: Briefcase, tabParam: "oportunidades" },
+      { label: "Clientes", page: "Vendas", icon: Users, tabParam: "clientes" },
+      { label: "Propostas", page: "Vendas", icon: FileText, tabParam: "propostas" },
+      { label: "Configurações", page: "Vendas", icon: Settings, tabParam: "configuracoes" },
+    ]
+  },
+  {
     label: "Financeiro", page: "Financeiro", icon: DollarSign,
     children: [
       { label: "Contas a Pagar", page: "ContasAPagar", icon: DollarSign },
@@ -109,33 +120,6 @@ const navItems = [
     children: [
       { label: "Comercial", page: "MarketingComercial", icon: TrendingUp },
       { label: "Orçado vs Real", page: "MarketingOrcado", icon: PieChart },
-    ]
-  },
-  {
-    label: "Qualidade", page: "DashboardQualidade", icon: ClipboardCheck,
-    children: [
-      { label: "Dashboard", page: "DashboardQualidade", icon: LayoutDashboard },
-      { label: "Questionário de Revisão", page: "QuestionarioRevisao", icon: ClipboardCheck },
-    ]
-  },
-  {
-    label: "Apps APSIS", page: "AppsAPSIS", icon: Grid3x3,
-    children: [
-      { label: "App Ativo Fixo", page: "AppAtivoFixo", icon: FolderKanban, externalUrl: "https://invativos.apsis.com.br/" },
-      { label: "App Conciliação", page: "AppConciliacao", icon: BarChart3, externalUrl: "https://invativos.apsis.com.br/admin/inventories" },
-      { label: "App Imóveis", page: "AppImoveis", icon: FolderKanban, externalUrl: "https://imoveis.apsis.com.br/" },
-      { label: "App Cubus", page: "AppCubus", icon: BarChart3 },
-    ]
-  },
-  {
-    label: "Vendas", page: "Vendas", icon: ShoppingBag,
-    children: [
-      { label: "Dashboard", page: "Vendas", icon: LayoutDashboard, tabParam: "dashboard" },
-      { label: "Pipeline", page: "Vendas", icon: GitBranch, tabParam: "pipeline" },
-      { label: "Oportunidades", page: "Vendas", icon: Briefcase, tabParam: "oportunidades" },
-      { label: "Clientes", page: "Vendas", icon: Users, tabParam: "clientes" },
-      { label: "Propostas", page: "Vendas", icon: FileText, tabParam: "propostas" },
-      { label: "Configurações", page: "Vendas", icon: Settings, tabParam: "configuracoes" },
     ]
   },
   { label: "Relatórios", page: "Relatorios", icon: FileText },
