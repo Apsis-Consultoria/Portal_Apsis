@@ -24,9 +24,9 @@ const FormField = ({ label, description, children, required }) => (
   </div>
 );
 
-const TextInput = ({ placeholder, defaultValue }) => (
+const TextInput = ({ placeholder, defaultValue, type = 'text' }) => (
   <input
-    type="text"
+    type={type}
     placeholder={placeholder}
     defaultValue={defaultValue}
     className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[var(--apsis-orange)]/50"
@@ -244,6 +244,20 @@ export default function NexusConfiguracoes() {
               <ToggleSwitch defaultChecked={true} label="Habilitar envio de e-mails automáticos" />
             </ConfigSection>
 
+            <ConfigSection title="Provedor de E-mail" description="Escolha o provedor para envio de e-mails">
+              <FormField label="Provedor" required>
+                <SelectInput 
+                  options={['microsoft_365', 'smtp', 'aws_ses']} 
+                  defaultValue="microsoft_365" 
+                />
+              </FormField>
+              <p className="text-xs text-[var(--text-secondary)] mt-2 p-2 bg-blue-50 rounded border border-blue-100">
+                <strong>Microsoft 365:</strong> Usa SSO Microsoft automaticamente (recomendado).<br/>
+                <strong>SMTP:</strong> Configuração manual (Outlook, Gmail, etc).<br/>
+                <strong>AWS SES:</strong> Para produção em larga escala.
+              </p>
+            </ConfigSection>
+
             <ConfigSection title="Configuração de Remetente" description="Como os e-mails aparecerão para clientes">
               <FormField label="E-mail Remetente" required>
                 <TextInput placeholder="contato@apsis.com.br" defaultValue="contato@apsis.com.br" />
@@ -284,11 +298,53 @@ export default function NexusConfiguracoes() {
               </FormField>
             </ConfigSection>
 
-            <ConfigSection title="Teste" description="Verifique se a configuração está funcionando">
-              <button className="flex items-center gap-2 px-6 py-2.5 border border-[var(--apsis-orange)] text-[var(--apsis-orange)] rounded-lg text-sm font-medium hover:bg-[var(--apsis-orange)]/5 transition-colors">
-                📧 Enviar e-mail de teste
-              </button>
-              <p className="text-xs text-[var(--text-secondary)] mt-2">Será enviado para o endereço do remetente</p>
+            <ConfigSection title="Configuração SMTP" description="Preencha apenas se escolher SMTP como provedor">
+              <FormField label="Host SMTP" description="Ex: smtp.gmail.com, smtp.outlook.com">
+                <TextInput placeholder="smtp.outlook.com" defaultValue="" />
+              </FormField>
+
+              <div className="grid grid-cols-2 gap-3">
+                <FormField label="Porta SMTP">
+                  <TextInput placeholder="587" defaultValue="587" />
+                </FormField>
+                <FormField label="Usuário SMTP">
+                  <TextInput placeholder="seu-email@empresa.com" defaultValue="" />
+                </FormField>
+              </div>
+
+              <FormField label="Senha SMTP" description="Será armazenada de forma segura">
+                <TextInput placeholder="••••••••" defaultValue="" type="password" />
+              </FormField>
+
+              <ToggleSwitch defaultChecked={true} label="Usar TLS/STARTTLS" />
+            </ConfigSection>
+
+            <ConfigSection title="Configuração AWS SES" description="Preencha apenas se escolher AWS SES como provedor">
+              <FormField label="Região AWS" description="Ex: us-east-1, sa-east-1">
+                <TextInput placeholder="sa-east-1" defaultValue="" />
+              </FormField>
+
+              <FormField label="AWS Access Key" description="Será armazenada de forma segura">
+                <TextInput placeholder="AKIA..." defaultValue="" />
+              </FormField>
+
+              <FormField label="AWS Secret Key" description="Será armazenada de forma segura">
+                <TextInput placeholder="••••••••" defaultValue="" type="password" />
+              </FormField>
+            </ConfigSection>
+
+            <ConfigSection title="Teste de Conexão" description="Verifique se o provedor está configurado corretamente">
+              <div className="space-y-3">
+                <button className="flex items-center gap-2 px-6 py-2.5 border border-[var(--apsis-orange)] text-[var(--apsis-orange)] rounded-lg text-sm font-medium hover:bg-[var(--apsis-orange)]/5 transition-colors w-full justify-center">
+                  🔗 Testar Provedor
+                </button>
+                <button className="flex items-center gap-2 px-6 py-2.5 border border-green-500 text-green-600 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors w-full justify-center">
+                  📧 Enviar E-mail de Teste
+                </button>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] mt-3 p-2 bg-amber-50 rounded border border-amber-100">
+                ⚠️ O e-mail de teste será enviado para <strong>seu endereço configurado</strong>
+              </p>
             </ConfigSection>
 
             <SaveButton />
