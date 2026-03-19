@@ -68,9 +68,16 @@ export default function ConversasList({
                 }`}
               >
                 <div className="flex items-start justify-between mb-1.5">
-                  <h4 className={`text-sm font-semibold truncate ${isSelected ? 'text-[var(--apsis-orange)]' : 'text-[var(--text-primary)]'}`}>
-                    {conversa.titulo}
-                  </h4>
+                  <div className="flex-1">
+                    <h4 className={`text-sm font-semibold truncate ${isSelected ? 'text-[var(--apsis-orange)]' : 'text-[var(--text-primary)]'}`}>
+                      {conversa.titulo}
+                    </h4>
+                    {conversa.cliente_nome && (
+                      <p className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+                        {conversa.cliente_nome}
+                      </p>
+                    )}
+                  </div>
                   {conversa.nao_lidas > 0 && (
                     <span className="ml-2 flex-shrink-0 w-5 h-5 rounded-full bg-[var(--apsis-orange)] text-white text-xs flex items-center justify-center font-bold">
                       {conversa.nao_lidas}
