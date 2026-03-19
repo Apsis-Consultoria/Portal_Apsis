@@ -17,6 +17,11 @@ import CapitalHumano from './pages/CapitalHumano';
 import RateiosCapitalHumano from './pages/RateiosCapitalHumano';
 import FluxoCaixa from './pages/FluxoCaixa';
 import Estoque from './pages/Estoque';
+import TecnologiaInicio from './pages/TecnologiaInicio';
+import EstoqueAtivos from './pages/EstoqueAtivos';
+import AlocacaoEquipamentos from './pages/AlocacaoEquipamentos';
+import MovimentacoesEquipamentos from './pages/MovimentacoesEquipamentos';
+import DashboardTI from './pages/DashboardTI';
 import PortalClienteLayout from './components/portal/PortalClienteLayout';
 import PortalClienteInicio from './pages/portal/PortalClienteInicio';
 import PortalClienteComunicacao from './pages/portal/PortalClienteComunicacao';
@@ -76,6 +81,11 @@ function App() {
             <Route path="/RateiosCapitalHumano" element={<LayoutWrapper currentPageName="RateiosCapitalHumano"><RateiosCapitalHumano /></LayoutWrapper>} />
             <Route path="/FluxoCaixa" element={<LayoutWrapper currentPageName="FluxoCaixa"><FluxoCaixa /></LayoutWrapper>} />
             <Route path="/Estoque" element={<LayoutWrapper currentPageName="Estoque"><Estoque /></LayoutWrapper>} />
+            <Route path="/TecnologiaInicio" element={<LayoutWrapper currentPageName="TecnologiaInicio"><TecnologiaInicio /></LayoutWrapper>} />
+            <Route path="/EstoqueAtivos" element={<LayoutWrapper currentPageName="EstoqueAtivos"><EstoqueAtivos /></LayoutWrapper>} />
+            <Route path="/AlocacaoEquipamentos" element={<LayoutWrapper currentPageName="AlocacaoEquipamentos"><AlocacaoEquipamentos /></LayoutWrapper>} />
+            <Route path="/MovimentacoesEquipamentos" element={<LayoutWrapper currentPageName="MovimentacoesEquipamentos"><MovimentacoesEquipamentos /></LayoutWrapper>} />
+            <Route path="/DashboardTI" element={<LayoutWrapper currentPageName="DashboardTI"><DashboardTI /></LayoutWrapper>} />
 
             {/* Portal do Cliente Routes */}
             <Route path="/PortalClienteInicio" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteInicio /></ClientProtectedRoute></PortalClienteLayout>} />
