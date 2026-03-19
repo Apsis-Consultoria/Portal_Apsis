@@ -54,39 +54,74 @@ const conversations = [
   },
 ];
 
-const messagesMock = {
+const initialMessages = {
   1: [
-    { id: 1, sender: 'cliente', name: 'João Silva', text: 'Olá! Como estamos com a análise?', time: '09:30', read: true },
-    { id: 2, sender: 'apsis', name: 'Marina APSIS', text: 'Oi João! Tudo bem. Estamos na fase final. Esperamos completar até amanhã.', time: '09:45', read: true },
-    { id: 3, sender: 'apsis', name: 'Marina APSIS', text: 'Podemos compartilhar um relatório preliminar se desejar?', time: '09:46', read: true },
-    { id: 4, sender: 'cliente', name: 'João Silva', text: 'Sim, por favor! Isso seria ótimo.', time: '10:10', read: true },
-    { id: 5, sender: 'apsis', name: 'Marina APSIS', text: '✓ Arquivo enviado: Análise_Preliminar_Q1.pdf', time: '10:20', read: false, attachment: true },
-    { id: 6, sender: 'cliente', name: 'João Silva', text: 'Podemos agendar uma reunião para discutir o próximo trimestre?', time: '10:30', read: false },
+    { id: 1, sender: 'cliente', name: 'João Silva', text: 'Olá! Como estamos com a análise?', time: '09:30', read: true, visibility: 'compartilhado', clientRead: true },
+    { id: 2, sender: 'apsis', name: 'Marina APSIS', text: 'Oi João! Tudo bem. Estamos na fase final. Esperamos completar até amanhã.', time: '09:45', read: true, visibility: 'compartilhado', clientRead: true },
+    { id: 3, sender: 'apsis', name: 'Marina APSIS', text: 'Podemos compartilhar um relatório preliminar se desejar?', time: '09:46', read: true, visibility: 'interno', clientRead: false },
+    { id: 4, sender: 'cliente', name: 'João Silva', text: 'Sim, por favor! Isso seria ótimo.', time: '10:10', read: true, visibility: 'compartilhado', clientRead: true },
+    { id: 5, sender: 'apsis', name: 'Marina APSIS', text: '✓ Arquivo enviado: Análise_Preliminar_Q1.pdf', time: '10:20', read: false, visibility: 'compartilhado', clientRead: false, attachment: true, attachmentVisibility: 'compartilhado' },
+    { id: 6, sender: 'cliente', name: 'João Silva', text: 'Podemos agendar uma reunião para discutir o próximo trimestre?', time: '10:30', read: false, visibility: 'compartilhado', clientRead: false },
   ],
   2: [
-    { id: 1, sender: 'apsis', name: 'Você', text: 'Documentação atualizada no sistema', time: '08:00', read: true },
-    { id: 2, sender: 'apsis', name: 'Você', text: '✓ Arquivo enviado: Cronograma_Auditoria.xlsx', time: '08:15', read: true, attachment: true },
-    { id: 3, sender: 'apsis', name: 'Você', text: 'Documentação foi enviada com sucesso', time: '09:15', read: true },
+    { id: 1, sender: 'apsis', name: 'Você', text: 'Documentação atualizada no sistema', time: '08:00', read: true, visibility: 'interno', clientRead: false },
+    { id: 2, sender: 'apsis', name: 'Você', text: '✓ Arquivo enviado: Cronograma_Auditoria.xlsx', time: '08:15', read: true, visibility: 'interno', clientRead: false, attachment: true, attachmentVisibility: 'interno' },
+    { id: 3, sender: 'apsis', name: 'Você', text: 'Documentação foi enviada com sucesso', time: '09:15', read: true, visibility: 'interno', clientRead: false },
   ],
 };
 
-const MessageBubble = ({ message }) => {
+const eventLog = {
+  1: [
+    { id: 'evt-1', type: 'enviado_cliente', message: 'João Silva recebeu a mensagem', time: '09:30' },
+    { id: 'evt-2', type: 'lido_cliente', message: 'João Silva leu a mensagem', time: '09:32' },
+    { id: 'evt-3', type: 'compartilhado', message: 'Documento compartilhado com o cliente', time: '10:20' },
+    { id: 'evt-4', type: 'lido_cliente', message: 'João Silva leu o documento', time: '10:35' },
+  ],
+};
+
+const MessageBubble = ({ message, onToggleVisibility }) => {
   const isApsis = message.sender === 'apsis';
+  const isShared = message.visibility === 'compartilhado';
   const bgColor = isApsis ? 'bg-[var(--apsis-orange)]/10 border-[var(--apsis-orange)]/20' : 'bg-blue-50 border-blue-100';
   const textColor = isApsis ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)]';
   const nameColor = isApsis ? 'text-[var(--apsis-orange)] font-semibold' : 'text-blue-600 font-medium';
 
   return (
-    <div className={`flex ${isApsis ? 'justify-start' : 'justify-end'} mb-3 group`}>
+    <div className={`flex ${isApsis ? 'justify-start' : 'justify-end'} mb-4 group`}>
       <div className={`max-w-xs lg:max-w-md`}>
         {message.name && <p className={`text-xs ${nameColor} mb-1 px-3`}>{message.name}</p>}
-        <div className={`px-4 py-3 rounded-2xl border ${bgColor} ${textColor} text-sm leading-relaxed`}>
+        <div className={`px-4 py-3 rounded-2xl border ${bgColor} ${textColor} text-sm leading-relaxed relative`}>
           {message.text}
+          {isApsis && (
+            <button
+              onClick={() => onToggleVisibility(message.id)}
+              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-black/5 rounded text-xs"
+              title={isShared ? 'Ocultar do cliente' : 'Compartilhar com cliente'}
+            >
+              {isShared ? '🔓' : '🔒'}
+            </button>
+          )}
         </div>
-        <div className={`flex items-center gap-1.5 mt-1 px-3 text-xs text-[var(--text-secondary)]`}>
-          <span>{message.time}</span>
-          {message.read && <CheckCheck size={13} className="text-[var(--apsis-orange)]" />}
-          {!message.read && isApsis && <Check size={13} />}
+        <div className="flex flex-col gap-1.5 mt-2 px-3">
+          <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+            <span>{message.time}</span>
+            {message.read && <CheckCheck size={13} className="text-[var(--apsis-orange)]" />}
+            {!message.read && isApsis && <Check size={13} />}
+            {message.clientRead && isShared && <span className="text-green-600 font-medium">✓ Lido</span>}
+          </div>
+          {message.visibility && (
+            <div className="text-xs font-medium">
+              {isShared ? (
+                <span className="text-green-600 flex items-center gap-1">
+                  🌐 Visível ao cliente
+                </span>
+              ) : (
+                <span className="text-amber-600 flex items-center gap-1">
+                  🔒 Interno APSIS
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -131,11 +166,37 @@ const ConversationItem = ({ conv, active, onClick }) => {
   );
 };
 
+const EventLogPanel = ({ convId }) => {
+  const events = eventLog[convId] || [];
+  const eventIcons = {
+    enviado_cliente: '📤',
+    lido_cliente: '👁️',
+    compartilhado: '🌐',
+    documento: '📎',
+  };
+
+  return (
+    <div className="space-y-2 h-full">
+      {events.map(evt => (
+        <div key={evt.id} className="flex gap-2 text-xs">
+          <span className="text-base flex-shrink-0">{eventIcons[evt.type] || '•'}</span>
+          <div>
+            <p className="text-[var(--text-secondary)]">{evt.message}</p>
+            <p className="text-[var(--text-secondary)]/60">{evt.time}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default function NexusComunicacao() {
   const [selectedConv, setSelectedConv] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [messageText, setMessageText] = useState('');
   const [filterType, setFilterType] = useState('Todos');
+  const [messages, setMessages] = useState(initialMessages);
+  const [showEventLog, setShowEventLog] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -143,13 +204,29 @@ export default function NexusComunicacao() {
   }, [selectedConv]);
 
   const selectedConversation = conversations.find(c => c.id === selectedConv);
-  const messages = messagesMock[selectedConv] || [];
+  const currentMessages = messages[selectedConv] || [];
 
   const filteredConversations = conversations.filter(conv => {
     const matchesSearch = conv.participant.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterType === 'Todos' || conv.contextLabel === filterType;
     return matchesSearch && matchesFilter;
   });
+
+  const handleToggleVisibility = (messageId) => {
+    setMessages(prev => ({
+      ...prev,
+      [selectedConv]: prev[selectedConv].map(msg => {
+        if (msg.id === messageId) {
+          return {
+            ...msg,
+            visibility: msg.visibility === 'compartilhado' ? 'interno' : 'compartilhado',
+            clientRead: msg.visibility === 'compartilhado' ? false : msg.clientRead,
+          };
+        }
+        return msg;
+      }),
+    }));
+  };
 
   const handleSendMessage = () => {
     if (messageText.trim()) {
@@ -231,29 +308,52 @@ export default function NexusComunicacao() {
                     <p className="text-xs text-[var(--text-secondary)]">Última mensagem {selectedConversation.timestamp}</p>
                   </div>
                 </div>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  selectedConversation.contextType === 'Cliente'
-                    ? 'bg-green-100 text-green-700'
-                    : selectedConversation.contextType === 'Projeto'
-                    ? 'bg-purple-100 text-purple-700'
-                    : 'bg-amber-100 text-amber-700'
-                }`}>
-                  {selectedConversation.contextLabel}
-                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShowEventLog(!showEventLog)}
+                    className="text-xs font-medium text-[var(--apsis-orange)] hover:text-[var(--apsis-orange)]/80 transition-colors"
+                  >
+                    📋 {showEventLog ? 'Ocultar' : 'Ver'} histórico
+                  </button>
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                    selectedConversation.contextType === 'Cliente'
+                      ? 'bg-green-100 text-green-700'
+                      : selectedConversation.contextType === 'Projeto'
+                      ? 'bg-purple-100 text-purple-700'
+                      : 'bg-amber-100 text-amber-700'
+                  }`}>
+                    {selectedConversation.contextLabel}
+                  </span>
+                </div>
               </div>
 
-              {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-2">
-                {messages.length > 0 ? (
-                  messages.map(msg => <MessageBubble key={msg.id} message={msg} />)
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-center">
-                    <div className="text-5xl mb-4 opacity-20">💬</div>
-                    <p className="text-[var(--text-secondary)]">Sem mensagens ainda</p>
-                    <p className="text-sm text-[var(--text-secondary)] mt-1">Comece a conversa</p>
+              {/* Messages Area with Event Log */}
+              <div className="flex flex-1 overflow-hidden gap-0">
+                {/* Messages */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <div className="flex-1 overflow-y-auto p-6 space-y-2">
+                    {currentMessages.length > 0 ? (
+                      currentMessages.map(msg => <MessageBubble key={msg.id} message={msg} onToggleVisibility={handleToggleVisibility} />)
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-center">
+                        <div className="text-5xl mb-4 opacity-20">💬</div>
+                        <p className="text-[var(--text-secondary)]">Sem mensagens ainda</p>
+                        <p className="text-sm text-[var(--text-secondary)] mt-1">Comece a conversa</p>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </div>
+
+                {/* Event Log Sidebar */}
+                {showEventLog && (
+                  <div className="w-72 border-l border-[var(--border)] bg-[var(--surface-2)] overflow-y-auto p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-bold text-[var(--text-primary)]">Histórico de Eventos</h3>
+                    </div>
+                    <EventLogPanel convId={selectedConv} />
                   </div>
                 )}
-                <div ref={messagesEndRef} />
               </div>
 
               {/* Input Area */}
