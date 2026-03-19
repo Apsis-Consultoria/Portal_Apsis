@@ -1,39 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { Link, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard, Search, Columns, Clock, GitBranch,
-  BarChart3, Calendar, Timer, CreditCard, FileText,
-  MessageSquare, AlertTriangle, ChevronRight, Plus
-} from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import NovoProjetoModal from "@/components/projetos/NovoProjetoModal";
 import ProjetosDashboard from "@/components/projetos/hub/ProjetosDashboard";
-import ProjetosBusca from "@/components/projetos/hub/ProjetosBusca";
+import ProjetosLista from "@/components/projetos/hub/ProjetosLista";
 import ProjetosKanban from "@/components/projetos/hub/ProjetosKanban";
-import ProjetosHoras from "@/components/projetos/hub/ProjetosHoras";
-import ProjetosPipeline from "@/components/projetos/hub/ProjetosPipeline";
-import ProjetosBudget from "@/components/projetos/hub/ProjetosBudget";
-import ProjetosGantt from "@/components/projetos/hub/ProjetosGantt";
-import ProjetosTimesheet from "@/components/projetos/hub/ProjetosTimesheet";
-import ProjetosParcelas from "@/components/projetos/hub/ProjetosParcelas";
 import ProjetosDocumentos from "@/components/projetos/hub/ProjetosDocumentos";
-import ProjetosComunicacao from "@/components/projetos/hub/ProjetosComunicacao";
 import ProjetosRiscos from "@/components/projetos/hub/ProjetosRiscos";
+import ProjetosConfiguracoes from "@/components/projetos/hub/ProjetosConfiguracoes";
 
 const TABS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "busca", label: "Busca", icon: Search },
-  { id: "kanban", label: "Kanban", icon: Columns },
-  { id: "horas", label: "Horas e Alocações", icon: Clock },
-  { id: "pipeline", label: "Pipeline", icon: GitBranch },
-  { id: "budget", label: "Budget", icon: BarChart3 },
-  { id: "gantt", label: "Gantt", icon: Calendar },
-  { id: "timesheet", label: "Entradas de Tempo", icon: Timer },
-  { id: "parcelas", label: "Parcelas", icon: CreditCard },
-  { id: "documentos", label: "Documentos", icon: FileText },
-  { id: "comunicacao", label: "Comunicação", icon: MessageSquare },
-  { id: "riscos", label: "Riscos", icon: AlertTriangle },
+  { id: "dashboard", label: "Dashboard" },
+  { id: "lista", label: "Lista de Projetos" },
+  { id: "kanban", label: "Kanban" },
+  { id: "documentos", label: "Documentos" },
+  { id: "riscos", label: "Riscos" },
+  { id: "configuracoes", label: "Configurações" },
 ];
 
 export default function Projetos() {
@@ -44,7 +27,6 @@ export default function Projetos() {
   const [showNovo, setShowNovo] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Dados globais compartilhados entre todos os submodulos
   const [data, setData] = useState({
     projetos: [],
     parcelas: [],
@@ -82,17 +64,11 @@ export default function Projetos() {
     const props = { data, onRefresh: loadAll, loading };
     switch (activeTab) {
       case "dashboard": return <ProjetosDashboard {...props} />;
-      case "busca": return <ProjetosBusca {...props} />;
+      case "lista": return <ProjetosLista {...props} />;
       case "kanban": return <ProjetosKanban {...props} />;
-      case "horas": return <ProjetosHoras {...props} />;
-      case "pipeline": return <ProjetosPipeline {...props} />;
-      case "budget": return <ProjetosBudget {...props} />;
-      case "gantt": return <ProjetosGantt {...props} />;
-      case "timesheet": return <ProjetosTimesheet {...props} />;
-      case "parcelas": return <ProjetosParcelas {...props} />;
       case "documentos": return <ProjetosDocumentos {...props} />;
-      case "comunicacao": return <ProjetosComunicacao {...props} />;
       case "riscos": return <ProjetosRiscos {...props} />;
+      case "configuracoes": return <ProjetosConfiguracoes />;
       default: return <ProjetosDashboard {...props} />;
     }
   };
