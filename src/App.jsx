@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import PageNotFound from './lib/PageNotFound';
 import Vendas from './pages/Vendas';
 import RateioDespesas from './pages/RateioDespesas';
+import MarketingIndicadores from './pages/MarketingIndicadores';
 import NexusInicio from './pages/NexusInicio';
 import NexusComunicacao from './pages/NexusComunicacao';
 import NexusSolicitacoes from './pages/NexusSolicitacoes';
@@ -82,6 +83,7 @@ function App() {
             <Route path="/AlocacaoEquipamentos" element={<LayoutWrapper currentPageName="AlocacaoEquipamentos"><AlocacaoEquipamentos /></LayoutWrapper>} />
             <Route path="/MovimentacoesEquipamentos" element={<LayoutWrapper currentPageName="MovimentacoesEquipamentos"><MovimentacoesEquipamentos /></LayoutWrapper>} />
             <Route path="/DashboardTI" element={<LayoutWrapper currentPageName="DashboardTI"><DashboardTI /></LayoutWrapper>} />
+            <Route path="/MarketingIndicadores" element={<LayoutWrapper currentPageName="MarketingIndicadores"><MarketingIndicadores /></LayoutWrapper>} />
 
             {/* Portal do Cliente Routes */}
             <Route path="/PortalClienteInicio" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteInicio /></ClientProtectedRoute></PortalClienteLayout>} />
