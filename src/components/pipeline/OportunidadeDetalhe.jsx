@@ -98,6 +98,7 @@ export default function OportunidadeDetalhe({ oap, onClose, onReload }) {
     // Criar projeto
     const projeto = await base44.entities.OrdemServico.create({
       proposta_id: oap.id,
+      opportunity_id: oap.id,
       proposta_numero: `OAP-${oap.id.substring(0, 8)}`,
       cliente_nome: oap.cliente_nome,
       nome_projeto: oap.cliente_nome,
