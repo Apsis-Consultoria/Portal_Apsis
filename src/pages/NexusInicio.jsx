@@ -1,175 +1,181 @@
-import { MessageSquare, FileText, LayoutDashboard, Globe, Bell, Clock, CheckCircle2, AlertCircle, ArrowRight, Zap } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { Home, FileText, MessageSquare, Clock, Users, Shield, ChevronRight, Lock, Eye, Download, Share2, AlertCircle } from 'lucide-react';
 
-const StatCard = ({ icon: Icon, label, value, color, trend }) => (
-  <div className={`bg-white rounded-xl p-5 shadow-sm border border-[var(--border)] hover:shadow-lg transition-all duration-300 transform hover:scale-105`}>
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide mb-1">{label}</p>
-        <p className={`text-3xl font-bold ${color}`}>{value}</p>
-        {trend && <p className="text-xs text-[var(--text-secondary)] mt-2">{trend}</p>}
+const StatCard = ({ icon: Icon, label, value, subtext, trend }) => (
+  <div className="bg-white border border-[var(--border)] rounded-lg p-4">
+    <div className="flex items-start justify-between mb-3">
+      <div className="p-2 bg-[var(--apsis-orange)]/10 rounded-lg">
+        <Icon size={18} className="text-[var(--apsis-orange)]" />
       </div>
-      <div className={`w-12 h-12 rounded-lg ${color.replace('text-', 'bg-')}/10 flex items-center justify-center`}>
-        <Icon size={22} className={color} />
-      </div>
+      {trend && <span className={`text-xs font-medium ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
+        {trend > 0 ? '+' : ''}{trend}%
+      </span>}
     </div>
+    <p className="text-xs text-[var(--text-secondary)] mb-1">{label}</p>
+    <p className="text-lg font-bold text-[var(--text-primary)]">{value}</p>
+    {subtext && <p className="text-xs text-[var(--text-secondary)] mt-2">{subtext}</p>}
   </div>
 );
 
-const QuickAction = ({ icon: Icon, label, to, color }) => (
-  <Link to={to} className={`group flex items-center gap-3 px-4 py-3 rounded-lg bg-white border border-[var(--border)] hover:border-[var(--apsis-orange)]/30 hover:bg-[var(--apsis-orange)]/5 transition-all duration-200`}>
-    <div className={`w-9 h-9 rounded-lg ${color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-      <Icon size={16} className="text-white" />
-    </div>
-    <span className="text-sm font-medium text-[var(--text-primary)] flex-1">{label}</span>
-    <ArrowRight size={16} className="text-[var(--text-secondary)] group-hover:text-[var(--apsis-orange)] transition-colors" />
-  </Link>
-);
-
-const MessageItem = ({ title, preview, time, unread }) => (
-  <div className={`p-3 border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface-2)] transition-colors cursor-pointer`}>
-    <div className="flex items-start justify-between mb-1">
-      <h4 className={`text-sm font-medium ${unread ? 'text-[var(--text-primary)] font-semibold' : 'text-[var(--text-secondary)]'}`}>{title}</h4>
-      {unread && <span className="w-2 h-2 rounded-full bg-[var(--apsis-orange)]" />}
-    </div>
-    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{preview}</p>
-    <p className="text-xs text-[var(--text-secondary)] mt-1.5">{time}</p>
-  </div>
-);
-
-const ProjectItem = ({ name, client, progress, status }) => {
-  const statusColors = {
-    ativo: 'bg-green-100 text-green-700',
-    parado: 'bg-yellow-100 text-yellow-700',
-    concluido: 'bg-blue-100 text-blue-700'
-  };
-  return (
-    <div className="p-3 border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface-2)] transition-colors">
-      <div className="flex items-start justify-between mb-2">
-        <div>
-          <h4 className="text-sm font-medium text-[var(--text-primary)]">{name}</h4>
-          <p className="text-xs text-[var(--text-secondary)]">{client}</p>
+const WorkspaceCard = ({ client, projects, lastUpdate, status }) => (
+  <div className="bg-white border border-[var(--border)] rounded-lg p-5">
+    <div className="flex items-start justify-between mb-4">
+      <div className="flex-1">
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="font-semibold text-[var(--text-primary)]">{client}</h3>
+          <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+            status === 'Ativo' ? 'bg-green-100 text-green-700' :
+            'bg-amber-100 text-amber-700'
+          }`}>
+            {status}
+          </span>
         </div>
-        <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusColors[status] || statusColors.ativo}`}>
-          {status === 'ativo' ? 'Ativo' : status === 'parado' ? 'Pausado' : 'Concluído'}
-        </span>
+        <p className="text-xs text-[var(--text-secondary)]">{projects} projetos ativos</p>
       </div>
-      <div className="w-full bg-[var(--surface-2)] rounded-full h-1.5 overflow-hidden">
-        <div className="bg-[var(--apsis-orange)] h-full transition-all" style={{width: `${progress}%`}} />
-      </div>
-      <p className="text-xs text-[var(--text-secondary)] mt-1.5">{progress}% concluído</p>
+      <Lock size={16} className="text-[var(--apsis-orange)]" />
     </div>
-  );
-};
+    <div className="space-y-2 pt-3 border-t border-[var(--border)]">
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-[var(--text-secondary)]">Última atualização</span>
+        <span className="font-medium text-[var(--text-primary)]">{lastUpdate}</span>
+      </div>
+      <div className="flex gap-2">
+        <button className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-[var(--text-secondary)] border border-[var(--border)] rounded hover:bg-[var(--surface-2)]">
+          <FileText size={14} /> Documentos
+        </button>
+        <button className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-[var(--text-secondary)] border border-[var(--border)] rounded hover:bg-[var(--surface-2)]">
+          <MessageSquare size={14} /> Chat
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+const ActivityLog = ({ items }) => (
+  <div className="bg-white border border-[var(--border)] rounded-lg p-5">
+    <h3 className="font-semibold text-[var(--text-primary)] mb-4">Histórico de Atividades</h3>
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={i} className="flex gap-3 pb-3 border-b border-[var(--border)] last:border-0 last:pb-0">
+          <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2 bg-[var(--apsis-orange)]" />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2 mb-1">
+              <p className="text-sm font-medium text-[var(--text-primary)]">{item.title}</p>
+              <span className="text-xs text-[var(--text-secondary)] whitespace-nowrap">{item.time}</span>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)]">{item.description}</p>
+            {item.actor && <p className="text-xs text-[var(--text-secondary)] mt-1">por {item.actor}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export default function NexusInicio() {
-  const [messages] = useState([
-    { title: 'Novo relatório disponível', preview: 'Seu relatório Q1 2026 foi finalizado...', time: '2h atrás', unread: true },
-    { title: 'Avaliação de bem imóvel', preview: 'Solicitamos informações adicionais sobre...', time: '5h atrás', unread: true },
-    { title: 'Reunião confirmada', preview: 'Sua reunião está agendada para 22 de março...', time: '1d atrás', unread: false },
-  ]);
-
-  const [requests] = useState([
-    { title: 'Solicitação #2341', status: 'Em revisão', days: '2 dias' },
-    { title: 'Parecer contábil', status: 'Aguardando', days: '5 dias' },
-    { title: 'Análise tributária', status: 'Em revisão', days: '1 dia' },
-  ]);
-
-  const [projects] = useState([
-    { name: 'Auditoria Contábil 2025', client: 'TechCorp Brasil', progress: 78, status: 'ativo' },
-    { name: 'Consultoria M&A', client: 'Global Solutions', progress: 45, status: 'ativo' },
-    { name: 'Avaliação de Bens', client: 'Imóvel Premium', progress: 100, status: 'concluido' },
-  ]);
-
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-2">APSIS Nexus</h1>
-        <p className="text-[var(--text-secondary)] text-lg">Bem-vindo ao seu workspace premium. Acompanhe projetos, mensagens e solicitações em um só lugar.</p>
+    <div className="space-y-6">
+      {/* Header Workspace */}
+      <div className="bg-gradient-to-r from-[var(--apsis-green)] to-[var(--apsis-green-light)] text-white rounded-lg p-6">
+        <div className="max-w-3xl">
+          <h1 className="text-2xl font-bold mb-2">APSIS Workspace</h1>
+          <p className="text-white/80 text-sm mb-4">Gerencie relacionamentos com clientes, documentos seguros e projetos em um único espaço corporativo.</p>
+          <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <Shield size={16} />
+              <span>Portal Seguro</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Lock size={16} />
+              <span>Visibilidade Controlada</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Eye size={16} />
+              <span>Auditável</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={MessageSquare} label="Mensagens não lidas" value="3" color="text-blue-600" trend="+1 hoje" />
-        <StatCard icon={AlertCircle} label="Solicitações abertas" value="4" color="text-amber-600" trend="2 urgentes" />
-        <StatCard icon={FileText} label="Documentos" value="12" color="text-green-600" trend="5 novos" />
-        <StatCard icon={LayoutDashboard} label="Projetos ativos" value="2" color="text-purple-600" trend="78% concluído" />
+      {/* KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard icon={Users} label="Clientes Ativos" value="12" subtext="Workspaces criados" />
+        <StatCard icon={FileText} label="Documentos" value="284" subtext="Na sala segura" trend={5} />
+        <StatCard icon={MessageSquare} label="Comunicações" value="47" subtext="Última semana" />
+        <StatCard icon={Clock} label="Tempo Médio" value="2.4h" subtext="Resposta a solicitações" />
       </div>
 
-      {/* Quick Actions */}
+      {/* Workspaces Principais */}
       <div>
-        <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wide mb-4">Atalhos Rápidos</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <QuickAction icon={MessageSquare} label="Enviar mensagem" to="/NexusComunicacao" color="bg-blue-600" />
-          <QuickAction icon={FileText} label="Visualizar documentos" to="/NexusDocumentos" color="bg-green-600" />
-          <QuickAction icon={LayoutDashboard} label="Ver projetos" to="/NexusProjetos" color="bg-purple-600" />
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">Seus Workspaces Principais</h2>
+          <a href="/NexusProjetos" className="text-xs font-medium text-[var(--apsis-orange)] hover:underline flex items-center gap-1">
+            Ver todos <ChevronRight size={14} />
+          </a>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <WorkspaceCard client="Industria Brasil SA" projects="3" lastUpdate="há 2 horas" status="Ativo" />
+          <WorkspaceCard client="Tech Innovations Ltd" projects="2" lastUpdate="há 4 horas" status="Ativo" />
+          <WorkspaceCard client="Logística Global Inc" projects="1" lastUpdate="há 1 dia" status="Ativo" />
         </div>
       </div>
 
-      {/* Content Grid */}
+      {/* Atividades Recentes */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Messages */}
-        <div className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-[var(--border)] overflow-hidden hover:shadow-md transition-shadow">
-          <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between bg-gradient-to-r from-blue-50 to-transparent">
-            <div className="flex items-center gap-2">
-              <Bell size={18} className="text-blue-600" />
-              <h3 className="font-semibold text-[var(--text-primary)]">Mensagens Recentes</h3>
-            </div>
-            <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-full">3</span>
-          </div>
-          <div>
-            {messages.map((msg, i) => (
-              <MessageItem key={i} {...msg} />
-            ))}
-          </div>
-          <div className="p-3 border-t border-[var(--border)] text-center">
-            <Link to="/NexusComunicacao" className="text-xs font-medium text-[var(--apsis-orange)] hover:underline">Ver todas as mensagens →</Link>
-          </div>
+        <div className="lg:col-span-2">
+          <ActivityLog items={[
+            {
+              title: 'Documentos compartilhados',
+              description: 'Relatório Financeiro Q1 2026',
+              time: '14:32',
+              actor: 'João Silva'
+            },
+            {
+              title: 'Projeto atualizado',
+              description: 'Status mudou para "Em Execução"',
+              time: '10:15',
+              actor: 'Sistema'
+            },
+            {
+              title: 'Mensagem lida',
+              description: 'Proposta de Consultoria revisada',
+              time: 'ontem',
+              actor: 'Cliente'
+            },
+            {
+              title: 'Permissão revisada',
+              description: 'Acesso concedido a novo colaborador',
+              time: '2 dias atrás',
+              actor: 'Gestor de Projetos'
+            }
+          ]} />
         </div>
 
-        {/* Requests */}
-        <div className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-[var(--border)] overflow-hidden hover:shadow-md transition-shadow">
-          <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between bg-gradient-to-r from-amber-50 to-transparent">
-            <div className="flex items-center gap-2">
-              <Clock size={18} className="text-amber-600" />
-              <h3 className="font-semibold text-[var(--text-primary)]">Solicitações Abertas</h3>
-            </div>
-            <span className="text-xs font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded-full">4</span>
-          </div>
-          <div>
-            {requests.map((req, i) => (
-              <div key={i} className="p-3 border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface-2)] transition-colors">
-                <div className="flex items-start justify-between mb-1">
-                  <h4 className="text-sm font-medium text-[var(--text-primary)]">{req.title}</h4>
-                </div>
-                <p className="text-xs text-[var(--text-secondary)]">{req.status}</p>
-                <p className="text-xs text-[var(--text-secondary)] mt-1.5">{req.days} em aberto</p>
+        {/* Quick Actions */}
+        <div className="bg-white border border-[var(--border)] rounded-lg p-5 h-fit">
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Ações Rápidas</h3>
+          <div className="space-y-3">
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-2)] text-left">
+              <FileText size={16} className="text-[var(--apsis-orange)]" />
+              <div>
+                <p className="text-sm font-medium text-[var(--text-primary)]">Acessar Data Room</p>
+                <p className="text-xs text-[var(--text-secondary)]">Documentos & contratos</p>
               </div>
-            ))}
-          </div>
-          <div className="p-3 border-t border-[var(--border)] text-center">
-            <Link to="/NexusSolicitacoes" className="text-xs font-medium text-[var(--apsis-orange)] hover:underline">Ver todas as solicitações →</Link>
-          </div>
-        </div>
-
-        {/* Projects */}
-        <div className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-[var(--border)] overflow-hidden hover:shadow-md transition-shadow">
-          <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between bg-gradient-to-r from-purple-50 to-transparent">
-            <div className="flex items-center gap-2">
-              <Zap size={18} className="text-purple-600" />
-              <h3 className="font-semibold text-[var(--text-primary)]">Projetos em Andamento</h3>
-            </div>
-            <span className="text-xs font-bold text-purple-600 bg-purple-100 px-2 py-1 rounded-full">3</span>
-          </div>
-          <div>
-            {projects.map((proj, i) => (
-              <ProjectItem key={i} {...proj} />
-            ))}
-          </div>
-          <div className="p-3 border-t border-[var(--border)] text-center">
-            <Link to="/NexusProjetos" className="text-xs font-medium text-[var(--apsis-orange)] hover:underline">Ver todos os projetos →</Link>
+            </button>
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-2)] text-left">
+              <MessageSquare size={16} className="text-[var(--apsis-orange)]" />
+              <div>
+                <p className="text-sm font-medium text-[var(--text-primary)]">Communication Center</p>
+                <p className="text-xs text-[var(--text-secondary)]">Mensagens & solicitações</p>
+              </div>
+            </button>
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-2)] text-left">
+              <Clock size={16} className="text-[var(--apsis-orange)]" />
+              <div>
+                <p className="text-sm font-medium text-[var(--text-primary)]">Service Requests</p>
+                <p className="text-xs text-[var(--text-secondary)]">Minhas solicitações</p>
+              </div>
+            </button>
           </div>
         </div>
       </div>
