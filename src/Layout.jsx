@@ -93,6 +93,7 @@ const navItems = [
       { label: "Kanban", page: "Projetos", icon: Columns2, tabParam: "kanban" },
       { label: "Documentos", page: "Projetos", icon: FileText, tabParam: "documentos" },
       { label: "Riscos", page: "Projetos", icon: AlertOctagon, tabParam: "riscos" },
+      { label: "Parcelas", page: "Projetos", icon: CreditCard, tabParam: "parcelas" },
       { label: "Configurações", page: "Projetos", icon: Settings, tabParam: "configuracoes" },
     ]
   },
