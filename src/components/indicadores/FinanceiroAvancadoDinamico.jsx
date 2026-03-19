@@ -104,7 +104,7 @@ export default function FinanceiroAvancadoDinamico({ filtros }) {
       <Card className="p-6 border-[var(--border)] bg-white">
         <h3 className="font-semibold text-[var(--text-primary)] mb-4">Fluxo de Caixa</h3>
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={DADOS_FLUXO}>
+          <BarChart data={DADOS_FLUXO} isAnimationActive={true}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis dataKey="mes" />
             <YAxis />
@@ -113,6 +113,21 @@ export default function FinanceiroAvancadoDinamico({ filtros }) {
             <Bar dataKey="entradas" fill="var(--apsis-green)" name="Entradas (R$ mil)" />
             <Bar dataKey="saidas" fill="var(--apsis-orange)" name="Saídas (R$ mil)" />
           </BarChart>
+        </ResponsiveContainer>
+      </Card>
+
+      <Card className="p-6 border-[var(--border)] bg-white">
+        <h3 className="font-semibold text-[var(--text-primary)] mb-4">Evolução Mensal de Receita</h3>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={DADOS_FLUXO} isAnimationActive={true}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+            <XAxis dataKey="mes" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="entradas" stroke="var(--apsis-green)" strokeWidth={2} name="Receita" />
+            <Line type="monotone" dataKey="saidas" stroke="var(--apsis-orange)" strokeWidth={2} name="Despesa" />
+          </LineChart>
         </ResponsiveContainer>
       </Card>
     </div>
