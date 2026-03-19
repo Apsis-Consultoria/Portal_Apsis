@@ -17,7 +17,7 @@ import {
   LayoutDashboard, GitBranch, FolderKanban,
   DollarSign, BarChart3, FileText, ChevronLeft,
   ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings, ClipboardCheck, Sparkles, Users, Grid3x3, Home,
-  Search, Columns2, Calendar, CreditCard, MessageSquare, AlertOctagon, ShoppingBag, Briefcase, Split, Globe
+  Search, Columns2, Calendar, CreditCard, MessageSquare, AlertOctagon, ShoppingBag, Briefcase, Split, Globe, ArrowRightLeft
 } from "lucide-react";
 import { Clock } from "lucide-react";
 import AssistantWidget from "@/components/AssistantWidget";
@@ -99,6 +99,7 @@ const navItems = [
     children: [
       { label: "Contas a Pagar", page: "ContasAPagar", icon: DollarSign },
       { label: "Contas a Receber", page: "ContasAReceber", icon: DollarSign },
+      { label: "Fluxo de Caixa", page: "FluxoCaixa", icon: ArrowRightLeft },
       { label: "Rateio de Despesas", page: "RateioDespesas", icon: Split },
     ]
   },
