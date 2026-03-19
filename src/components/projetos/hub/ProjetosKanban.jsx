@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Card, CardContent } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, AlertTriangle, ChevronRight } from "lucide-react";
+import { Users, Calendar, DollarSign, AlertTriangle, ChevronRight, LayoutGrid, List } from "lucide-react";
 
 const COLUNAS = [
   { id: "Não iniciado", label: "Iniciação", color: "bg-slate-100", dot: "bg-slate-400" },
@@ -15,6 +14,7 @@ const fmt = (v) => (v || 0).toLocaleString("pt-BR", { style: "currency", currenc
 
 export default function ProjetosKanban({ data, onRefresh }) {
   const [dragging, setDragging] = useState(null);
+  const [viewMode, setViewMode] = useState("kanban");
   const { projetos, parcelas } = data;
 
   const getTotal = (osId) => parcelas.filter(p => p.os_id === osId).reduce((s, p) => s + (p.valor || 0), 0);
@@ -27,8 +27,89 @@ export default function ProjetosKanban({ data, onRefresh }) {
     setDragging(null);
   };
 
+  const allItems = projetos;
+
+  const renderListView = () => (
+    <div className="p-4">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-200">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">Cliente</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">Natureza</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">Responsável</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">Status</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">Progresso</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">Prazo</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">Valor</th>
+              <th className="px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {allItems.map(p => {
+              const col = COLUNAS.find(c => c.id === p.status) || COLUNAS[0];
+              const total = getTotal(p.id);
+              const atrasado = p.prazo_previsto && new Date(p.prazo_previsto) < new Date() && p.percentual_conclusao < 100;
+              const dias = p.prazo_previsto ? Math.ceil((new Date(p.prazo_previsto) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+              return (
+                <tr key={p.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3">
+                    <Link to={`/ProjetoDetalhe?id=${p.id}`} className="font-medium text-slate-800 hover:text-[#1A4731] text-xs">{p.cliente_nome || "—"}</Link>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-500">{p.natureza || "—"}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500">{p.responsavel_tecnico || "—"}</td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium ${col.color}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${col.dot}`} />{col.label}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full ${atrasado ? "bg-red-400" : "bg-[#1A4731]"}`} style={{ width: `${p.percentual_conclusao || 0}%` }} />
+                      </div>
+                      <span className={`text-[10px] ${atrasado ? "text-red-500" : "text-slate-500"}`}>{p.percentual_conclusao || 0}%</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    {dias !== null ? (
+                      <span className={atrasado ? "text-red-500 font-medium" : dias <= 7 ? "text-amber-500" : "text-slate-500"}>
+                        {atrasado ? `${Math.abs(dias)}d atraso` : `${dias}d`}
+                      </span>
+                    ) : <span className="text-slate-300">—</span>}
+                  </td>
+                  <td className="px-4 py-3 text-xs text-green-700">{total > 0 ? fmt(total) : "—"}</td>
+                  <td className="px-4 py-3">
+                    <Link to={`/ProjetoDetalhe?id=${p.id}`} className="text-slate-400 hover:text-[#1A4731]">
+                      <ChevronRight size={14} />
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+            {allItems.length === 0 && (
+              <tr><td colSpan={8} className="text-center py-10 text-xs text-slate-300">Nenhum projeto encontrado</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
   return (
     <div className="p-4 overflow-auto" style={{ minHeight: "calc(100vh - 180px)" }}>
+      {/* View mode toggle */}
+      <div className="flex justify-end mb-3">
+        <div className="flex bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <button onClick={() => setViewMode("kanban")} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs transition-colors ${viewMode === "kanban" ? "bg-[#1A4731] text-white" : "text-slate-500 hover:bg-slate-50"}`}>
+            <LayoutGrid size={13} /> Kanban
+          </button>
+          <button onClick={() => setViewMode("lista")} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs transition-colors ${viewMode === "lista" ? "bg-[#1A4731] text-white" : "text-slate-500 hover:bg-slate-50"}`}>
+            <List size={13} /> Lista
+          </button>
+        </div>
+      </div>
+      {viewMode === "lista" ? renderListView() : (
       <div className="flex gap-3 min-h-full">
         {COLUNAS.map(col => {
           const items = projetos.filter(p => p.status === col.id);
@@ -88,6 +169,7 @@ export default function ProjetosKanban({ data, onRefresh }) {
           );
         })}
       </div>
+      )}
     </div>
   );
 }
