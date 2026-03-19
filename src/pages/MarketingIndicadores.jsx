@@ -2,55 +2,59 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 const INDICADORES_POR_AREA = {
-  vendas: {
-    titulo: 'Vendas & Mercado',
+  business_valuation: {
+    titulo: 'Business Valuation',
     kpis: [
-      { label: 'Orçado 2026', valor: 'R$ 8.700.000', meta: 'Meta anual total', status: 'info' },
-      { label: 'Realizado 2026', valor: 'R$ 161.182', meta: '1.9% da meta', status: 'warning' },
-      { label: 'Propostas Ativas', valor: '0', meta: '0 em elaboração', status: 'neutral' },
-      { label: 'Taxa Conversão', valor: '0.0%', meta: '0 propostas ganhas', status: 'neutral' },
-    ],
-    charts: ['Vendas por Grupo', 'Vendas Tipo Cliente', 'Ticket Médio']
+      { label: 'Avaliações Realizadas', valor: '0', meta: 'Processos em andamento', status: 'neutral' },
+      { label: 'Valor em Análise', valor: 'R$ 0', meta: 'Portfolio avaliado', status: 'neutral' },
+      { label: 'Prazo Médio', valor: '0 dias', meta: 'Conclusão do processo', status: 'neutral' },
+      { label: 'Clientes', valor: '0', meta: 'Empresa atendidas', status: 'neutral' },
+    ]
   },
-  contabil: {
-    titulo: 'Contabilidade & Fiscal',
+  contabil_fiscal: {
+    titulo: 'Consultoria Contábil & Fiscal',
     kpis: [
       { label: 'Laudos Contábeis', valor: '0', meta: 'Serviços realizados', status: 'neutral' },
       { label: 'Consultoria Fiscal', valor: 'R$ 0', meta: 'Faturamento do período', status: 'neutral' },
       { label: 'Conformidade', valor: '100%', meta: 'Documentos em dia', status: 'success' },
-      { label: 'Clientes Ativos', valor: '0', meta: 'Portfolio contábil', status: 'neutral' },
-    ],
-    charts: ['Tipo Serviço', 'Faturamento Mensal', 'Análise Conformidade']
+      { label: 'Clientes Ativos', valor: '0', meta: 'Portfolio', status: 'neutral' },
+    ]
   },
-  ativos: {
-    titulo: 'Avaliação de Ativos',
+  ativos_fixos: {
+    titulo: 'Ativos Fixos',
     kpis: [
-      { label: 'Avaliações Realizadas', valor: '0', meta: 'Total do período', status: 'neutral' },
-      { label: 'Valor em Estoque', valor: 'R$ 0', meta: 'Portfólio avaliado', status: 'neutral' },
+      { label: 'Avaliações Ativas', valor: '0', meta: 'Em processamento', status: 'neutral' },
+      { label: 'Valor Total', valor: 'R$ 0', meta: 'Patrimônio avaliado', status: 'neutral' },
       { label: 'Taxa Ocupação', valor: '0%', meta: 'Capacidade utilizada', status: 'neutral' },
-      { label: 'Tempo Médio', valor: '0 dias', meta: 'Avaliação por ativo', status: 'neutral' },
-    ],
-    charts: ['Tipo Ativo', 'Localização', 'Valor por Categoria']
+      { label: 'Documentação', valor: '0%', meta: 'Processos documentados', status: 'neutral' },
+    ]
+  },
+  consultoria_estrategica: {
+    titulo: 'Consultoria Estratégica',
+    kpis: [
+      { label: 'Projetos em Andamento', valor: '0', meta: 'Consultoria ativa', status: 'neutral' },
+      { label: 'Valor Contratado', valor: 'R$ 0', meta: 'Receita esperada', status: 'neutral' },
+      { label: 'Taxa Conclusão', valor: '0%', meta: 'Projetos finalizados', status: 'neutral' },
+      { label: 'Clientes', valor: '0', meta: 'Atendidos', status: 'neutral' },
+    ]
   },
   ma: {
     titulo: 'M&A',
     kpis: [
-      { label: 'Projetos em Andamento', valor: '0', meta: 'Due Diligence', status: 'neutral' },
+      { label: 'Deals em Pipeline', valor: '0', meta: 'Due Diligence ativo', status: 'neutral' },
       { label: 'Valor em Análise', valor: 'R$ 0', meta: 'Pipeline M&A', status: 'neutral' },
-      { label: 'Taxa Conclusão', valor: '0%', meta: 'Deals fechados', status: 'neutral' },
-      { label: 'Ciclo Médio', valor: '0 meses', meta: 'Duração média projeto', status: 'neutral' },
-    ],
-    charts: ['Pipeline Stage', 'Valor por Tipo', 'Timeline Projetos']
+      { label: 'Taxa Conclusão', valor: '0%', meta: 'Transações fechadas', status: 'neutral' },
+      { label: 'Valor Realizado', valor: 'R$ 0', meta: 'Transações completas', status: 'neutral' },
+    ]
   },
-  projetos: {
-    titulo: 'Projetos',
+  projetos_especiais: {
+    titulo: 'Projetos Especiais',
     kpis: [
       { label: 'Projetos Ativos', valor: '0', meta: 'Em execução', status: 'neutral' },
+      { label: 'Valor Empenhado', valor: 'R$ 0', meta: 'Total do portfólio', status: 'neutral' },
       { label: 'Taxa Pontualidade', valor: '0%', meta: 'Dentro do prazo', status: 'neutral' },
-      { label: 'Valor em Execução', valor: 'R$ 0', meta: 'Total do portfolio', status: 'neutral' },
-      { label: 'Utilização Recursos', valor: '0%', meta: 'Média equipe', status: 'neutral' },
-    ],
-    charts: ['Status Projeto', 'Fases', 'Recursos Alocados']
+      { label: 'Recursos Alocados', valor: '0', meta: 'Horas de trabalho', status: 'neutral' },
+    ]
   },
   financeiro: {
     titulo: 'Financeiro',
@@ -59,8 +63,7 @@ const INDICADORES_POR_AREA = {
       { label: 'Contas a Receber', valor: 'R$ 0', meta: 'Pendências', status: 'warning' },
       { label: 'Contas a Pagar', valor: 'R$ 0', meta: 'Obrigações', status: 'warning' },
       { label: 'Fluxo de Caixa', valor: 'R$ 0', meta: 'Saldo líquido', status: 'neutral' },
-    ],
-    charts: ['Fluxo Mensal', 'Composição Receita', 'Análise Custos']
+    ]
   },
   capital_humano: {
     titulo: 'Capital Humano',
@@ -69,18 +72,16 @@ const INDICADORES_POR_AREA = {
       { label: 'Utilização CH', valor: '0%', meta: 'Horas alocadas', status: 'neutral' },
       { label: 'Custo CH', valor: 'R$ 0', meta: 'Despesa mensal', status: 'neutral' },
       { label: 'Produtividade', valor: '0 h/pessoa', meta: 'Média por colaborador', status: 'neutral' },
-    ],
-    charts: ['Distribuição Departamentos', 'Utilização por Projeto', 'Custo por Área']
+    ]
   },
   mercado_clientes: {
-    titulo: 'Mercado & Clientes',
+    titulo: 'Mercado / Clientes',
     kpis: [
       { label: 'Clientes Ativos', valor: '0', meta: 'Portfolio', status: 'neutral' },
-      { label: 'Receita por Cliente', valor: 'R$ 0', media: 'Ticket médio', status: 'neutral' },
+      { label: 'Receita por Cliente', valor: 'R$ 0', meta: 'Ticket médio', status: 'neutral' },
       { label: 'Taxa Retenção', valor: '0%', meta: 'Clientes mantidos', status: 'neutral' },
       { label: 'Novos Clientes', valor: '0', meta: 'Período', status: 'neutral' },
-    ],
-    charts: ['Clientes por Segmento', 'Receita por Cliente', 'Análise Churn']
+    ]
   },
 };
 
@@ -102,7 +103,7 @@ function KPICard({ label, valor, meta, status }) {
 }
 
 export default function MarketingIndicadores() {
-  const [selectedArea, setSelectedArea] = useState('vendas');
+  const [selectedArea, setSelectedArea] = useState('business_valuation');
   const indicador = INDICADORES_POR_AREA[selectedArea];
 
   return (
