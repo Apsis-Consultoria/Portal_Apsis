@@ -143,6 +143,7 @@ const navItems = [
       { label: "Dashboard", page: "DashboardTI", icon: BarChart3 },
     ]
   },
+  { label: "Dashboard Qualidade", page: "DashboardQualidade", icon: BarChart3 },
   {
     label: "Apps APSIS", page: "AppsAPSIS", icon: Grid3x3,
     children: [
