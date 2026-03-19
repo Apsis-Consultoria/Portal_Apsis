@@ -4,6 +4,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import { Plus, Search, Flame, Thermometer, Snowflake, Bell, X, Edit2, Trash2, ChevronDown, ChevronRight, Columns2, List } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import KanbanPipeline from "@/components/pipeline/KanbanPipeline";
+import OportunidadesLista from "@/components/pipeline/OportunidadesLista";
 
 const fmt = (v) => v ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v) : "—";
 const TempIcon = ({ t }) => t === "Quente" ? <Flame size={13} className="text-red-500" /> : t === "Morno" ? <Thermometer size={13} className="text-amber-500" /> : <Snowflake size={13} className="text-blue-400" />;
@@ -339,38 +340,7 @@ export default function Pipeline() {
 
       {/* OAP tab */}
       {tab === "oap" && (
-        <div className="bg-white rounded-2xl border border-[#DDE3DE] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#DDE3DE] bg-[#F4F6F4]">
-                  {["Cliente","Natureza","Responsável","Status","Data",""].map(h => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#5C7060] uppercase tracking-wider">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F4F6F4]">
-                {filtrarOAPs().length === 0 ? (
-                  <tr><td colSpan={6} className="text-center py-12 text-[#5C7060] text-sm">Nenhuma oportunidade encontrada</td></tr>
-                ) : filtrarOAPs().map(o => (
-                  <tr key={o.id} className="hover:bg-[#F4F6F4] transition-colors">
-                    <td className="px-4 py-3 font-medium text-[#1A2B1F]">{o.cliente_nome}</td>
-                    <td className="px-4 py-3 text-[#5C7060]">{o.natureza}</td>
-                    <td className="px-4 py-3 text-[#5C7060]">{o.responsavel || "—"}</td>
-                    <td className="px-4 py-3"><StatusBadge status={o.status} /></td>
-                    <td className="px-4 py-3 text-xs text-[#5C7060]">{o.created_date ? format(new Date(o.created_date), "dd/MM/yy") : "—"}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => setModal({ type:"oap", data:{...o}, editing:o })} className="p-1.5 hover:bg-[#E8EDE9] rounded-lg"><Edit2 size={13} className="text-[#5C7060]" /></button>
-                        <button onClick={() => excluir("oap", o.id)} className="p-1.5 hover:bg-red-50 rounded-lg"><Trash2 size={13} className="text-red-400" /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <OportunidadesLista oaps={oaps} onReload={load} />
       )}
 
       {/* Modal */}
