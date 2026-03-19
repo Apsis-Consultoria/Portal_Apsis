@@ -37,6 +37,11 @@ export default function ChatArea({
     );
   }
 
+  // Filtrar mensagens: cliente não vê mensagens internas
+  const visibleMessages = messages.filter(
+    (msg) => !(msg.visibilidade === 'interno' && currentUserType === 'cliente')
+  );
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -47,14 +52,18 @@ export default function ChatArea({
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+        {visibleMessages.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-center">
+            <div>
+              <div className="text-4xl mb-3 opacity-30">📭</div>
+              <p className="text-sm text-[var(--text-secondary)]">Nenhuma mensagem ainda</p>
+            </div>
+          </div>
+        ) : (
+          visibleMessages.map((msg) => {
             const isOwn = msg.remetente_email === currentUserEmail;
             const isShared = msg.visibilidade === 'compartilhado';
             const isInternal = msg.visibilidade === 'interno';
-
-            // Se for mensagem interna e o usuário é cliente, não mostrar
-            if (isInternal && currentUserType === 'cliente') {
-              return null;
-            }
 
             return (
               <div key={msg.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'} group`}>
