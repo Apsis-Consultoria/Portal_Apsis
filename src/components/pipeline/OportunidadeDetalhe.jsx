@@ -47,22 +47,13 @@ export default function OportunidadeDetalhe({ oap, onClose, onReload }) {
   const [savingObs, setSavingObs] = useState(false);
   const [converting, setConverting] = useState(false);
   const [converted, setConverted] = useState(false);
-  const [userName, setUserName] = useState("Usuário");
-  const logEndRef = useRef(null);
-
-  // Proposta fields (armazenados no próprio OAP ou campos extras)
-  const [proposta, setProposta] = useState({
-    valor: oap.valor || "",
-    prazo: oap.prazo || "",
-    probabilidade: oap.probabilidade || "",
-    descricao: oap.descricao || oap.observacoes_proposta || "",
-  });
+  const [projectId, setProjectId] = useState(null);
   const [savingProp, setSavingProp] = useState(false);
 
   useEffect(() => {
     setLogEntries(parseLog(oap.observacoes));
     setConverted(!!oap.convertida_ap);
-    base44.auth.me().then(u => { if (u?.full_name) setUserName(u.full_name); }).catch(() => {});
+    setProjectId(oap.project_id || null);
   }, [oap]);
 
   useEffect(() => {
@@ -101,17 +92,45 @@ export default function OportunidadeDetalhe({ oap, onClose, onReload }) {
   const converterEmProjeto = async () => {
     if (!confirm("Criar um projeto vinculado a esta oportunidade?")) return;
     setConverting(true);
-    await base44.entities.OrdemServico.create({
+    const agora = new Date().toISOString();
+    const dataHoje = agora.split("T")[0];
+
+    // Criar projeto
+    const projeto = await base44.entities.OrdemServico.create({
       proposta_id: oap.id,
+      proposta_numero: `OAP-${oap.id.substring(0, 8)}`,
       cliente_nome: oap.cliente_nome,
+      nome_projeto: oap.cliente_nome,
       responsavel_tecnico: oap.responsavel || "",
       gerente_projeto: oap.responsavel || "",
       valor_projeto: oap.valor || 0,
       natureza: oap.natureza,
-      nome_projeto: `Projeto - ${oap.cliente_nome}`,
       status: "Não iniciado",
+      data_inicio: dataHoje,
+      descricao: `Projeto criado a partir da oportunidade ${oap.cliente_nome}`,
+      observacoes_log: JSON.stringify([{
+        timestamp: agora,
+        user: "Sistema",
+        content: `Projeto criado a partir da oportunidade: ${oap.cliente_nome} (ID: ${oap.id})`,
+      }]),
     });
-    await base44.entities.OAP.update(oap.id, { convertida_ap: true });
+
+    // Log na oportunidade
+    const logAtualizado = [...logEntries, {
+      timestamp: agora,
+      user: "Sistema",
+      content: `Oportunidade convertida em projeto (ID: ${projeto.id})`,
+    }];
+
+    // Marcar OAP como convertida e guardar project_id
+    await base44.entities.OAP.update(oap.id, {
+      convertida_ap: true,
+      project_id: projeto.id,
+      observacoes: serializeLog(logAtualizado),
+    });
+
+    setLogEntries(logAtualizado);
+    setProjectId(projeto.id);
     setConverted(true);
     setConverting(false);
     onReload();
@@ -304,6 +323,16 @@ export default function OportunidadeDetalhe({ oap, onClose, onReload }) {
                     <p className="text-base font-bold text-emerald-700">Oportunidade Convertida!</p>
                     <p className="text-sm text-slate-500 mt-1">Um projeto foi criado para esta oportunidade.</p>
                   </div>
+                  {projectId && (
+                    <a
+                      href={`/Projetos?id=${projectId}`}
+                      className="inline-flex items-center gap-2 bg-[#1A4731] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#245E40] transition-colors">
+                      <ChevronRight size={14} /> Abrir Projeto
+                    </a>
+                  )}
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs text-slate-400">
+                    A conversão foi registrada no histórico de observações.
+                  </div>
                 </div>
               ) : (
                 <>
@@ -330,7 +359,7 @@ export default function OportunidadeDetalhe({ oap, onClose, onReload }) {
 
                   <div className="flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3">
                     <ArrowRight size={14} className="text-amber-600 flex-shrink-0" />
-                    <p className="text-xs text-amber-700">Um novo projeto será criado automaticamente em <strong>Projetos → Lista de Projetos</strong>.</p>
+                    <p className="text-xs text-amber-700">Um novo projeto será criado em <strong>Projetos → Lista de Projetos</strong> com vínculo automático.</p>
                   </div>
 
                   <button
