@@ -41,7 +41,6 @@ export default function Projetos() {
   const urlParams = new URLSearchParams(location.search);
   const activeTab = urlParams.get("tab") || "dashboard";
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNovo, setShowNovo] = useState(false);
   const [loading, setLoading] = useState(true);
 
