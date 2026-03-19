@@ -12,6 +12,14 @@ import NexusDocumentos from './pages/NexusDocumentos';
 import NexusProjetos from './pages/NexusProjetos';
 import NexusPortalCliente from './pages/NexusPortalCliente';
 import NexusConfiguracoes from './pages/NexusConfiguracoes';
+import PortalClienteLayout from './components/portal/PortalClienteLayout';
+import PortalClienteInicio from './pages/portal/PortalClienteInicio';
+import PortalClienteComunicacao from './pages/portal/PortalClienteComunicacao';
+import PortalClienteDocumentos from './pages/portal/PortalClienteDocumentos';
+import PortalClienteSolicitacoes from './pages/portal/PortalClienteSolicitacoes';
+import PortalClienteProjetos from './pages/portal/PortalClienteProjetos';
+import PortalClientePerfil from './pages/portal/PortalClientePerfil';
+
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -51,6 +59,14 @@ function App() {
           <Route path="/NexusProjetos" element={<LayoutWrapper currentPageName="NexusProjetos"><NexusProjetos /></LayoutWrapper>} />
           <Route path="/NexusPortalCliente" element={<LayoutWrapper currentPageName="NexusPortalCliente"><NexusPortalCliente /></LayoutWrapper>} />
           <Route path="/NexusConfiguracoes" element={<LayoutWrapper currentPageName="NexusConfiguracoes"><NexusConfiguracoes /></LayoutWrapper>} />
+
+          {/* Portal do Cliente Routes */}
+          <Route path="/PortalClienteInicio" element={<PortalClienteLayout><PortalClienteInicio /></PortalClienteLayout>} />
+          <Route path="/PortalClienteComunicacao" element={<PortalClienteLayout><PortalClienteComunicacao /></PortalClienteLayout>} />
+          <Route path="/PortalClienteDocumentos" element={<PortalClienteLayout><PortalClienteDocumentos /></PortalClienteLayout>} />
+          <Route path="/PortalClienteSolicitacoes" element={<PortalClienteLayout><PortalClienteSolicitacoes /></PortalClienteLayout>} />
+          <Route path="/PortalClienteProjetos" element={<PortalClienteLayout><PortalClienteProjetos /></PortalClienteLayout>} />
+          <Route path="/PortalClientePerfil" element={<PortalClienteLayout><PortalClientePerfil /></PortalClienteLayout>} />
 
           <Route path="*" element={<PageNotFound />} />
         </Routes>
