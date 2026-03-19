@@ -42,10 +42,18 @@ export default function ChatArea({
     (msg) => !(msg.visibilidade === 'interno' && currentUserType === 'cliente')
   );
 
+  // Agrupar mensagens por data
+  const groupedMessages = visibleMessages.reduce((acc, msg) => {
+    const date = new Date(msg.created_date).toLocaleDateString('pt-BR');
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(msg);
+    return acc;
+  }, {});
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
-       <div className="border-b border-[var(--border)] px-6 py-4">
+      <div className="border-b-2 border-[var(--border)] px-6 py-4 bg-gradient-to-r from-white to-[var(--surface-2)]">
          <div className="flex items-start justify-between">
            <div>
              <h2 className="text-lg font-semibold text-[var(--text-primary)]">{selectedConversation.titulo}</h2>
@@ -62,16 +70,29 @@ export default function ChatArea({
        </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-        {visibleMessages.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-center">
-            <div>
-              <div className="text-4xl mb-3 opacity-30">📭</div>
-              <p className="text-sm text-[var(--text-secondary)]">Nenhuma mensagem ainda</p>
-            </div>
-          </div>
-        ) : (
-          visibleMessages.map((msg) => {
+       <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-[var(--surface-2)]">
+         {visibleMessages.length === 0 ? (
+           <div className="flex items-center justify-center h-full text-center">
+             <div>
+               <div className="text-4xl mb-3 opacity-30">📭</div>
+               <p className="text-sm text-[var(--text-secondary)]">Nenhuma mensagem ainda</p>
+             </div>
+           </div>
+         ) : (
+           Object.entries(groupedMessages).map(([date, dateMessages]) => (
+             <div key={date}>
+               {/* Separador de data */}
+               <div className="flex items-center gap-3 mb-4">
+                 <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent" />
+                 <span className="text-xs font-semibold text-[var(--text-secondary)] bg-[var(--surface-2)] px-3 py-1 rounded-full border border-[var(--border)]">
+                   {new Date(date).toLocaleDateString('pt-BR', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase()}
+                 </span>
+                 <div className="h-px flex-1 bg-gradient-to-l from-[var(--border)] to-transparent" />
+               </div>
+
+               {/* Mensagens do dia */}
+               <div className="space-y-3">
+                 {dateMessages.map((msg) => {
             const isOwn = msg.remetente_email === currentUserEmail;
             const isShared = msg.visibilidade === 'compartilhado';
             const isInternal = msg.visibilidade === 'interno';
@@ -115,10 +136,10 @@ export default function ChatArea({
                         {isShared ? '🔓' : '🔒'}
                       </button>
                     )}
-                  </div>
+                    </div>
 
-                  {/* Metadados */}
-                  <div className="flex items-center gap-1.5 mt-1.5 px-3 text-xs text-[var(--text-secondary)]">
+                    {/* Metadados */}
+                    <div className="flex items-center gap-1.5 mt-2 px-3 text-xs text-[var(--text-secondary)]">
                     <span>{new Date(msg.created_date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
                     {isOwn && msg.lida_por?.length > 0 && (
                       <CheckCheck size={13} className="text-[var(--apsis-orange)]" />
