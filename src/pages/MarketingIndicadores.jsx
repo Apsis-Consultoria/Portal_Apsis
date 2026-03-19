@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import IndicadoresGraficos from '@/components/marketing/IndicadoresGraficos';
 
 const INDICADORES_POR_AREA = {
   business_valuation: {
@@ -138,13 +139,8 @@ export default function MarketingIndicadores() {
         ))}
       </div>
 
-      {/* Placeholder para Charts */}
-      <div className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg p-8 text-center">
-        <p className="text-slate-600 font-medium">Gráficos analíticos em desenvolvimento</p>
-        <p className="text-sm text-slate-500 mt-1">
-          Visualizações de tendências e análises por período
-        </p>
-      </div>
+      {/* Gráficos */}
+      <IndicadoresGraficos selectedArea={selectedArea} />
     </div>
   );
 }
