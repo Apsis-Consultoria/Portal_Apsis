@@ -10,6 +10,7 @@ import {
   Loader2, Shield, AlertTriangle, Edit2, Save, ChevronDown, ChevronUp,
   Download, FileText
 } from "lucide-react";
+import ObservacoesLog from "./shared/ObservacoesLog";
 
 const IMPACTO_STYLE = {
   "Baixo":   { badge: "bg-slate-100 text-slate-500",    border: "border-l-slate-300",   icon: "text-slate-400"   },
@@ -27,7 +28,8 @@ const STATUS_STYLE = {
 
 const EMPTY_FORM = {
   descricao: "", categoria: "Prazo", probabilidade: "Média",
-  impacto: "Médio", status: "Aberto", plano_mitigacao: "", responsavel: "", prazo_resolucao: ""
+  impacto: "Médio", status: "Aberto", plano_mitigacao: "", responsavel: "", prazo_resolucao: "",
+  observacoes_log: ""
 };
 
 export default function ProjetoRiscos({ osId }) {
@@ -174,9 +176,6 @@ export default function ProjetoRiscos({ osId }) {
         </div>
       )}
 
-
-      </div>
-
       {/* ── Form novo risco ──────────────────────────────────────────── */}
       {showForm && (
         <FormCard title="Novo Risco" onClose={() => setShowForm(false)}>
@@ -240,12 +239,10 @@ export default function ProjetoRiscos({ osId }) {
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 flex-shrink-0">
-                        {r.plano_mitigacao && (
-                          <button onClick={() => setExpanded(e => ({ ...e, [r.id]: !e[r.id] }))}
-                            className="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-slate-600">
-                            {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                          </button>
-                        )}
+                        <button onClick={() => setExpanded(e => ({ ...e, [r.id]: !e[r.id] }))}
+                          className="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-slate-600">
+                          {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                        </button>
                         <button onClick={() => startEdit(r)}
                           className="w-6 h-6 flex items-center justify-center rounded text-slate-300 hover:text-blue-500 hover:bg-blue-50 transition-colors">
                           <Edit2 size={11} />
@@ -277,10 +274,23 @@ export default function ProjetoRiscos({ osId }) {
                       </div>
                     )}
 
-                    {/* Plano de mitigação expandido */}
-                    {isExpanded && r.plano_mitigacao && (
-                      <div className="mx-5 mb-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
-                        <span className="font-semibold text-slate-700">Plano de mitigação:</span>{" "}{r.plano_mitigacao}
+                    {/* Expandido: plano + observações */}
+                    {isExpanded && (
+                      <div className="mx-5 mb-4 space-y-3">
+                        {r.plano_mitigacao && (
+                          <div className="p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
+                            <span className="font-semibold text-slate-700">Plano de mitigação:</span>{" "}{r.plano_mitigacao}
+                          </div>
+                        )}
+                        <ObservacoesLog
+                          value={r.observacoes_log || ""}
+                          onChange={async (val) => {
+                            await base44.entities.RiscoProjeto.update(r.id, { observacoes_log: val });
+                            setRiscos(prev => prev.map(x => x.id === r.id ? { ...x, observacoes_log: val } : x));
+                          }}
+                          currentUser="Usuário"
+                          label="Histórico de Observações"
+                        />
                       </div>
                     )}
                   </>
