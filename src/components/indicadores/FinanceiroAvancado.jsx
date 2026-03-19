@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import MetricCardAvancado from './MetricCardAvancado';
-import { Percent, DollarSign, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { BarChart as BarChartIcon, LineChart as LineChartIcon } from 'lucide-react';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Percent, DollarSign } from 'lucide-react';
 
 const DADOS_FLUXO = [
   { mes: 'Jan', entradas: 280, saidas: 168 },
