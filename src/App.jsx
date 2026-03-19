@@ -16,6 +16,7 @@ import NexusConfiguracoes from './pages/NexusConfiguracoes';
 import CapitalHumano from './pages/CapitalHumano';
 import RateiosCapitalHumano from './pages/RateiosCapitalHumano';
 import FluxoCaixa from './pages/FluxoCaixa';
+import Estoque from './pages/Estoque';
 import PortalClienteLayout from './components/portal/PortalClienteLayout';
 import PortalClienteInicio from './pages/portal/PortalClienteInicio';
 import PortalClienteComunicacao from './pages/portal/PortalClienteComunicacao';
@@ -74,6 +75,7 @@ function App() {
             <Route path="/CapitalHumano" element={<LayoutWrapper currentPageName="CapitalHumano"><CapitalHumano /></LayoutWrapper>} />
             <Route path="/RateiosCapitalHumano" element={<LayoutWrapper currentPageName="RateiosCapitalHumano"><RateiosCapitalHumano /></LayoutWrapper>} />
             <Route path="/FluxoCaixa" element={<LayoutWrapper currentPageName="FluxoCaixa"><FluxoCaixa /></LayoutWrapper>} />
+            <Route path="/Estoque" element={<LayoutWrapper currentPageName="Estoque"><Estoque /></LayoutWrapper>} />
 
             {/* Portal do Cliente Routes */}
             <Route path="/PortalClienteInicio" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteInicio /></ClientProtectedRoute></PortalClienteLayout>} />
