@@ -78,18 +78,20 @@ export default function ProjetoDetalhe() {
             <Link to="/Projetos" className="hover:text-[#1A4731] transition-colors">Projetos</Link>
             <ChevronRight size={12} />
             <span className="text-slate-600 font-medium truncate max-w-xs">{projeto.cliente_nome}</span>
+            <ChevronRight size={12} />
+            <span className="text-[#F47920] font-semibold">{TABS.find(t => t.id === tab)?.label}</span>
           </div>
 
           {/* Identity row */}
           <div className="flex items-start justify-between gap-4 flex-wrap pb-4">
             <div className="flex items-start gap-3">
               <Link to="/Projetos">
-                <button className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors mt-0.5">
+                <button className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all mt-0.5">
                   <ArrowLeft size={15} className="text-slate-500" />
                 </button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-slate-900 leading-tight">{projeto.cliente_nome || "—"}</h1>
+                <h1 className="text-xl font-bold text-slate-900 leading-tight tracking-tight">{projeto.cliente_nome || "—"}</h1>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   {projeto.natureza && <span className="text-xs text-slate-400">{projeto.natureza}</span>}
                   {projeto.proposta_numero && <><span className="text-slate-200">·</span><span className="text-xs font-mono text-slate-400">{projeto.proposta_numero}</span></>}
@@ -98,17 +100,17 @@ export default function ProjetoDetalhe() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${s.bg} ${s.text}`}>
+              <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${s.bg} ${s.text}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />{projeto.status}
               </span>
               {atrasado && (
-                <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-red-100 text-red-600">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-full bg-red-100 text-red-600">
                   <AlertTriangle size={10} /> Atrasado
                 </span>
               )}
               <div className="flex items-center gap-2">
-                <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full ${atrasado ? "bg-red-400" : "bg-[#1A4731]"}`}
+                <div className="w-28 h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all ${atrasado ? "bg-red-400" : "bg-[#1A4731]"}`}
                     style={{ width: `${projeto.percentual_conclusao || 0}%` }} />
                 </div>
                 <span className={`text-xs font-bold ${atrasado ? "text-red-500" : "text-slate-600"}`}>
@@ -119,10 +121,10 @@ export default function ProjetoDetalhe() {
           </div>
 
           {/* Tabs */}
-          <div className="flex overflow-x-auto -mx-6 px-6 gap-0">
+          <div className="flex overflow-x-auto -mx-6 px-6 gap-0 scrollbar-hide">
             {TABS.map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setTab(id)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 transition-all ${
+                className={`flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-all ${
                   tab === id
                     ? "border-[#F47920] text-[#F47920]"
                     : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-200"
