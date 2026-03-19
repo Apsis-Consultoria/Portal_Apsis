@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PageHeader from "./shared/PageHeader";
+import { downloadCSV, downloadPDF, fmtDatePTBR } from "@/utils/exportUtils";
 import {
   FileText, Plus, Upload, Check, Trash2, ExternalLink, Send,
-  X, Loader2, HelpCircle, FolderOpen, Link2, AlertCircle, ChevronDown
+  X, Loader2, HelpCircle, FolderOpen, Link2, AlertCircle, ChevronDown, Download
 } from "lucide-react";
 
 const TIPO_ICON = {
@@ -89,6 +90,48 @@ export default function ProjetoDocumentos({ osId, projeto }) {
   const filtered = filter === "todos" ? documentos : documentos.filter(d => d.status === filter);
   const porStatus = (s) => documentos.filter(d => d.status === s).length;
 
+  const exportarCSV = () => {
+    const headers = ["Nome", "Tipo", "Versão", "Status", "Responsável", "Prazo Entrega", "Enviado ao Cliente", "URL", "Observações"];
+    const rows = filtered.map((d) => [
+      d.nome || "",
+      d.tipo || "",
+      d.versao || "1.0",
+      d.status || "",
+      d.responsavel || "",
+      fmtDatePTBR(d.data_entrega),
+      d.enviado_cliente ? "Sim" : "Não",
+      d.url || "",
+      d.observacoes || "",
+    ]);
+    downloadCSV(`documentos_${osId}`, headers, rows);
+  };
+
+  const exportarPDF = () => {
+    const headers = ["Nome", "Tipo", "Versão", "Status", "Responsável", "Prazo"];
+    const rows = filtered.map((d) => [
+      d.nome || "",
+      d.tipo || "",
+      d.versao || "1.0",
+      d.status || "",
+      d.responsavel || "",
+      fmtDatePTBR(d.data_entrega),
+    ]);
+    downloadPDF({
+      filename: `documentos_${osId}`,
+      title: "Documentos do Projeto",
+      subtitle: `Filtro: ${filter === "todos" ? "Todos" : filter} — ${filtered.length} documento(s)`,
+      headers,
+      rows,
+      kpis: [
+        { label: "Rascunho", value: porStatus("Rascunho") },
+        { label: "Em Revisão", value: porStatus("Em revisão") },
+        { label: "Aprovado", value: porStatus("Aprovado") },
+        { label: "Entregue", value: porStatus("Entregue") },
+      ],
+      colWidths: [55, 25, 15, 25, 35, 25],
+    });
+  };
+
   return (
     <div className="p-6 space-y-5 max-w-5xl mx-auto">
 
@@ -97,10 +140,20 @@ export default function ProjetoDocumentos({ osId, projeto }) {
         subtitle="Gerencie laudos, relatórios e entregas do projeto"
         icon={FileText}
         actions={(
-          <Button size="sm" onClick={() => setShowForm(!showForm)}
-            className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
-            <Plus size={12} /> Novo Documento
-          </Button>
+          <>
+            <button onClick={exportarCSV}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-all">
+              <FileText size={12} /> CSV
+            </button>
+            <button onClick={exportarPDF}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#1A4731]/30 rounded-lg text-[#1A4731] hover:bg-[#1A4731]/5 transition-all">
+              <Download size={12} /> PDF
+            </button>
+            <Button size="sm" onClick={() => setShowForm(!showForm)}
+              className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
+              <Plus size={12} /> Novo Documento
+            </Button>
+          </>
         )}
       />
 

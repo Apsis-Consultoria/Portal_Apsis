@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PageHeader from "./shared/PageHeader";
+import { downloadCSV, downloadPDF, fmtDatePTBR } from "@/utils/exportUtils";
 import {
   AlertOctagon, Plus, Check, Trash2, ShieldCheck, X,
-  Loader2, Shield, AlertTriangle, Edit2, Save, ChevronDown, ChevronUp
+  Loader2, Shield, AlertTriangle, Edit2, Save, ChevronDown, ChevronUp,
+  Download, FileText
 } from "lucide-react";
 
 const IMPACTO_STYLE = {
@@ -78,6 +80,47 @@ export default function ProjetoRiscos({ osId }) {
     setRiscos(prev => prev.filter(r => r.id !== id));
   };
 
+  const exportarCSV = () => {
+    const headers = ["Descrição", "Categoria", "Probabilidade", "Impacto", "Status", "Responsável", "Prazo Resolução", "Plano de Mitigação"];
+    const rows = riscos.map((r) => [
+      r.descricao || "",
+      r.categoria || "",
+      r.probabilidade || "",
+      r.impacto || "",
+      r.status || "",
+      r.responsavel || "",
+      fmtDatePTBR(r.prazo_resolucao),
+      r.plano_mitigacao || "",
+    ]);
+    downloadCSV(`riscos_${osId}`, headers, rows);
+  };
+
+  const exportarPDF = () => {
+    const headers = ["Descrição", "Categoria", "Impacto", "Status", "Responsável", "Prazo"];
+    const rows = riscos.map((r) => [
+      r.descricao || "",
+      r.categoria || "",
+      r.impacto || "",
+      r.status || "",
+      r.responsavel || "",
+      fmtDatePTBR(r.prazo_resolucao),
+    ]);
+    downloadPDF({
+      filename: `riscos_${osId}`,
+      title: "Registro de Riscos",
+      subtitle: `Total: ${riscos.length} risco(s) — Abertos: ${riscos.filter(r => r.status === "Aberto").length} — Críticos: ${riscos.filter(r => r.impacto === "Crítico").length}`,
+      headers,
+      rows,
+      kpis: [
+        { label: "Abertos", value: riscos.filter(r => r.status === "Aberto").length },
+        { label: "Em Mitigação", value: riscos.filter(r => r.status === "Em mitigação").length },
+        { label: "Resolvidos", value: riscos.filter(r => r.status === "Resolvido").length },
+        { label: "Críticos", value: riscos.filter(r => r.impacto === "Crítico").length },
+      ],
+      colWidths: [60, 28, 20, 28, 30, 24],
+    });
+  };
+
   if (loading) return (
     <div className="flex justify-center py-16">
       <div className="w-6 h-6 border-2 border-slate-200 border-t-[#1A4731] rounded-full animate-spin" />
@@ -98,10 +141,20 @@ export default function ProjetoRiscos({ osId }) {
         icon={AlertOctagon}
         iconColor="text-red-500"
         actions={(
-          <Button size="sm" onClick={() => setShowForm(!showForm)}
-            className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
-            <Plus size={12} /> Novo Risco
-          </Button>
+          <>
+            <button onClick={exportarCSV}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-all">
+              <FileText size={12} /> CSV
+            </button>
+            <button onClick={exportarPDF}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#1A4731]/30 rounded-lg text-[#1A4731] hover:bg-[#1A4731]/5 transition-all">
+              <Download size={12} /> PDF
+            </button>
+            <Button size="sm" onClick={() => setShowForm(!showForm)}
+              className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
+              <Plus size={12} /> Novo Risco
+            </Button>
+          </>
         )}
       />
 

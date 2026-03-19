@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import {
   Search, LayoutList, LayoutGrid, AlertTriangle, ChevronRight,
   Calendar, Users, DollarSign, FileText, Filter, ArrowUpDown,
-  Plus, ExternalLink, X, SlidersHorizontal
+  Plus, ExternalLink, X, SlidersHorizontal, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NovoProjetoModal from "@/components/projetos/NovoProjetoModal";
+import { downloadCSV, downloadPDF, fmtBRL, fmtDatePTBR } from "@/utils/exportUtils";
 
 const fmt = (v) => v >= 1000000 ? `R$ ${(v / 1000000).toFixed(1)}M` : v >= 1000 ? `R$ ${(v / 1000).toFixed(0)}K` : `R$ ${(v || 0).toFixed(0)}`;
 
@@ -92,8 +93,47 @@ export default function ProjetosLista({ data, onRefresh }) {
   const activeFilters = [statusFilter, respFilter, tipoFilter].filter(f => f !== "todos").length;
 
   const clearFilters = () => { setStatusFilter("todos"); setRespFilter("todos"); setTipoFilter("todos"); setPage(1); };
-
   const handleSearch = (v) => { setSearch(v); setPage(1); };
+
+  const exportarCSV = () => {
+    const headers = ["Cliente", "Natureza", "Responsável", "Status", "Progresso (%)", "Prazo", "Valor", "Risco"];
+    const rows = filtered.map((p) => [
+      p.cliente_nome || "",
+      p.natureza || "",
+      p.responsavel_tecnico || "",
+      p.status || "",
+      p.percentual_conclusao || 0,
+      fmtDatePTBR(p.prazo_previsto),
+      fmtBRL(getValor(p.id)),
+      getRisco(p.id) || "",
+    ]);
+    downloadCSV("lista_projetos", headers, rows);
+  };
+
+  const exportarPDF = () => {
+    const headers = ["Cliente", "Responsável", "Status", "Progresso", "Prazo", "Valor"];
+    const rows = filtered.map((p) => [
+      p.cliente_nome || "",
+      p.responsavel_tecnico || "",
+      p.status || "",
+      `${p.percentual_conclusao || 0}%`,
+      fmtDatePTBR(p.prazo_previsto),
+      fmtBRL(getValor(p.id)),
+    ]);
+    downloadPDF({
+      filename: "lista_projetos",
+      title: "Lista de Projetos",
+      subtitle: `${filtered.length} projeto(s) — filtros: status=${statusFilter}, resp=${respFilter}`,
+      headers,
+      rows,
+      kpis: [
+        { label: "Total filtrado", value: filtered.length },
+        { label: "Ativos", value: filtered.filter(p => p.status === "Ativo").length },
+        { label: "Receita", value: fmtBRL(filtered.reduce((s, p) => s + getValor(p.id), 0)) },
+      ],
+      colWidths: [48, 35, 25, 22, 30, 30],
+    });
+  };
 
   return (
     <div className="p-6 space-y-5">
@@ -183,6 +223,18 @@ export default function ProjetosLista({ data, onRefresh }) {
             )}
           </div>
         )}
+      </div>
+
+      {/* Export */}
+      <div className="flex items-center gap-2 justify-end">
+        <button onClick={exportarCSV}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all">
+          <FileText size={12} /> Exportar CSV
+        </button>
+        <button onClick={exportarPDF}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#1A4731]/30 rounded-lg text-[#1A4731] hover:bg-[#1A4731]/5 transition-all">
+          <Download size={12} /> Exportar PDF
+        </button>
       </div>
 
       {/* Count */}

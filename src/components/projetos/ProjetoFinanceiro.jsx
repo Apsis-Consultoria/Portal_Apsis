@@ -112,13 +112,45 @@ export default function ProjetoFinanceiro({ osId, projeto }) {
   };
 
   const exportCSV = () => {
-    const header = "Vencimento,Valor,Status,Mês Ref.,NF,Observações\n";
-    const rows = parcelas.map(p =>
-      `"${p.data_vencimento}",${p.valor},"${p.status}","${p.mes_referencia || ""}","${p.nota_fiscal || ""}","${p.observacoes || ""}"`
-    ).join("\n");
-    const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = `financeiro_${osId}.csv`; a.click();
+    const headers = ["Vencimento", "Valor", "Status", "Mês Referência", "Nota Fiscal", "Data Recebimento", "Observações"];
+    const rows = parcelas.map((p) => [
+      fmtDate(p.data_vencimento),
+      fmt(p.valor),
+      p.status || "",
+      p.mes_referencia || "",
+      p.nota_fiscal || "",
+      fmtDate(p.data_recebimento),
+      p.observacoes || "",
+    ]);
+    import("@/utils/exportUtils").then(({ downloadCSV }) => downloadCSV(`financeiro_${osId}`, headers, rows));
+  };
+
+  const exportPDF = () => {
+    const headers = ["Vencimento", "Valor", "Status", "Mês Ref.", "NF", "Recebimento"];
+    const rows = parcelas.map((p) => [
+      fmtDate(p.data_vencimento),
+      fmt(p.valor),
+      p.status || "",
+      p.mes_referencia || "",
+      p.nota_fiscal || "",
+      fmtDate(p.data_recebimento),
+    ]);
+    import("@/utils/exportUtils").then(({ downloadPDF }) =>
+      downloadPDF({
+        filename: `financeiro_${osId}`,
+        title: "Financeiro do Projeto",
+        subtitle: `${projeto?.cliente_nome || osId} — ${parcelas.length} parcela(s)`,
+        headers,
+        rows,
+        kpis: [
+          { label: "Contrato", value: fmt(valorContrato) },
+          { label: "Recebido", value: fmt(valorRecebido) },
+          { label: "A Faturar", value: fmt(aFaturar) },
+          { label: "Em Atraso", value: fmt(valorEmAtraso) },
+        ],
+        colWidths: [28, 32, 22, 22, 22, 28, 36],
+      })
+    );
   };
 
   if (loading) return (
@@ -140,9 +172,14 @@ export default function ProjetoFinanceiro({ osId, projeto }) {
               className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
               <Plus size={12} /> Nova Parcela
             </Button>
-            <Button size="sm" variant="outline" onClick={exportCSV} className="gap-1.5 text-xs border-slate-200 text-slate-500 hover:bg-white transition-all">
-              <Download size={12} /> CSV
-            </Button>
+            <button onClick={exportCSV}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-all">
+              <FileText size={12} /> CSV
+            </button>
+            <button onClick={exportPDF}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#1A4731]/30 rounded-lg text-[#1A4731] hover:bg-[#1A4731]/5 transition-all">
+              <Download size={12} /> PDF
+            </button>
           </>
         )}
       />

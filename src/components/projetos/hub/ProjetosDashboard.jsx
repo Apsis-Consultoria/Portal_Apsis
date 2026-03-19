@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import {
   Briefcase, DollarSign, AlertTriangle, Clock, CheckCircle2,
   TrendingUp, ChevronRight, AlertOctagon, BarChart3, Users,
-  Activity, Calendar
+  Activity, Calendar, Download, FileText
 } from "lucide-react";
+import { downloadCSV, downloadPDF, fmtBRL, fmtDatePTBR } from "@/utils/exportUtils";
 import {
   BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip,
   PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend
@@ -96,12 +97,69 @@ export default function ProjetosDashboard({ data, loading }) {
     .sort((a, b) => (a.prazo_previsto || "").localeCompare(b.prazo_previsto || ""))
     .slice(0, 10);
 
+  // ── Exportações ───────────────────────────────────────────────────────────
+  const exportarCSV = () => {
+    const headers = ["Cliente", "Natureza", "Responsável", "Status", "Progresso (%)", "Prazo", "Valor"];
+    const rows = projetos.map((p) => {
+      const valor = parcelas.filter(pa => pa.os_id === p.id).reduce((s, pa) => s + (pa.valor || 0), 0);
+      return [
+        p.cliente_nome || "",
+        p.natureza || "",
+        p.responsavel_tecnico || "",
+        p.status || "",
+        p.percentual_conclusao || 0,
+        fmtDatePTBR(p.prazo_previsto),
+        fmtBRL(valor),
+      ];
+    });
+    downloadCSV("dashboard_projetos", headers, rows);
+  };
+
+  const exportarPDF = () => {
+    const kpisList = [
+      { label: "Projetos Ativos", value: ativos },
+      { label: "Em Atraso", value: atrasados },
+      { label: "Horas Lançadas", value: `${horasLancadas.toFixed(0)}h` },
+      { label: "Receita Total", value: fmtK(receitaTotal) },
+    ];
+    const headers = ["Cliente", "Natureza", "Responsável", "Status", "Progresso", "Prazo"];
+    const rows = tabelaProjetos.map((p) => [
+      p.cliente_nome || "",
+      p.natureza || "",
+      p.responsavel_tecnico || "",
+      p.status || "",
+      `${p.percentual_conclusao || 0}%`,
+      fmtDatePTBR(p.prazo_previsto),
+    ]);
+    downloadPDF({
+      filename: "dashboard_projetos",
+      title: "Dashboard de Projetos",
+      subtitle: `Portfólio ativo — ${new Date().toLocaleDateString("pt-BR")}`,
+      headers,
+      rows,
+      kpis: kpisList,
+      colWidths: [50, 40, 35, 25, 20, 20],
+    });
+  };
+
   return (
     <div className="p-6 space-y-6 animate-fadeIn">
       {/* Header */}
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">Dashboard de Projetos</h2>
-        <p className="text-sm text-slate-400 mt-0.5">Visão executiva consolidada do portfólio ativo</p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Dashboard de Projetos</h2>
+          <p className="text-sm text-slate-400 mt-0.5">Visão executiva consolidada do portfólio ativo</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={exportarCSV}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all">
+            <FileText size={12} /> CSV
+          </button>
+          <button onClick={exportarPDF}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#1A4731]/30 rounded-lg text-[#1A4731] hover:bg-[#1A4731]/5 transition-all">
+            <Download size={12} /> PDF
+          </button>
+        </div>
       </div>
 
       {/* KPIs Row 1 */}

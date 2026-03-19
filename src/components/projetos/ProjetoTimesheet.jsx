@@ -116,13 +116,45 @@ export default function ProjetoTimesheet({ osId, projeto }) {
   };
 
   const exportCSV = () => {
-    const header = "Colaborador,Data,Horas,Faturável,Aprovado,Descrição\n";
-    const rows = entradas.map(e =>
-      `"${e.colaborador}","${e.data}",${e.horas},${e.faturavel ? "Sim" : "Não"},${e.aprovado ? "Sim" : "Não"},"${e.descricao || ""}"`
-    ).join("\n");
-    const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = `horas_${osId}.csv`; a.click();
+    const headers = ["Colaborador", "Data", "Horas", "Faturável", "Aprovado", "Descrição", "Tarefa ID"];
+    const rows = entradas.map((e) => [
+      e.colaborador || "",
+      fmtDate(e.data),
+      (e.horas || 0).toFixed(2),
+      e.faturavel ? "Sim" : "Não",
+      e.aprovado ? "Sim" : "Não",
+      e.descricao || "",
+      e.tarefa_id || "",
+    ]);
+    import("@/utils/exportUtils").then(({ downloadCSV }) => downloadCSV(`horas_${osId}`, headers, rows));
+  };
+
+  const exportPDF = () => {
+    const headers = ["Colaborador", "Data", "Horas", "Faturável", "Aprovado", "Descrição"];
+    const rows = entradas.map((e) => [
+      e.colaborador || "",
+      fmtDate(e.data),
+      `${e.horas || 0}h`,
+      e.faturavel ? "Sim" : "Não",
+      e.aprovado ? "Sim" : "Não",
+      e.descricao || "",
+    ]);
+    import("@/utils/exportUtils").then(({ downloadPDF, fmtBRL }) =>
+      downloadPDF({
+        filename: `horas_${osId}`,
+        title: "Equipe e Horas",
+        subtitle: `Projeto: ${projeto?.cliente_nome || osId} — ${entradas.length} entrada(s)`,
+        headers,
+        rows,
+        kpis: [
+          { label: "Horas Previstas", value: `${fmt1(horasPrevistas)}h` },
+          { label: "Horas Executadas", value: `${fmt1(horasExecutadas)}h` },
+          { label: "Faturáveis", value: `${fmt1(horasFaturaveis)}h` },
+          { label: "Aprovadas", value: `${fmt1(horasAprovadas)}h` },
+        ],
+        colWidths: [38, 22, 15, 18, 18, 79],
+      })
+    );
   };
 
   if (loading) return (
@@ -148,9 +180,14 @@ export default function ProjetoTimesheet({ osId, projeto }) {
               className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
               <Plus size={12} /> Nova Entrada
             </Button>
-            <Button size="sm" variant="outline" onClick={exportCSV} className="gap-1.5 text-xs border-slate-200 text-slate-500 hover:bg-white transition-all">
-              <Download size={12} /> CSV
-            </Button>
+            <button onClick={exportCSV}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-all">
+              <FileText size={12} /> CSV
+            </button>
+            <button onClick={exportPDF}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#1A4731]/30 rounded-lg text-[#1A4731] hover:bg-[#1A4731]/5 transition-all">
+              <Download size={12} /> PDF
+            </button>
           </>
         )}
       />
