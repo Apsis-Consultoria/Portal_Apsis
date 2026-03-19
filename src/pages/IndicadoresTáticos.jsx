@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Filter } from 'lucide-react';
+import { Calendar, Filter, AlertCircle, CheckCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
 import ResumoExecutivo from '@/components/indicadores/ResumoExecutivo';
 import ResumoExecutivoAvancado from '@/components/indicadores/ResumoExecutivoAvancado';
 import FinanceiroAvancado from '@/components/indicadores/FinanceiroAvancado';
@@ -16,6 +17,30 @@ export default function IndicadoresTáticos() {
   const [periodo, setPeriodo] = useState('mes');
   const [unidade, setUnidade] = useState('todas');
   const [ano, setAno] = useState(new Date().getFullYear());
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState(null);
+  const [dados, setDados] = useState(null);
+
+  useEffect(() => {
+    carregarDados();
+  }, [periodo, unidade, ano]);
+
+  const carregarDados = async () => {
+    try {
+      setLoading(true);
+      setErro(null);
+      const projetos = await base44.entities.Projeto?.list?.('-updated_date', 100).catch(() => []);
+      const vendas = await base44.entities.SalesTransaction?.list?.('-updated_date', 100).catch(() => []);
+      const despesas = await base44.entities.RateioLancamento?.list?.('-updated_date', 100).catch(() => []);
+      const equipamentos = await base44.entities.AtivoTI?.list?.('-updated_date', 100).catch(() => []);
+      setDados({ projetos: projetos || [], vendas: vendas || [], despesas: despesas || [], equipamentos: equipamentos || [] });
+    } catch (err) {
+      console.error('Erro:', err);
+      setErro('Dados simulados. Verifique a integração.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const periodos = [
     { label: 'Mês Atual', value: 'mes' },
@@ -87,6 +112,23 @@ export default function IndicadoresTáticos() {
           </Button>
         </div>
       </Card>
+
+      {/* Status de Integração */}
+      {erro && (
+        <Card className="bg-yellow-50 border-2 border-yellow-200 p-4 flex items-start gap-3">
+          <AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={18} />
+          <div>
+            <p className="text-sm font-medium text-yellow-900">{erro}</p>
+            {dados && <p className="text-xs text-yellow-700 mt-1">Entidades detectadas: {dados.projetos.length} projetos | {dados.vendas.length} vendas | {dados.despesas.length} despesas | {dados.equipamentos.length} ativos</p>}
+          </div>
+        </Card>
+      )}
+      {!erro && !loading && dados && (
+        <Card className="bg-green-50 border-2 border-green-200 p-4 flex items-center gap-3">
+          <CheckCircle className="text-green-600" size={18} />
+          <p className="text-sm font-medium text-green-900">Sistema integrado: {dados.projetos.length} projetos | {dados.vendas.length} vendas | {dados.despesas.length} despesas | {dados.equipamentos.length} ativos</p>
+        </Card>
+      )}
 
       {/* Alertas Executivos */}
       <AlertasExecutivos />
