@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import PageHeader from "./shared/PageHeader";
 import {
   DollarSign, Plus, Check, Trash2, TrendingUp, AlertTriangle,
-  Download, X, Loader2, BarChart3, Calendar, TrendingDown, Clock
+  Download, X, Loader2, BarChart3, Calendar, TrendingDown, Clock, FileText
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
