@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
+import Vendas from './pages/Vendas';
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -33,6 +34,7 @@ function App() {
               }
             />
           ))}
+          <Route path="/Vendas" element={<LayoutWrapper currentPageName="Vendas"><Vendas /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
         <Toaster />

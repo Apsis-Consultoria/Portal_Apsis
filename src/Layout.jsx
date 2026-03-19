@@ -17,7 +17,7 @@ import {
   LayoutDashboard, GitBranch, FolderKanban,
   DollarSign, BarChart3, FileText, ChevronLeft,
   ChevronRight, Bell, User, Menu, X, Megaphone, TrendingUp, PieChart, Settings, ClipboardCheck, Sparkles, Users, Grid3x3, Home,
-  Search, Columns2, Calendar, Timer, CreditCard, MessageSquare, AlertOctagon
+  Search, Columns2, Calendar, Timer, CreditCard, MessageSquare, AlertOctagon, ShoppingBag, Briefcase
 } from "lucide-react";
 import { Clock } from "lucide-react";
 import AssistantWidget from "@/components/AssistantWidget";
@@ -124,6 +124,17 @@ const navItems = [
       { label: "App Conciliação", page: "AppConciliacao", icon: BarChart3, externalUrl: "https://invativos.apsis.com.br/admin/inventories" },
       { label: "App Imóveis", page: "AppImoveis", icon: FolderKanban, externalUrl: "https://imoveis.apsis.com.br/" },
       { label: "App Cubus", page: "AppCubus", icon: BarChart3 },
+    ]
+  },
+  {
+    label: "Vendas", page: "Vendas", icon: ShoppingBag,
+    children: [
+      { label: "Dashboard", page: "Vendas", icon: LayoutDashboard, tabParam: "dashboard" },
+      { label: "Pipeline", page: "Vendas", icon: GitBranch, tabParam: "pipeline" },
+      { label: "Oportunidades", page: "Vendas", icon: Briefcase, tabParam: "oportunidades" },
+      { label: "Clientes", page: "Vendas", icon: Users, tabParam: "clientes" },
+      { label: "Propostas", page: "Vendas", icon: FileText, tabParam: "propostas" },
+      { label: "Configurações", page: "Vendas", icon: Settings, tabParam: "configuracoes" },
     ]
   },
   { label: "Relatórios", page: "Relatorios", icon: FileText },
