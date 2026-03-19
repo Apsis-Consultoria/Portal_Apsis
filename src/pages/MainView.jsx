@@ -23,7 +23,7 @@ export default function MainView() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-5xl font-bold text-[#1A4731] mb-4">Bem-vindo(a) Apsiano!</h1>
-          <p className="text-lg"><span className="text-[#5C7060]">Explore os módulos do </span><span className="bg-gradient-to-r from-[#1A4731] via-[#F47920] to-[#245E40] bg-clip-text text-transparent font-bold">Portal APSIS</span><span className="text-[#5C7060]"> abaixo</span></p>
+          <p className="text-[#5C7060] text-lg">Explore os módulos do Portal APSIS abaixo</p>
         </div>
 
         {/* Modules Grid */}
