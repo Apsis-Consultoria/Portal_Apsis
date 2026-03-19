@@ -5,6 +5,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import Vendas from './pages/Vendas';
+import RateioDespesas from './pages/RateioDespesas';
 import NexusInicio from './pages/NexusInicio';
 import NexusComunicacao from './pages/NexusComunicacao';
 import NexusSolicitacoes from './pages/NexusSolicitacoes';
@@ -57,6 +58,7 @@ function App() {
               />
             ))}
             <Route path="/Vendas" element={<LayoutWrapper currentPageName="Vendas"><Vendas /></LayoutWrapper>} />
+            <Route path="/RateioDespesas" element={<LayoutWrapper currentPageName="RateioDespesas"><RateioDespesas /></LayoutWrapper>} />
 
             {/* APSIS Nexus Routes */}
             <Route path="/NexusInicio" element={<LayoutWrapper currentPageName="NexusInicio"><NexusInicio /></LayoutWrapper>} />
