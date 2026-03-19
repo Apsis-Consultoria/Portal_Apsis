@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PageHeader from "./shared/PageHeader";
 import {
-  Save, User, Calendar, Percent, FileText, AlertCircle,
-  Users, Lock, Link2, Eye, Building2, Check, Loader2
+  Save, Settings, Calendar, FileText, AlertCircle,
+  Users, Lock, Link2, Eye, Building2, Check, Loader2,
+  ExternalLink, TestTube2
 } from "lucide-react";
 
 const STATUS_OPTIONS = ["Não iniciado", "Ativo", "Pausado", "Cancelado"];

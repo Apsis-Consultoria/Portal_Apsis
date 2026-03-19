@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, LayoutDashboard, Columns2, Users, DollarSign,
-  FileText, AlertTriangle, Calendar, Settings, ChevronRight, Clock, MessageSquare
+  FileText, AlertTriangle, Calendar, Settings, ChevronRight
 } from "lucide-react";
 import ProjetoResumo from "@/components/projetos/ProjetoResumo";
 import ProjetoKanban from "@/components/projetos/ProjetoKanban";
@@ -14,7 +14,7 @@ import ProjetoDocumentos from "@/components/projetos/ProjetoDocumentos";
 import ProjetoRiscos from "@/components/projetos/ProjetoRiscos";
 import ProjetoGantt from "@/components/projetos/ProjetoGantt";
 import ProjetoConfig from "@/components/projetos/ProjetoConfig";
-import ProjetoComunicacao from "@/components/projetos/ProjetoComunicacao";
+
 
 const STATUS_STYLE = {
   "Ativo":        { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-500" },
@@ -24,15 +24,14 @@ const STATUS_STYLE = {
 };
 
 const TABS = [
-  { id: "visao-geral",   label: "Visão Geral",    icon: LayoutDashboard },
-  { id: "kanban",        label: "Kanban",          icon: Columns2        },
-  { id: "timeline",      label: "Timeline",        icon: Calendar        },
-  { id: "equipe",        label: "Equipe e Horas",  icon: Users           },
-  { id: "financeiro",    label: "Financeiro",      icon: DollarSign      },
-  { id: "documentos",    label: "Documentos",      icon: FileText        },
-  { id: "comunicacao",   label: "Comunicação",     icon: MessageSquare   },
-  { id: "riscos",        label: "Riscos",          icon: AlertTriangle   },
-  { id: "configuracoes", label: "Configurações",   icon: Settings        },
+  { id: "visao-geral",   label: "Visão Geral",   icon: LayoutDashboard },
+  { id: "kanban",        label: "Kanban",         icon: Columns2        },
+  { id: "timeline",      label: "Timeline",       icon: Calendar        },
+  { id: "equipe",        label: "Equipe & Horas", icon: Users           },
+  { id: "financeiro",    label: "Financeiro",     icon: DollarSign      },
+  { id: "documentos",    label: "Documentos",     icon: FileText        },
+  { id: "riscos",        label: "Riscos",         icon: AlertTriangle   },
+  { id: "configuracoes", label: "Configurações",  icon: Settings        },
 ];
 
 export default function ProjetoDetalhe() {
@@ -144,7 +143,6 @@ export default function ProjetoDetalhe() {
         {tab === "equipe"        && <ProjetoTimesheet   osId={osId} projeto={projeto} />}
         {tab === "financeiro"    && <ProjetoFinanceiro  osId={osId} projeto={projeto} />}
         {tab === "documentos"    && <ProjetoDocumentos  osId={osId} projeto={projeto} />}
-        {tab === "comunicacao"   && <ProjetoComunicacao osId={osId} projeto={projeto} />}
         {tab === "riscos"        && <ProjetoRiscos      osId={osId} projeto={projeto} />}
         {tab === "configuracoes" && <ProjetoConfig      projeto={projeto} onUpdate={setProjeto} osId={osId} />}
       </div>
