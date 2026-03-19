@@ -157,8 +157,8 @@ export default function Layout({ children, currentPageName }) {
   const [openSubmenus, setOpenSubmenus] = useState({}); // Rastreia submenus expandidos
 
   // Estados de autenticação e permissões
-  const [userRole, setUserRole] = useState(null); // Role do usuário (admin, diretor, gerente, analista)
-  const [userDepartamento, setUserDepartamento] = useState(null); // Departamento do colaborador
+  const [userRole, setUserRole] = useState("admin"); // Role padrão: admin (carrega com app público)
+  const [userDepartamento, setUserDepartamento] = useState("Portal APSIS"); // Departamento do colaborador
   const [pagePermissions, setPagePermissions] = useState(null); // Permissões customizadas (null = usa padrão do perfil)
 
   const toggleSubmenu = (label) => setOpenSubmenus(prev => ({ ...prev, [label]: !prev[label] }));
