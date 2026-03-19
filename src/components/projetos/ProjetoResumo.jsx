@@ -103,6 +103,22 @@ export default function ProjetoResumo({ projeto, onUpdate, osId }) {
   return (
     <div className="p-6 space-y-6 max-w-6xl mx-auto">
 
+      {/* Banner de vínculo com oportunidade de origem */}
+      {projeto.opportunity_id && (
+        <a
+          href={`/Vendas?tab=oportunidades`}
+          className="flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 hover:bg-blue-100 transition-colors group">
+          <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-200 transition-colors">
+            <Link2 size={13} className="text-blue-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-blue-700">Projeto originado de uma Oportunidade</p>
+            <p className="text-[11px] text-blue-500 mt-0.5">ID: {projeto.opportunity_id}</p>
+          </div>
+          <ArrowUpRight size={13} className="text-blue-400 flex-shrink-0" />
+        </a>
+      )}
+
       <PageHeader
         title="Visão Geral"
         subtitle={`${projeto.natureza || "Projeto"} · ${projeto.proposta_numero || ""}`}
