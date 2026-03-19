@@ -9,6 +9,7 @@ const mockConversas = [
     titulo: 'Auditoria Contábil 2025',
     descricao: 'Projeto - Auditoria completa das demonstrações contábeis',
     tipo: 'projeto',
+    cliente_nome: 'TechCorp Brasil',
     ultima_mensagem: 'Documentação foi atualizada',
     ultima_mensagem_em: '2026-03-19T10:30:00',
     nao_lidas: 0,
@@ -18,6 +19,7 @@ const mockConversas = [
     titulo: 'Dúvida sobre relatório',
     descricao: 'Solicitação - Entender apresentação dos resultados',
     tipo: 'solicitacao',
+    cliente_nome: 'TechCorp Brasil',
     ultima_mensagem: 'Temos a resposta pronta para você',
     ultima_mensagem_em: '2026-03-18T15:45:00',
     nao_lidas: 0,
@@ -27,6 +29,7 @@ const mockConversas = [
     titulo: 'Assunto geral',
     descricao: 'Conversa geral com a equipe',
     tipo: 'geral',
+    cliente_nome: 'Inovação Digital Ltda',
     ultima_mensagem: 'Qual é o melhor horário para a reunião?',
     ultima_mensagem_em: '2026-03-17T09:20:00',
     nao_lidas: 0,
@@ -36,6 +39,7 @@ const mockConversas = [
     titulo: 'Consultoria Tributária',
     descricao: 'Projeto - Planejamento fiscal para 2026',
     tipo: 'projeto',
+    cliente_nome: 'Finanças & Cia',
     ultima_mensagem: 'Reunião de alinhamento marcada para quinta',
     ultima_mensagem_em: '2026-03-16T14:10:00',
     nao_lidas: 0,
@@ -47,6 +51,7 @@ const mockMensagens = {
     {
       id: 1,
       conversa_id: 1,
+      cliente_nome: 'TechCorp Brasil',
       remetente_email: 'marina@apsis.com',
       remetente_nome: 'Marina Silva (Você)',
       remetente_tipo: 'apsis',
@@ -59,6 +64,7 @@ const mockMensagens = {
     {
       id: 2,
       conversa_id: 1,
+      cliente_nome: 'TechCorp Brasil',
       remetente_email: 'joao@techcorp.com',
       remetente_nome: 'João Silva (Cliente)',
       remetente_tipo: 'cliente',
@@ -71,6 +77,7 @@ const mockMensagens = {
     {
       id: 3,
       conversa_id: 1,
+      cliente_nome: 'TechCorp Brasil',
       remetente_email: 'marina@apsis.com',
       remetente_nome: 'Marina Silva (Você)',
       remetente_tipo: 'apsis',
@@ -83,6 +90,7 @@ const mockMensagens = {
     {
       id: 4,
       conversa_id: 1,
+      cliente_nome: 'TechCorp Brasil',
       remetente_email: 'marina@apsis.com',
       remetente_nome: 'Marina Silva (Você)',
       remetente_tipo: 'apsis',
@@ -97,6 +105,7 @@ const mockMensagens = {
     {
       id: 1,
       conversa_id: 2,
+      cliente_nome: 'TechCorp Brasil',
       remetente_email: 'joao@techcorp.com',
       remetente_nome: 'João Silva (Cliente)',
       remetente_tipo: 'cliente',
@@ -109,6 +118,7 @@ const mockMensagens = {
     {
       id: 2,
       conversa_id: 2,
+      cliente_nome: 'TechCorp Brasil',
       remetente_email: 'carlos@apsis.com',
       remetente_nome: 'Carlos Santos',
       remetente_tipo: 'apsis',
@@ -124,6 +134,7 @@ const mockMensagens = {
     {
       id: 1,
       conversa_id: 3,
+      cliente_nome: 'Inovação Digital Ltda',
       remetente_email: 'ana@apsis.com',
       remetente_nome: 'Ana Costa (Você)',
       remetente_tipo: 'apsis',
@@ -138,6 +149,7 @@ const mockMensagens = {
     {
       id: 1,
       conversa_id: 4,
+      cliente_nome: 'Finanças & Cia',
       remetente_email: 'patricia@apsis.com',
       remetente_nome: 'Patricia Silva',
       remetente_tipo: 'apsis',
