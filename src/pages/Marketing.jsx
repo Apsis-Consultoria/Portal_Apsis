@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { TrendingUp, Target } from "lucide-react";
+import { TrendingUp, Target, BarChart3 } from "lucide-react";
 import MarketingComercial from "./MarketingComercial";
 import MarketingOrcado from "./MarketingOrcado";
+import MarketingIndicadores from "./MarketingIndicadores";
 
 const TABS = [
+  { id: "indicadores", label: "Indicadores Estratégicos", icon: BarChart3 },
   { id: "comercial", label: "Comercial Estratégico", icon: TrendingUp },
   { id: "orcado", label: "Orçado vs Realizado", icon: Target },
 ];
@@ -32,6 +34,7 @@ export default function Marketing() {
       </div>
 
       {/* Content */}
+      {tab === "indicadores" && <MarketingIndicadores />}
       {tab === "comercial" && <MarketingComercial />}
       {tab === "orcado" && <MarketingOrcado />}
     </div>
