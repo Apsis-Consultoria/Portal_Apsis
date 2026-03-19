@@ -334,9 +334,6 @@ export default function Layout({ children, currentPageName }) {
             <div className="text-white text-[11px] font-bold tracking-widest uppercase mb-2">Portal</div>
           )}
           <img src={LOGO_URL} alt="APSIS" className={`object-contain flex-shrink-0 ${collapsed ? "w-8 h-8" : "w-32 h-auto"}`} />
-          {!collapsed && userDepartamento && (
-            <div className="text-[#F47920] text-[11px] font-bold tracking-widest uppercase truncate max-w-[160px] mt-3">{userDepartamento}</div>
-          )}
         </div>
 
         {/* Nav filtrado por permissão */}
@@ -370,9 +367,6 @@ export default function Layout({ children, currentPageName }) {
               <div className="flex flex-col items-center w-full">
                 <div className="text-white text-[10px] font-bold tracking-widest uppercase mb-2">Portal</div>
                 <img src={LOGO_URL} alt="APSIS" className="w-24 h-auto object-contain" />
-                {userDepartamento && (
-                  <div className="text-[#F47920] text-[10px] font-bold tracking-widest uppercase truncate max-w-[150px] mt-2">{userDepartamento}</div>
-                )}
               </div>
               <button onClick={() => setMobileOpen(false)} className="ml-4"><X size={18} className="text-white/50" /></button>
             </div>
