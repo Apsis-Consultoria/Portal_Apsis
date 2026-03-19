@@ -125,10 +125,10 @@ const navItems = [
   {
     label: "Apps APSIS", page: "AppsAPSIS", icon: Grid3x3,
     children: [
-      { label: "Ativo Fixo", page: "AppAtivoFixo", icon: Settings },
-      { label: "Conciliação", page: "AppConciliacao", icon: Settings },
-      { label: "Imóveis", page: "AppImoveis", icon: Settings },
-      { label: "CUBUS", page: "AppCubus", icon: Settings },
+      { label: "APP Ativo Fixo", page: "AppAtivoFixo", icon: Briefcase },
+      { label: "App Conciliação", page: "AppConciliacao", icon: BarChart3 },
+      { label: "App Imóveis", page: "AppImoveis", icon: Home },
+      { label: "APSIS CUBUS", page: "AppCubus", icon: Sparkles },
     ]
   },
   {
