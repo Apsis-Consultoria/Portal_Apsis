@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Save, Settings, Globe, MessageSquare, Mail, Share2, Lock, Check, AlertCircle, Upload } from 'lucide-react';
 import SharePointConfigPanel from '@/components/SharePointConfigPanel';
+import PortalClienteGuide from '@/components/PortalClienteGuide';
 
 const ConfigSection = ({ title, description, children }) => (
   <div className="space-y-4">
@@ -205,6 +206,11 @@ export default function NexusConfiguracoes() {
         {/* ABA 2: Portal do Cliente */}
         {activeTab === 'portal' && (
           <>
+            {/* Guia do Portal */}
+            <div className="bg-white border border-[var(--border)] rounded-lg p-6">
+              <PortalClienteGuide />
+            </div>
+
             <ConfigSection title="Ativação do Portal" description="Controle o acesso dos clientes">
               <ToggleSwitch defaultChecked={true} label="Habilitar Portal do Cliente" />
             </ConfigSection>
