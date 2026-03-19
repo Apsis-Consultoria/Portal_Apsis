@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import PageHeader from "./shared/PageHeader";
 import {
   AlertOctagon, Plus, Check, Trash2, ShieldCheck, X,
   Loader2, Shield, AlertTriangle, Edit2, Save, ChevronDown, ChevronUp
@@ -90,6 +91,19 @@ export default function ProjetoRiscos({ osId }) {
 
   return (
     <div className="p-6 space-y-5 max-w-4xl mx-auto">
+
+      <PageHeader
+        title="Riscos"
+        subtitle="Identificação, mitigação e acompanhamento de riscos do projeto"
+        icon={AlertOctagon}
+        iconColor="text-red-500"
+        actions={(
+          <Button size="sm" onClick={() => setShowForm(!showForm)}
+            className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
+            <Plus size={12} /> Novo Risco
+          </Button>
+        )}
+      />
 
       {/* ── KPIs ─────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

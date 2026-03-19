@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import PageHeader from "./shared/PageHeader";
 import {
   Save, User, Calendar, Percent, FileText, AlertCircle,
   Users, Lock, Link2, Eye, Building2, Check, Loader2
@@ -66,11 +67,11 @@ export default function ProjetoConfig({ projeto, onUpdate, osId }) {
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-5">
 
-      {/* Header */}
-      <div>
-        <h2 className="text-base font-bold text-slate-800">Configurações do Projeto</h2>
-        <p className="text-xs text-slate-400 mt-0.5">Parâmetros operacionais, permissões e integrações deste projeto</p>
-      </div>
+      <PageHeader
+        title="Configurações do Projeto"
+        subtitle="Parâmetros operacionais, responsabilidades, permissões e integrações"
+        icon={Settings}
+      />
 
       {/* Tab nav */}
       <div className="flex overflow-x-auto gap-0 bg-slate-100/70 rounded-xl p-1">

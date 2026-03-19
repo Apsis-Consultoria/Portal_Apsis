@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import PageHeader from "./shared/PageHeader";
 import {
   FileText, Plus, Upload, Check, Trash2, ExternalLink, Send,
   X, Loader2, HelpCircle, FolderOpen, Link2, AlertCircle, ChevronDown
@@ -90,6 +91,18 @@ export default function ProjetoDocumentos({ osId, projeto }) {
 
   return (
     <div className="p-6 space-y-5 max-w-5xl mx-auto">
+
+      <PageHeader
+        title="Documentos"
+        subtitle="Gerencie laudos, relatórios e entregas do projeto"
+        icon={FileText}
+        actions={(
+          <Button size="sm" onClick={() => setShowForm(!showForm)}
+            className="bg-[#1A4731] hover:bg-[#245E40] active:bg-[#15372a] text-white gap-1.5 text-xs shadow-sm hover:shadow-md transition-all">
+            <Plus size={12} /> Novo Documento
+          </Button>
+        )}
+      />
 
       {/* ── KPIs ─────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-4 gap-3">

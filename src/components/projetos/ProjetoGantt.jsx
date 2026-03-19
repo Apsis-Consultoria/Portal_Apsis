@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, CheckCircle2, Clock, AlertTriangle, Calendar, ZoomIn, ZoomOut, Flag } from "lucide-react";
+import PageHeader from "./shared/PageHeader";
+import { ChevronLeft, ChevronRight, CheckCircle2, Clock, AlertTriangle, Calendar, Flag, LayoutList } from "lucide-react";
 
 const STATUS = {
   "A fazer":      { color: "#94a3b8", bg: "bg-slate-100",   text: "text-slate-600"   },
