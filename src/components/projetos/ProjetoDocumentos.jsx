@@ -7,8 +7,9 @@ import PageHeader from "./shared/PageHeader";
 import { downloadCSV, downloadPDF, fmtDatePTBR } from "@/utils/exportUtils";
 import {
   FileText, Plus, Upload, Check, Trash2, ExternalLink, Send,
-  X, Loader2, HelpCircle, FolderOpen, Link2, AlertCircle, ChevronDown, Download
+  X, Loader2, HelpCircle, FolderOpen, Link2, ChevronDown, ChevronUp, Download
 } from "lucide-react";
+import ObservacoesLog from "./shared/ObservacoesLog";
 
 const TIPO_ICON = {
   "Laudo": "📋", "Relatório": "📊", "Contrato": "📝",
@@ -24,7 +25,7 @@ const STATUS_STYLE = {
 
 const EMPTY_FORM = {
   nome: "", tipo: "Laudo", versao: "1.0", responsavel: "",
-  data_entrega: "", observacoes: "", status: "Rascunho", url: ""
+  data_entrega: "", observacoes: "", status: "Rascunho", url: "", observacoes_log: ""
 };
 
 export default function ProjetoDocumentos({ osId, projeto }) {
@@ -35,6 +36,7 @@ export default function ProjetoDocumentos({ osId, projeto }) {
   const [uploading,  setUploading]  = useState(false);
   const [saving,     setSaving]     = useState(false);
   const [filter,     setFilter]     = useState("todos");
+  const [expanded,   setExpanded]   = useState({});
   const [form,       setForm]       = useState(EMPTY_FORM);
 
   // SharePoint URL from projeto or config
@@ -320,60 +322,80 @@ export default function ProjetoDocumentos({ osId, projeto }) {
             {filtered.map(d => {
               const st = STATUS_STYLE[d.status] || STATUS_STYLE["Rascunho"];
               return (
-                <div key={d.id} className="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50/50 group flex-wrap">
-                  <span className="text-xl flex-shrink-0">{TIPO_ICON[d.tipo] || "📄"}</span>
-                  <div className="flex-1 min-w-[180px]">
-                    <p className="text-sm font-semibold text-slate-800">{d.nome}</p>
-                    <p className="text-xs text-slate-400">{d.tipo} · v{d.versao || "1.0"}{d.responsavel ? ` · ${d.responsavel}` : ""}</p>
+                <div key={d.id} className="group">
+                  <div className="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50/50 flex-wrap">
+                    <span className="text-xl flex-shrink-0">{TIPO_ICON[d.tipo] || "📄"}</span>
+                    <div className="flex-1 min-w-[180px]">
+                      <p className="text-sm font-semibold text-slate-800">{d.nome}</p>
+                      <p className="text-xs text-slate-400">{d.tipo} · v{d.versao || "1.0"}{d.responsavel ? ` · ${d.responsavel}` : ""}</p>
+                    </div>
+                    {d.data_entrega && (
+                      <span className="text-xs text-slate-400">{new Date(d.data_entrega + "T00:00:00").toLocaleDateString("pt-BR")}</span>
+                    )}
+                    <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${st.badge}`}>
+                      <span className={`w-1 h-1 rounded-full ${st.dot}`} />{d.status}
+                    </span>
+                    {d.enviado_cliente && (
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">Enviado ao cliente</span>
+                    )}
+                    <div className="flex gap-1 flex-wrap">
+                      {d.url && (
+                        <a href={d.url} target="_blank" rel="noopener noreferrer"
+                          className="w-6 h-6 flex items-center justify-center rounded text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                          <ExternalLink size={12} />
+                        </a>
+                      )}
+                      {d.status === "Rascunho" && (
+                        <button onClick={() => atualizarStatus(d.id, "Em revisão")}
+                          className="text-[10px] border border-amber-200 text-amber-600 rounded px-1.5 py-0.5 hover:bg-amber-50 transition-colors">
+                          Revisar
+                        </button>
+                      )}
+                      {d.status === "Em revisão" && (
+                        <button onClick={() => atualizarStatus(d.id, "Aprovado")}
+                          className="text-[10px] border border-blue-200 text-blue-600 rounded px-1.5 py-0.5 hover:bg-blue-50 transition-colors">
+                          Aprovar
+                        </button>
+                      )}
+                      {d.status !== "Entregue" && (
+                        <button onClick={() => marcarEntregue(d.id)}
+                          className="text-[10px] border border-violet-200 text-violet-600 rounded px-1.5 py-0.5 hover:bg-violet-50 transition-colors flex items-center gap-0.5">
+                          <Send size={9} /> Entregar
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setExpanded(e => ({ ...e, [d.id]: !e[d.id] }))}
+                        className="w-6 h-6 flex items-center justify-center rounded text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-colors">
+                        {expanded[d.id] ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                      </button>
+                      <button onClick={() => excluir(d.id)}
+                        className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded text-slate-200 hover:text-red-400 hover:bg-red-50 transition-all">
+                        <Trash2 size={11} />
+                      </button>
+                    </div>
                   </div>
-                  {d.data_entrega && (
-                    <span className="text-xs text-slate-400">{new Date(d.data_entrega + "T00:00:00").toLocaleDateString("pt-BR")}</span>
+                  {expanded[d.id] && (
+                    <div className="px-5 pb-4 pt-1 border-t border-slate-50 bg-slate-50/30">
+                      <ObservacoesLog
+                        value={d.observacoes_log || ""}
+                        onChange={async (val) => {
+                          await base44.entities.DocumentoProjeto.update(d.id, { observacoes_log: val });
+                          setDocumentos(prev => prev.map(x => x.id === d.id ? { ...x, observacoes_log: val } : x));
+                        }}
+                        currentUser="Usuário"
+                        label="Histórico"
+                      />
+                    </div>
                   )}
-                  <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${st.badge}`}>
-                    <span className={`w-1 h-1 rounded-full ${st.dot}`} />{d.status}
-                  </span>
-                  {d.enviado_cliente && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">Enviado ao cliente</span>
-                  )}
-                  <div className="flex gap-1 flex-wrap">
-                    {d.url && (
-                      <a href={d.url} target="_blank" rel="noopener noreferrer"
-                        className="w-6 h-6 flex items-center justify-center rounded text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors">
-                        <ExternalLink size={12} />
-                      </a>
-                    )}
-                    {d.status === "Rascunho" && (
-                      <button onClick={() => atualizarStatus(d.id, "Em revisão")}
-                        className="text-[10px] border border-amber-200 text-amber-600 rounded px-1.5 py-0.5 hover:bg-amber-50 transition-colors">
-                        Revisar
-                      </button>
-                    )}
-                    {d.status === "Em revisão" && (
-                      <button onClick={() => atualizarStatus(d.id, "Aprovado")}
-                        className="text-[10px] border border-blue-200 text-blue-600 rounded px-1.5 py-0.5 hover:bg-blue-50 transition-colors">
-                        Aprovar
-                      </button>
-                    )}
-                    {d.status !== "Entregue" && (
-                      <button onClick={() => marcarEntregue(d.id)}
-                        className="text-[10px] border border-violet-200 text-violet-600 rounded px-1.5 py-0.5 hover:bg-violet-50 transition-colors flex items-center gap-0.5">
-                        <Send size={9} /> Entregar
-                      </button>
-                    )}
-                    <button onClick={() => excluir(d.id)}
-                      className="w-6 h-6 flex items-center justify-center rounded text-slate-200 hover:text-red-400 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100">
-                      <Trash2 size={11} />
-                    </button>
-                  </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+                );
+                })}
+                </div>
+                )}
+                </div>
+                </div>
+                );
+                }
 
 function Field({ label, span, children }) {
   return (

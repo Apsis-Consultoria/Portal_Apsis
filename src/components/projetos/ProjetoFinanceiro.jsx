@@ -8,6 +8,7 @@ import {
   DollarSign, Plus, Check, Trash2, TrendingUp, AlertTriangle,
   Download, X, Loader2, BarChart3, Calendar, TrendingDown, Clock, FileText
 } from "lucide-react";
+import ObservacoesLog from "./shared/ObservacoesLog";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   Cell, LineChart, Line, CartesianGrid, Legend, ReferenceLine
@@ -24,7 +25,7 @@ const STATUS_STYLE = {
   "Em atraso": { badge: "bg-red-100 text-red-700",         dot: "bg-red-500"     },
 };
 
-const EMPTY_FORM = { valor: "", data_vencimento: "", mes_referencia: "", observacoes: "", status: "Lançada", nota_fiscal: "" };
+const EMPTY_FORM = { valor: "", data_vencimento: "", mes_referencia: "", observacoes: "", status: "Lançada", nota_fiscal: "", observacoes_log: "" };
 
 export default function ProjetoFinanceiro({ osId, projeto }) {
   const [parcelas,  setParcelas]  = useState([]);
@@ -237,7 +238,7 @@ export default function ProjetoFinanceiro({ osId, projeto }) {
                   value={form.nota_fiscal} onChange={e => setForm(f => ({ ...f, nota_fiscal: e.target.value }))} />
               </Field>
               <Field label="Observações">
-                <Input placeholder="Notas" className="h-9 text-sm"
+                <Input placeholder="Notas sobre esta parcela" className="h-9 text-sm"
                   value={form.observacoes} onChange={e => setForm(f => ({ ...f, observacoes: e.target.value }))} />
               </Field>
             </div>
