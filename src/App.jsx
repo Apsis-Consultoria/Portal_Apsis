@@ -19,6 +19,12 @@ import PortalClienteDocumentos from './pages/portal/PortalClienteDocumentos';
 import PortalClienteSolicitacoes from './pages/portal/PortalClienteSolicitacoes';
 import PortalClienteProjetos from './pages/portal/PortalClienteProjetos';
 import PortalClientePerfil from './pages/portal/PortalClientePerfil';
+import ClientLogin from './pages/ClientLogin';
+import ClientFirstAccess from './pages/ClientFirstAccess';
+import ClientForgotPassword from './pages/ClientForgotPassword';
+import ClientResetPassword from './pages/ClientResetPassword';
+import ClientProtectedRoute from './components/ClientProtectedRoute';
+import { ClientAuthProvider } from './lib/ClientAuthContext';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -31,47 +37,55 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 function App() {
   return (
     <QueryClientProvider client={queryClientInstance}>
-      <Router>
-        <Routes>
-          <Route path="/" element={
-            <LayoutWrapper currentPageName={mainPageKey}>
-              <MainPage />
-            </LayoutWrapper>
-          } />
-          {Object.entries(Pages).map(([path, Page]) => (
-            <Route
-              key={path}
-              path={`/${path}`}
-              element={
-                <LayoutWrapper currentPageName={path}>
-                  <Page />
-                </LayoutWrapper>
-              }
-            />
-          ))}
-          <Route path="/Vendas" element={<LayoutWrapper currentPageName="Vendas"><Vendas /></LayoutWrapper>} />
+      <ClientAuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={
+              <LayoutWrapper currentPageName={mainPageKey}>
+                <MainPage />
+              </LayoutWrapper>
+            } />
+            {Object.entries(Pages).map(([path, Page]) => (
+              <Route
+                key={path}
+                path={`/${path}`}
+                element={
+                  <LayoutWrapper currentPageName={path}>
+                    <Page />
+                  </LayoutWrapper>
+                }
+              />
+            ))}
+            <Route path="/Vendas" element={<LayoutWrapper currentPageName="Vendas"><Vendas /></LayoutWrapper>} />
 
-          {/* APSIS Nexus Routes */}
-          <Route path="/NexusInicio" element={<LayoutWrapper currentPageName="NexusInicio"><NexusInicio /></LayoutWrapper>} />
-          <Route path="/NexusComunicacao" element={<LayoutWrapper currentPageName="NexusComunicacao"><NexusComunicacao /></LayoutWrapper>} />
-          <Route path="/NexusSolicitacoes" element={<LayoutWrapper currentPageName="NexusSolicitacoes"><NexusSolicitacoes /></LayoutWrapper>} />
-          <Route path="/NexusDocumentos" element={<LayoutWrapper currentPageName="NexusDocumentos"><NexusDocumentos /></LayoutWrapper>} />
-          <Route path="/NexusProjetos" element={<LayoutWrapper currentPageName="NexusProjetos"><NexusProjetos /></LayoutWrapper>} />
-          <Route path="/NexusPortalCliente" element={<LayoutWrapper currentPageName="NexusPortalCliente"><NexusPortalCliente /></LayoutWrapper>} />
-          <Route path="/NexusConfiguracoes" element={<LayoutWrapper currentPageName="NexusConfiguracoes"><NexusConfiguracoes /></LayoutWrapper>} />
+            {/* APSIS Nexus Routes */}
+            <Route path="/NexusInicio" element={<LayoutWrapper currentPageName="NexusInicio"><NexusInicio /></LayoutWrapper>} />
+            <Route path="/NexusComunicacao" element={<LayoutWrapper currentPageName="NexusComunicacao"><NexusComunicacao /></LayoutWrapper>} />
+            <Route path="/NexusSolicitacoes" element={<LayoutWrapper currentPageName="NexusSolicitacoes"><NexusSolicitacoes /></LayoutWrapper>} />
+            <Route path="/NexusDocumentos" element={<LayoutWrapper currentPageName="NexusDocumentos"><NexusDocumentos /></LayoutWrapper>} />
+            <Route path="/NexusProjetos" element={<LayoutWrapper currentPageName="NexusProjetos"><NexusProjetos /></LayoutWrapper>} />
+            <Route path="/NexusPortalCliente" element={<LayoutWrapper currentPageName="NexusPortalCliente"><NexusPortalCliente /></LayoutWrapper>} />
+            <Route path="/NexusConfiguracoes" element={<LayoutWrapper currentPageName="NexusConfiguracoes"><NexusConfiguracoes /></LayoutWrapper>} />
 
-          {/* Portal do Cliente Routes */}
-          <Route path="/PortalClienteInicio" element={<PortalClienteLayout><PortalClienteInicio /></PortalClienteLayout>} />
-          <Route path="/PortalClienteComunicacao" element={<PortalClienteLayout><PortalClienteComunicacao /></PortalClienteLayout>} />
-          <Route path="/PortalClienteDocumentos" element={<PortalClienteLayout><PortalClienteDocumentos /></PortalClienteLayout>} />
-          <Route path="/PortalClienteSolicitacoes" element={<PortalClienteLayout><PortalClienteSolicitacoes /></PortalClienteLayout>} />
-          <Route path="/PortalClienteProjetos" element={<PortalClienteLayout><PortalClienteProjetos /></PortalClienteLayout>} />
-          <Route path="/PortalClientePerfil" element={<PortalClienteLayout><PortalClientePerfil /></PortalClienteLayout>} />
+            {/* Portal do Cliente Routes */}
+            <Route path="/PortalClienteInicio" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteInicio /></ClientProtectedRoute></PortalClienteLayout>} />
+            <Route path="/PortalClienteComunicacao" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteComunicacao /></ClientProtectedRoute></PortalClienteLayout>} />
+            <Route path="/PortalClienteDocumentos" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteDocumentos /></ClientProtectedRoute></PortalClienteLayout>} />
+            <Route path="/PortalClienteSolicitacoes" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteSolicitacoes /></ClientProtectedRoute></PortalClienteLayout>} />
+            <Route path="/PortalClienteProjetos" element={<PortalClienteLayout><ClientProtectedRoute><PortalClienteProjetos /></ClientProtectedRoute></PortalClienteLayout>} />
+            <Route path="/PortalClientePerfil" element={<PortalClienteLayout><ClientProtectedRoute><PortalClientePerfil /></ClientProtectedRoute></PortalClienteLayout>} />
 
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-        <Toaster />
-      </Router>
+            {/* Client Auth Routes */}
+            <Route path="/ClientLogin" element={<ClientLogin />} />
+            <Route path="/ClientFirstAccess" element={<ClientFirstAccess />} />
+            <Route path="/ClientForgotPassword" element={<ClientForgotPassword />} />
+            <Route path="/ClientResetPassword" element={<ClientResetPassword />} />
+
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+          <Toaster />
+        </Router>
+      </ClientAuthProvider>
     </QueryClientProvider>
   )
 }
