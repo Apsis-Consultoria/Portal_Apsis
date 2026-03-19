@@ -128,7 +128,7 @@ export default function ComercialAvancadoDinamico({ filtros }) {
       <Card className="p-6 border-[var(--border)] bg-white">
         <h3 className="font-semibold text-[var(--text-primary)] mb-4">Vendas vs Meta</h3>
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={DADOS_VENDAS}>
+          <BarChart data={DADOS_VENDAS} isAnimationActive={true}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis dataKey="mes" />
             <YAxis yAxisId="left" />
@@ -144,7 +144,7 @@ export default function ComercialAvancadoDinamico({ filtros }) {
       <Card className="p-6 border-[var(--border)] bg-white">
         <h3 className="font-semibold text-[var(--text-primary)] mb-4">Evolução Ticket Médio (R$ mil)</h3>
         <ResponsiveContainer width="100%" height={250}>
-          <LineChart data={DADOS_TICKET}>
+          <LineChart data={DADOS_TICKET} isAnimationActive={true}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis dataKey="mes" />
             <YAxis />

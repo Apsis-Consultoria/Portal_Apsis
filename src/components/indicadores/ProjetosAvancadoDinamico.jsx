@@ -120,6 +120,8 @@ export default function ProjetosAvancadoDinamico({ filtros }) {
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
+                isAnimationActive={true}
+                animationDuration={800}
                 data={projetos.dados}
                 cx="50%"
                 cy="50%"
@@ -142,7 +144,7 @@ export default function ProjetosAvancadoDinamico({ filtros }) {
       <Card className="p-6 border-[var(--border)] bg-white">
         <h3 className="font-semibold text-[var(--text-primary)] mb-4">Evolução de Projetos</h3>
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={DADOS_EVOLUCAO}>
+          <BarChart data={DADOS_EVOLUCAO} isAnimationActive={true}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis dataKey="mes" />
             <YAxis />

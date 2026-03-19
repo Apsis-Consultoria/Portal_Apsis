@@ -71,6 +71,7 @@ const DEFAULT_ROLE_PAGES = {
  */
 const navItems = [
   { label: "Boas-Vindas", page: "BoasVindas", icon: Home },
+  { label: "Indicadores Táticos", page: "IndicadoresTáticos", icon: TrendingUp },
   {
     label: "Projetos", page: "Projetos", icon: FolderKanban,
     children: [
@@ -143,7 +144,6 @@ const navItems = [
       { label: "Dashboard", page: "DashboardTI", icon: BarChart3 },
     ]
   },
-  { label: "Indicadores Táticos", page: "IndicadoresTáticos", icon: BarChart3 },
   { label: "Dashboard Qualidade", page: "DashboardQualidade", icon: BarChart3 },
   {
     label: "Apps APSIS", page: "AppsAPSIS", icon: Grid3x3,
